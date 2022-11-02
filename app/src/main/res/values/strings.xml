@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Road801</string>
+
+    <string name="menu_home">홈</string>
+    <string name="menu_point">포인트</string>
+    <string name="menu_my_info">내 정보</string>
+
+    <string name="intro_message">SNS로 1초만에 로그인</string>
+    <string name="intro_login_signup_msg"><u>ID 로그인하기 / 회원가입</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

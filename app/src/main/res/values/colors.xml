@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="primary">#0971CE</color>
+    <color name="primary_gray">#707170</color>
+    <color name="secondary_color">#288AE1</color>
+    <color name="disabled_gray">#D7D7D7</color>
+    <color name="primary_black">#000000</color>
+    <color name="selected_gray">#363636</color>
+    <color name="unselected_gray">#9D9D9D</color>
+    <color name="background_gray">#E0E0E0</color>
+    <color name="bottom_sheet_gray">#F6F6F6</color>
+    <color name="positive_green">#67C81B</color>
+    <color name="linear_blue">#0971CE</color>
+    <color name="alert_red">#F43759</color>
+    <color name="_1E1E1E">#1E1E1E</color>
+
+
+
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -7,4 +23,6 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>
