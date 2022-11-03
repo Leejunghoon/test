@@ -12,7 +12,7 @@ data class UserDto (
     val sexType: GenderType,
     val termAgreeList: List<String>,
     val socialType: String?,
-    val socialId: Long?,
+    val socialId: String?,
     val loginId: String?,
     val password: String?,
     val thumbnailImageUrl: String?

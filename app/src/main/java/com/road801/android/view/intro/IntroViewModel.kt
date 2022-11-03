@@ -1,6 +1,9 @@
 package com.road801.android.view.intro
 
+import android.app.Activity
 import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,9 +49,17 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                         }
                     }
                 }
-                SnsType.NAVER -> {
 
+                SnsType.NAVER -> {
+                    SnsRepository.naverLogin(context) {
+                        when (it) {
+                            is Resource.Loading -> {}
+                            is Resource.Success -> _signupUser.value = Event(Resource.Success(it.data))
+                            is Resource.Failure -> _signupUser.value = Event(Resource.Failure(it.exception))
+                        }
+                    }
                 }
+
                 SnsType.GOOGLE -> {
 
                 }

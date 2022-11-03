@@ -3,6 +3,7 @@ package com.road801.android.data.network.error
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
+import com.road801.android.BuildConfig
 import com.road801.android.data.network.dto.ErrorResponseDto
 import okhttp3.Interceptor
 
@@ -17,7 +18,7 @@ class ServerResponseInterceptor : Interceptor {
 
     @Throws(ServerResponseException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        Log.d(tag, "Response intercept..")
+        if(BuildConfig.DEBUG) Log.d(tag, "Response intercept..")
         val request: Request = chain.request()
         val response = chain.proceed(request)
         if (response.isSuccessful.not()) {
@@ -27,10 +28,10 @@ class ServerResponseInterceptor : Interceptor {
                 errorResponseDto = gson.fromJson(response.body?.charStream(), ErrorResponseDto::class.java)
                 jsonResponse = errorResponseDto.toString()
             } catch (jsonSyntaxException: JsonSyntaxException) {
-                Log.d(tag, "JsonSyntaxException:")
+                if(BuildConfig.DEBUG) Log.d(tag, "JsonSyntaxException:")
                 throw ServerResponseException(NetworkError("JsonSyntaxException", SERVER_RESPONSE_JSON_PARSE_ERROR), jsonSyntaxException)
             } catch (throwable: Throwable) {
-                Log.d(tag, "Throwable:")
+                if(BuildConfig.DEBUG) Log.d(tag, "Throwable:")
                 throw ServerResponseException(NetworkError("Throwable", SERVER_RESPONSE_UNKNOWN_ERROR), throwable)
             }
             throw ServerResponseException(NetworkError(errorResponseDto.code, errorResponseDto.message), Throwable(jsonResponse))

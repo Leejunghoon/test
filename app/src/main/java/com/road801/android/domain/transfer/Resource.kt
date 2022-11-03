@@ -8,7 +8,7 @@ sealed class Resource<out T> {
     data class Failure(val exception: DomainException) : Resource<Nothing>()
 }
 
-class DomainException(val domainErrorMessage: String = DOMAIN_UNDEFINED_ERROR_MESSAGE, val domainErrorSubMessage: String = DOMAIN_UNDEFINED_ERROR_SUB_MESSAGE, cause: Throwable?) : IOException(cause)
+class DomainException(val domainErrorMessage: String = DOMAIN_UNDEFINED_ERROR_MESSAGE, val domainErrorSubMessage: String = DOMAIN_UNDEFINED_ERROR_SUB_MESSAGE, cause: Throwable? = null) : IOException(cause)
 
 const val DOMAIN_NETWORK_ERROR_MESSAGE = "네트워크 오류"
 const val DOMAIN_SERVER_AUTH_ERROR_MESSAGE = "서버 인증 오류"

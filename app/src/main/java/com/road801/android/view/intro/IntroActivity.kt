@@ -1,7 +1,7 @@
 package com.road801.android.view.intro
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.road801.android.R
 import com.road801.android.databinding.ActivityIntroBinding

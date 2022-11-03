@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Road801</string>
+    
+    <string name="naver_client_id">1EDAmuXC7asbokZ1fhhD</string>
+    <string name="naver_client_secret">usoPZKNWWO</string>
+    <string name="naver_client_name">로드801</string>
 
     <string name="menu_home">홈</string>
     <string name="menu_point">포인트</string>

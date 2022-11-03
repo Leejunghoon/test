@@ -1,21 +1,46 @@
 package com.road801.android.data.repository
 
+import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
+import com.road801.android.BuildConfig
+import com.road801.android.common.TAG
 import com.road801.android.common.enum.GenderType
 import com.road801.android.common.enum.SnsType
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.domain.transfer.DomainException
 import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.intro.IntroActivity
 
 object SnsRepository {
-    private final val TAG_KAKAO = "KAKAO"
     private lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
 
+    private lateinit var oAuthLoginCallback: OAuthLoginCallback // for naver
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // for naver
 
+
+    /**
+     * MARK: - 카카오 로그인
+     *
+     * @param context
+     * @param callback UserDTO
+     */
     public fun kakaoLogin(context: Context, callback: (result: Resource<UserDto>) -> Unit) {
         setupKakaoCallback(context, callback)
 
@@ -27,12 +52,109 @@ object SnsRepository {
         }
     }
 
-    // 카카오 사용자 정보 가져오기.
+    /**
+     * MARK: - 네이버 로그인
+     *
+     * @param context
+     * @return
+     */
+    public fun naverLogin(context: Context, callback: (result: Resource<UserDto>) -> Unit) {
+        setupOauthLoginCallback(callback)
+        NaverIdLoginSDK.authenticate(context, oAuthLoginCallback)
+    }
+
+    /**
+     *  SNS 로그아웃
+     *
+     * @param type KAKAO, NAVER, GOOGLE
+     * @param callback none: success
+     */
+    public fun logout(type: SnsType, callback: () -> Unit) {
+        when (type) {
+            SnsType.KAKAO -> {
+                UserApiClient.instance.logout {
+                    if(BuildConfig.DEBUG) Log.d(TAG, "[카카오] 로그아웃 성공")
+                    callback.invoke()
+                }
+            }
+            SnsType.NAVER -> {
+                if(BuildConfig.DEBUG) Log.d(TAG, "[네이버] 로그아웃 성공")
+                NaverIdLoginSDK.logout()
+                callback.invoke()
+            }
+
+            SnsType.GOOGLE -> {
+
+            }
+        }
+    }
+
+    /**
+     * 회원 탈퇴시 SNS 연동 해제
+     *
+     * @param context
+     * @param type KAKAO, NAVER, GOOGLE
+     * @param callback Boolean: success, fail
+     */
+    public fun withdrawal(context: Context, type: SnsType, callback: (result: Boolean) -> Unit) {
+        when (type) {
+            SnsType.KAKAO -> {
+                UserApiClient.instance.unlink { error ->
+                    if (error != null) {
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 연동 해제 실패", error)
+                        callback.invoke(false)
+                    }
+                    else {
+                        if(BuildConfig.DEBUG) Log.d(TAG, "[카카오] 연동 해제 성공")
+                        callback.invoke(true)
+                    }
+                }
+            }
+
+            SnsType.NAVER -> {
+                NidOAuthLogin().callDeleteTokenApi(context, object : OAuthLoginCallback {
+                    override fun onSuccess() {
+                        //서버에서 토큰 삭제에 성공한 상태입니다.
+                        if(BuildConfig.DEBUG) Log.d(TAG, "[네이버] 연동 해제 성공")
+                        callback.invoke(true)
+                    }
+                    override fun onFailure(httpStatus: Int, message: String) {
+                        // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                        // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                        val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                        val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                        if (BuildConfig.DEBUG) Log.d(TAG, "$errorCode $errorDescription")
+                        if(BuildConfig.DEBUG) Log.d(TAG, "[네이버] 연동 해제 성공")
+                        callback.invoke(true)
+                    }
+                    override fun onError(errorCode: Int, message: String) {
+                        // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                        // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                        onFailure(errorCode, message)
+                    }
+                })
+            }
+
+            SnsType.GOOGLE -> {
+
+            }
+        }
+    }
+
+    public fun getHashKey(context: Context): String {
+        return Utility.getKeyHash(context);
+    }
+
+    /**
+     * 카카오 사용자 정보 가져오기.
+     *
+     * @param callback UserDto
+     */
     private fun requestKaKaoUserInformation(callback: (result: Resource<UserDto>) -> Unit) {
         UserApiClient.instance.me { user, error ->
             if (user != null) {
-                Log.d(
-                    TAG_KAKAO,
+                if(BuildConfig.DEBUG) Log.d(
+                    TAG,
                     "카카오 사용자 정보 요청 성공" + "\n회원번호: ${user.id}"
                             + "\n이메일: ${user.kakaoAccount?.email}"
                             + "\n닉네임: ${user.kakaoAccount?.profile?.nickname}"
@@ -42,7 +164,7 @@ object SnsRepository {
                 )
 
                 user.kakaoAccount?.let {
-                    val userId = user.id!!
+                    val userId = user.id!!.toString()
                     val birthday = it.birthday
                     val gender = it.gender
                     val snsType = SnsType.KAKAO.name
@@ -66,11 +188,11 @@ object SnsRepository {
                 }
 
             } else {
-                Log.d(TAG_KAKAO, "requestKaKaoUserInformation: $error")
+                if(BuildConfig.DEBUG) Log.e(TAG, "requestKaKaoUserInformation: $error")
                 callback.invoke(
                     Resource.Failure(
                         DomainException(
-                            "카카오 로그인을 다시 시도해주세요.",
+                            "[카카오] 사용자 정보 요청 실패.",
                             "카카오 사용자 정보를 가져오는데 실패하였습니다.",
                             error
                         )
@@ -80,37 +202,42 @@ object SnsRepository {
         }
     }
 
-
+    /**
+     * 카카오 로그인 콜백 (추상화)
+     *
+     * @param context
+     * @param callback UserDto
+     */
     private fun setupKakaoCallback(context: Context, callback: (result: Resource<UserDto>) -> Unit) {
         kakaoCallback = { token, error ->
             if (error != null) {
                 when {
                     error.toString() == AuthErrorCause.AccessDenied.toString() -> {
-                        Log.e(TAG_KAKAO, "접근이 거부 됨(동의 취소)")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 접근이 거부 됨(동의 취소)")
                     }
                     error.toString() == AuthErrorCause.InvalidClient.toString() -> {
-                        Log.e(TAG_KAKAO, "유효하지 않은 앱")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 유효하지 않은 앱")
                     }
                     error.toString() == AuthErrorCause.InvalidGrant.toString() -> {
-                        Log.e(TAG_KAKAO, "인증 수단이 유효하지 않아 인증할 수 없는 상태")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 인증 수단이 유효하지 않아 인증할 수 없는 상태")
                     }
                     error.toString() == AuthErrorCause.InvalidRequest.toString() -> {
-                        Log.e(TAG_KAKAO, "요청 파라미터 오류")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 요청 파라미터 오류")
                     }
                     error.toString() == AuthErrorCause.InvalidScope.toString() -> {
-                        Log.e(TAG_KAKAO, "유효하지 않은 scope ID")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 유효하지 않은 scope ID")
                     }
                     error.toString() == AuthErrorCause.Misconfigured.toString() -> {
-                        Log.e(TAG_KAKAO, "설정이 올바르지 않음(android key hash)")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 설정이 올바르지 않음(android key hash)")
                     }
                     error.toString() == AuthErrorCause.ServerError.toString() -> {
-                        Log.e(TAG_KAKAO, "서버 내부 에러")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 서버 내부 에러")
                     }
                     error.toString() == AuthErrorCause.Unauthorized.toString() -> {
-                        Log.e(TAG_KAKAO, "앱이 요청 권한이 없음")
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 앱이 요청 권한이 없음")
                     }
                     else -> { // Unknown
-                        Log.e(TAG_KAKAO, "기타 에러 " + error.toString())
+                        if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 기타 에러 " + error.toString())
                     }
                 }
 
@@ -121,7 +248,7 @@ object SnsRepository {
                     callback.invoke(
                         Resource.Failure(
                             DomainException(
-                                "로그인 실패",
+                                "[카카오] 로그인 실패",
                                 "카카오 로그인을 취소하였습니다.",
                                 error
                             )
@@ -130,16 +257,92 @@ object SnsRepository {
                 }
 
             } else if (token != null) {
-                Log.d(TAG_KAKAO, "로그인 성공")
+                if(BuildConfig.DEBUG) Log.d(TAG, "[카카오] 로그인 성공")
 
                 requestKaKaoUserInformation(callback)
             }
         }
     }
 
-    public fun getHashKey(): String {
-        return "";
-//        return Utility.getKeyHash(this);
+
+
+    /**
+     * 네이버 인증 콜백.
+     *
+     */
+    private fun setupOauthLoginCallback(callback: (result: Resource<UserDto>) -> Unit) {
+        oAuthLoginCallback = object : OAuthLoginCallback {
+            override fun onSuccess() {
+                // 네이버 로그인 인증이 성공했을 때 수행할 코드 추가
+                if (BuildConfig.DEBUG) Log.d(TAG, "[네이버] 로그인 인증 성공.")
+                requestNaverProfile(callback)
+            }
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                if (BuildConfig.DEBUG) Log.d(TAG, "$errorCode $errorDescription")
+
+                callback.invoke(Resource.Failure(DomainException(
+                    "[네이버] 로그인 인증 실패.",
+                    "$errorCode $errorDescription")
+                ))
+            }
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+            }
+        }
     }
+
+
+    /**
+     * 네이버 사용자 정보 가져오기.
+     *
+     */
+    private fun requestNaverProfile(callback: (result: Resource<UserDto>) -> Unit) {
+        NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
+            override fun onSuccess(response: NidProfileResponse) {
+                if (BuildConfig.DEBUG) Log.d(TAG, "$response")
+
+                response.profile?.let {
+                    val userId = it.id
+                    val birthday = it.birthday
+                    val gender = it.gender
+                    val snsType = SnsType.NAVER.name
+                    val thumbnailImageUrl = it.profileImage
+
+                    val userDto = UserDto(
+                        name = "",
+                        birthday = birthday,
+                        mobileNo = "",
+                        sexType = if (gender == null) GenderType.NONE
+                        else GenderType.valueOf( if (gender == "M") "MALE" else "FEMALE"),
+                        termAgreeList = emptyList(),
+                        socialType = snsType,
+                        socialId = userId,
+                        loginId = null,
+                        password = null,
+                        thumbnailImageUrl = thumbnailImageUrl
+                    )
+
+                    callback.invoke(Resource.Success(userDto))
+                }
+
+            }
+            override fun onFailure(httpStatus: Int, message: String) {
+                val errorCode = NaverIdLoginSDK.getLastErrorCode().code
+                val errorDescription = NaverIdLoginSDK.getLastErrorDescription()
+                if (BuildConfig.DEBUG) Log.d(TAG, "$errorCode $errorDescription")
+                callback.invoke(Resource.Failure(DomainException(
+                    "[네이버] 사용자 정보 요청 실패.",
+                    "$errorCode $errorDescription")
+                ))
+            }
+
+            override fun onError(errorCode: Int, message: String) {
+                onFailure(errorCode, message)
+            }
+        })
+    }
+
 
 }

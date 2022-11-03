@@ -5,5 +5,5 @@ package com.road801.android.common.enum
  *
  */
 enum class GenderType {
-    MALE, FEMALE, NONE
+    MALE, FEMALE, NONE;
 }

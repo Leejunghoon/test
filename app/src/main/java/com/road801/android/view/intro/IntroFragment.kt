@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import com.road801.android.BuildConfig
+import com.road801.android.common.TAG
 import com.road801.android.common.enum.SnsType
+import com.road801.android.data.repository.SnsRepository
 import com.road801.android.databinding.FragmentIntroBinding
+import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
 
 class IntroFragment : Fragment() {
@@ -18,7 +23,6 @@ class IntroFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -40,14 +44,15 @@ class IntroFragment : Fragment() {
     private fun initView() {
 
         binding.introSnsKakaoButton.setOnClickListener {
-            Log.d("intro", "introSnsKakaoButton")
+            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsKakaoButton")
             viewModel.requestSnsLogin(requireContext(), SnsType.KAKAO)
         }
         binding.introSnsNaverButton.setOnClickListener {
-            Log.d("intro", "introSnsNaverButton")
+            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsNaverButton")
+            viewModel.requestSnsLogin(requireContext(), SnsType.NAVER)
         }
         binding.introSnsGoogleButton.setOnClickListener {
-            Log.d("intro", "introSnsGoogleButton")
+            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsGoogleButton")
         }
 
     }
@@ -57,8 +62,8 @@ class IntroFragment : Fragment() {
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
-                    is Resource.Success -> {Log.d(tag, it.data.toString())}
-                    is Resource.Failure -> {Log.e(tag, it.exception.domainErrorMessage)}
+                    is Resource.Success -> { if(BuildConfig.DEBUG) Log.d(TAG, it.data.toString()) }
+                    is Resource.Failure -> { if(BuildConfig.DEBUG) Log.e(TAG, it.exception.domainErrorMessage) }
                 }
             }
         }

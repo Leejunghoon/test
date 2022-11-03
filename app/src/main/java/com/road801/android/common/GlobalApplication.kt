@@ -4,7 +4,10 @@ import android.app.Application
 import android.util.Log
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
+import com.navercorp.nid.NaverIdLoginSDK
 import com.road801.android.BuildConfig
+import com.road801.android.R
+import com.road801.android.data.repository.SnsRepository
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -18,17 +21,28 @@ class GlobalApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // KaKao SDK 초기화
-        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+        setupKaKaoSDK()
+        setupNaverSDK()
 
-        val keyHash = Utility.getKeyHash(this) // for debug
         if (BuildConfig.DEBUG) {
-            Log.d("GlobalApplication", "keyHash: $keyHash")
+            val keyHash = SnsRepository.getHashKey(this)
+            if(BuildConfig.DEBUG) Log.d("GlobalApplication", "keyHash: $keyHash")
         }
-        Log.d("GlobalApplication", "keyHash: $keyHash")
     }
 
     companion object {
         lateinit var instance: GlobalApplication
+    }
+
+
+    private fun setupKaKaoSDK() {
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+    }
+
+    private fun setupNaverSDK() {
+        val naverClientId = getString(R.string.naver_client_id)
+        val naverClientSecret = getString(R.string.naver_client_secret)
+        val naverClientName = getString(R.string.naver_client_name)
+        NaverIdLoginSDK.initialize(this, naverClientId, naverClientSecret , naverClientName)
     }
 }

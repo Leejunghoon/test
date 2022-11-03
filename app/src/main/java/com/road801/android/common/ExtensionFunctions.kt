@@ -21,10 +21,16 @@ import com.road801.android.view.home.HomeActivity
 import com.road801.android.view.intro.IntroActivity
 import java.util.*
 
+/**
+ * MARK: - 공통
+ */
+val Any.TAG: String get() = this::class.java.simpleName
+
 @BindingAdapter("navigateUp")
 fun bindNavigateUp(toolbar: Toolbar, listener: View.OnClickListener) {
     toolbar.setNavigationOnClickListener { toolbar.findNavController().navigateUp() }
 }
+
 
 /**
  * 바코드 넘버로 비트맵 바코드 생성.
@@ -59,7 +65,7 @@ fun String.getBarcodeBitmap(widthPx: Int, heightPx: Int): Bitmap? {
  * MARK: - Application
  *
  */
-fun Application.goToIntroActivity() {
+fun Application.goToIntro() {
     val intent = Intent(this, IntroActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
@@ -69,13 +75,13 @@ fun Application.goToIntroActivity() {
  * MARK: - Activity
  *
  */
-fun Activity.goToHomeActivity() {
+fun Activity.goToHome() {
     val intent = Intent(this, HomeActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
 }
 
-fun Activity.goToIntroActivity() {
+fun Activity.goToIntro() {
     val intent = Intent(this, IntroActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
