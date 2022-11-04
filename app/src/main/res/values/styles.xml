@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <!--FilledBox일 경우 밑줄 색상, OutlinedBox일 경우 테두리 색상-->
+        <item name="boxStrokeColor">@color/background_gray</item>
+        <!--Counter-->
+        <item name="counterTextAppearance">@style/CounterTextAppearance</item>
+        <!--EditText에 있을때의 Hint-->
+        <item name="android:textColorHint">@color/primary_gray</item>
+        <!--상단에 있을때의 Hint-->
+        <item name="hintTextColor">@color/primary_gray</item>
+        <item name="hintTextAppearance">@style/HintTextAppearance</item>
+        <!--Helper-->
+        <item name="helperTextTextAppearance">@style/HelperTextAppearance</item>
+        <!--Error-->
+        <item name="errorEnabled">true</item>
+        <item name="colorError">@color/alert_red</item>
+        <item name="errorIconDrawable">@android:color/transparent</item>
+        <item name="errorTextAppearance">@style/ErrorTextAppearance</item>
+
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
+    <style name="ErrorTextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="HintTextAppearance">
+        <!--        <item name="android:fontFamily">@font/</item>-->
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="HelperTextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CounterTextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextInputEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="RoadButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="background">@drawable/selector_button</item>
+    </style>
+
+    <!--머티리얼 버튼 커스텀 스타일-->
+    <style name="ToggleButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@color/color_selector_button</item>
+    </style>
+
+</resources>

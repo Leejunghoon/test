@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import com.road801.android.R
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.databinding.FragmentIntroBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding

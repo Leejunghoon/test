@@ -21,20 +21,22 @@ import javax.inject.Inject
 @HiltViewModel
 class IntroViewModel @Inject constructor() : ViewModel() {
 
-    /**
-     * 회원가입 프로세스 데이터 (공통)
-     */
+    // 회원가입 프로세스 데이터 (공통)
     private var _signupUser = MutableLiveData<Event<Resource<UserDto>>>()
     val signupUser: LiveData<Event<Resource<UserDto>>> = _signupUser
 
-    /**
-     * 이미 가입한 회원 존재 유무
-     */
+    // 이미 가입한 회원 존재 유무
     private var _memberExist = MutableLiveData<Event<Resource<Boolean>>>()
     val memberExist: LiveData<Event<Resource<Boolean>>> = _memberExist
 
 
-
+    /**
+     * SNS 로그인
+     *
+     * @param context
+     * @param type SnsType
+     * @param googleResultLauncher 구글 로그인 콜백. (추후 카카오도 사용할 수 있음)
+     */
     public fun requestSnsLogin(context: Context, type: SnsType, googleResultLauncher: ActivityResultLauncher<Intent>? = null) {
         _signupUser.value = Event(Resource.Loading)
 

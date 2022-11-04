@@ -2,14 +2,18 @@ package com.road801.android.common;
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toolbar
 import androidx.databinding.BindingAdapter;
+import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -60,6 +64,29 @@ fun String.getBarcodeBitmap(widthPx: Int, heightPx: Int): Bitmap? {
         return null
     }
 }
+
+/**
+ * 코드로 뷰 마진 설정
+ *
+ * @param left
+ * @param top
+ * @param right
+ * @param bottom
+ */
+fun View.margin(left: Float? = null, top: Float? = null, right: Float? = null, bottom: Float? = null) {
+    layoutParams<ViewGroup.MarginLayoutParams> {
+        left?.run { leftMargin = dpToPx(this) }
+        top?.run { topMargin = dpToPx(this) }
+        right?.run { rightMargin = dpToPx(this) }
+        bottom?.run { bottomMargin = dpToPx(this) }
+    }
+}
+inline fun <reified T : ViewGroup.LayoutParams> View.layoutParams(block: T.() -> Unit) {
+    if (layoutParams is T) block(layoutParams as T)
+}
+
+fun View.dpToPx(dp: Float): Int = context.dpToPx(dp)
+fun Context.dpToPx(dp: Float): Int = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
 
 /**
  * MARK: - Application

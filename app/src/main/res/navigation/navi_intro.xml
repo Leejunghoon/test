@@ -8,5 +8,32 @@
         android:id="@+id/introFragment"
         android:name="com.road801.android.view.intro.IntroFragment"
         android:label="IntroFragment"
-        tools:layout="@layout/fragment_intro"/>
+        tools:layout="@layout/fragment_intro">
+        <action
+            android:id="@+id/action_introFragment_to_signUpTermsFragment"
+            app:destination="@id/signUpTermsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpTermsFragment"
+        android:name="com.road801.android.view.intro.signup.SignUpTermsFragment"
+        android:label="SignUpTermsFragment"
+        tools:layout="@layout/fragment_sign_up_terms">
+        <action
+            android:id="@+id/action_signUpTermsFragment_to_signUpInfoInputFragment"
+            app:destination="@id/signUpInfoInputFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpInfoInputFragment"
+        android:name="com.road801.android.view.intro.signup.SignUpInfoInputFragment"
+        android:label="SignUpInfoInputFragment"
+        tools:layout="@layout/fragment_sign_up_info_input">
+        <action
+            android:id="@+id/action_signUpInfoInputFragment_to_signUpCompleteFragment"
+            app:destination="@id/signUpCompleteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpCompleteFragment"
+        android:name="com.road801.android.view.intro.signup.SignUpCompleteFragment"
+        android:label="SignUpCompleteFragment"
+        tools:layout="@layout/fragment_sign_up_complete"/>
 </navigation>
