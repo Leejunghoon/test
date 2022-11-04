@@ -1,25 +1,39 @@
 package com.road801.android.view.intro
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.road801.android.BuildConfig
 import com.road801.android.common.TAG
+import com.road801.android.common.enum.GenderType
 import com.road801.android.common.enum.SnsType
+import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.repository.SnsRepository
 import com.road801.android.databinding.FragmentIntroBinding
-import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
+
 
 class IntroFragment : Fragment() {
 
     private lateinit var binding: FragmentIntroBinding
     private val viewModel: IntroViewModel by viewModels()
+
+    private lateinit var googleResultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,24 +51,22 @@ class IntroFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        registerForActivityResult()
+
         initView()
         bindViewModel()
     }
 
     private fun initView() {
-
         binding.introSnsKakaoButton.setOnClickListener {
-            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsKakaoButton")
             viewModel.requestSnsLogin(requireContext(), SnsType.KAKAO)
         }
         binding.introSnsNaverButton.setOnClickListener {
-            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsNaverButton")
             viewModel.requestSnsLogin(requireContext(), SnsType.NAVER)
         }
         binding.introSnsGoogleButton.setOnClickListener {
-            if(BuildConfig.DEBUG) Log.d(TAG, "introSnsGoogleButton")
+            viewModel.requestSnsLogin(requireContext(), SnsType.GOOGLE, googleResultLauncher)
         }
-
     }
 
     private fun bindViewModel() {
@@ -68,5 +80,41 @@ class IntroFragment : Fragment() {
             }
         }
     }
+
+    // google login callback
+    private fun registerForActivityResult() {
+        googleResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+
+                try {
+                    val account = task.getResult(ApiException::class.java)
+
+                    if(BuildConfig.DEBUG) Log.d(TAG, "account.id ${account.id}")
+
+                    val userDto = UserDto(
+                        name = "",
+                        birthday = "",
+                        mobileNo = "",
+                        sexType =  GenderType.NONE,
+                        termAgreeList = emptyList(),
+                        socialType = SnsType.GOOGLE.name,
+                        socialId = account.id,
+                        loginId = null,
+                        password = null,
+                        thumbnailImageUrl = null
+                    )
+
+                    viewModel.setSignupUser(userDto = userDto)
+
+                } catch (e: ApiException) {
+                    if(BuildConfig.DEBUG) Log.e(TAG, "[구글] 로그인 실패")
+                    viewModel.setSignupUser(error = e)
+                }
+            }
+        }
+    }
+
 
 }

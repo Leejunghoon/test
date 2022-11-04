@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.road801.android.R
 import com.road801.android.databinding.ActivityIntroBinding
+import com.road801.android.databinding.FragmentIntroBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

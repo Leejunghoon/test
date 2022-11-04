@@ -1,15 +1,12 @@
 package com.road801.android.data.repository
 
-import android.app.Activity
-import android.app.Activity.RESULT_CANCELED
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.util.Utility
@@ -26,14 +23,18 @@ import com.road801.android.common.enum.SnsType
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.domain.transfer.DomainException
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.intro.IntroActivity
 
 object SnsRepository {
+    // for kakao
     private lateinit var kakaoCallback: (OAuthToken?, Throwable?) -> Unit
 
-    private lateinit var oAuthLoginCallback: OAuthLoginCallback // for naver
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent> // for naver
+    // for naver
+    private lateinit var oAuthLoginCallback: OAuthLoginCallback
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
 
+    // for google
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var googleResultLauncher:ActivityResultLauncher<Intent>
 
     /**
      * MARK: - 카카오 로그인
@@ -64,6 +65,23 @@ object SnsRepository {
     }
 
     /**
+     * MARK: - 구글 로그인
+     *
+     * @param context
+     * @param resultLauncher 콜백
+     */
+    public fun googleLogin(context: Context, resultLauncher: ActivityResultLauncher<Intent>) {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestId()
+            .requestEmail()
+            .requestProfile()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(context, gso)
+        googleResultLauncher = resultLauncher
+        googleResultLauncher.launch(googleSignInClient.signInIntent)
+    }
+
+    /**
      *  SNS 로그아웃
      *
      * @param type KAKAO, NAVER, GOOGLE
@@ -84,7 +102,8 @@ object SnsRepository {
             }
 
             SnsType.GOOGLE -> {
-
+                if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 성공")
+                googleSignInClient.signOut()
             }
         }
     }
@@ -136,7 +155,8 @@ object SnsRepository {
             }
 
             SnsType.GOOGLE -> {
-
+                if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 성공")
+                googleSignInClient.signOut()
             }
         }
     }
@@ -156,6 +176,7 @@ object SnsRepository {
                 if(BuildConfig.DEBUG) Log.d(
                     TAG,
                     "카카오 사용자 정보 요청 성공" + "\n회원번호: ${user.id}"
+                            + "\n이름: ${user.kakaoAccount?.name}"
                             + "\n이메일: ${user.kakaoAccount?.email}"
                             + "\n닉네임: ${user.kakaoAccount?.profile?.nickname}"
                             + "\n생일: ${user.kakaoAccount?.birthday}"
@@ -165,13 +186,14 @@ object SnsRepository {
 
                 user.kakaoAccount?.let {
                     val userId = user.id!!.toString()
+                    val userName = it.name
                     val birthday = it.birthday
                     val gender = it.gender
                     val snsType = SnsType.KAKAO.name
                     val thumbnailImageUrl = it.profile?.thumbnailImageUrl
 
                     val userDto = UserDto(
-                        name = "",
+                        name = userName,
                         birthday = birthday,
                         mobileNo = "",
                         sexType = if (gender == null) GenderType.NONE else GenderType.valueOf(
@@ -305,13 +327,14 @@ object SnsRepository {
 
                 response.profile?.let {
                     val userId = it.id
+                    val userName = it.name
                     val birthday = it.birthday
                     val gender = it.gender
                     val snsType = SnsType.NAVER.name
                     val thumbnailImageUrl = it.profileImage
 
                     val userDto = UserDto(
-                        name = "",
+                        name = userName,
                         birthday = birthday,
                         mobileNo = "",
                         sexType = if (gender == null) GenderType.NONE

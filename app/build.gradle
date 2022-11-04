@@ -91,6 +91,9 @@ dependencies {
 
     //네이버 로그인
 //    implementation 'com.navercorp.nid:oauth-jdk8:5.1.0' // jdk 8
-    implementation 'com.navercorp.nid:oauth:5.1.0' // jdk 11
+    implementation 'com.navercorp.nid:oauth:5.1.0' // jdk 11 (5.2버전은 액티비티 이슈가 있음.)
+
+    // 구글 로그인
+    implementation 'com.google.android.gms:play-services-auth:20.3.0'
 
 }
