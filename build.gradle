@@ -9,8 +9,8 @@ buildscript {
         targetSdkVersion = 33  // android 12
 
         // App version
-        versionCode = 7
-        versionName = '1.0.7'
+        versionCode = 1
+        versionName = '1.0.0'
 
         // App dependencies
         ktxVersion = '1.9.0'
@@ -29,7 +29,7 @@ buildscript {
         glideVersion = '4.13.2'
         retrofitVersion = '2.9.0'
         okhttpLoggingVersion = '4.9.0'
-        gradleVersion = '7.2.1'
+        gradleVersion = '7.3.0'
         kotlinVersion = '1.7.20'
         emojiVersion = '1.1.0'
         testVersion= '1.4.0'
@@ -40,6 +40,7 @@ buildscript {
         codeScannerVersion = '2.1.0'
         jsoupVersion = '1.12.2'
         splashscreen = '1.0.0'
+        lottieVersion = '5.2.0'
     }
 
     repositories {

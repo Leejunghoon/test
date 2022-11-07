@@ -1,4 +1,4 @@
-package com.road801.android.common;
+package com.road801.android.common.util.extension;
 
 import android.app.Activity
 import android.app.Application
@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
 import androidx.databinding.BindingAdapter;
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import com.google.zxing.BarcodeFormat
@@ -21,6 +23,7 @@ import com.google.zxing.Writer
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.oned.Code128Writer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.home.HomeActivity
 import com.road801.android.view.intro.IntroActivity
 import java.util.*
@@ -122,4 +125,39 @@ fun Activity.goToSystemSettingActivity() {
     intent.data = uri
     startActivity(intent)
     overridePendingTransition(0, 0)
+}
+
+fun Activity.showDialog(fragmentManager: FragmentManager,
+                        title: String = "[ 알림 ]",
+                        message: String,
+                        cancelButtonTitle: String? = null,
+                        confirmButtonTitle: String? = null,
+                        listener: RoadDialog.OnDialogListener? = null) {
+    val dialog = RoadDialog()
+    dialog.title = title
+    dialog.message = message
+    dialog.cancelButtonTitle = cancelButtonTitle
+    dialog.confirmButtonTitle = confirmButtonTitle
+    dialog.onClickListener = listener
+    dialog.show(fragmentManager, "showDialog")
+}
+
+/**
+ * MARK: - Fragment
+ *
+ */
+
+fun Fragment.showDialog(fragmentManager: FragmentManager,
+                                      title: String = "[ 알림 ]",
+                                      message: String,
+                                      cancelButtonTitle: String? = null,
+                                      confirmButtonTitle: String? = null,
+                                      listener: RoadDialog.OnDialogListener? = null) {
+    val dialog = RoadDialog()
+    dialog.title = title
+    dialog.message = message
+    dialog.cancelButtonTitle = cancelButtonTitle
+    dialog.confirmButtonTitle = confirmButtonTitle
+    dialog.onClickListener = listener
+    dialog.show(fragmentManager, "showDialog")
 }

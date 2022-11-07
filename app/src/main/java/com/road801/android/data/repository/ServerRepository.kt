@@ -1,12 +1,13 @@
 package com.road801.android.data.repository
 
 import com.road801.android.common.Constants
+import com.road801.android.common.Constants.API_VERSION
+import com.road801.android.common.enum.SnsType
 import com.road801.android.data.network.api.Api
-import com.road801.android.data.network.error.ServerResponseException
-import com.road801.android.data.network.error.ServerResponseInterceptor
+import com.road801.android.data.network.dto.IsExistResponseDto
+import com.road801.android.data.network.error.*
 import com.road801.android.data.network.interceptor.TokenException
 import com.road801.android.data.network.interceptor.TokenInterceptor
-import com.road801.android.domain.transfer.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
@@ -19,14 +20,17 @@ object ServerRepository {
     private val api = createApiClient()
 
     private fun createApiClient(): Api {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
         val client = OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor)
-            .addNetworkInterceptor(ServerResponseInterceptor())
-            .addNetworkInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .addInterceptor(ServerResponseInterceptor())
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(Constants.BASE_URL + API_VERSION)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -50,13 +54,13 @@ object ServerRepository {
             // server response (token) error
             throwable is TokenException -> {
                 domainErrorMessage = DOMAIN_SERVER_AUTH_ERROR_MESSAGE
-                domainErrorSubMessage = throwable.networkError.errorMessage
+                domainErrorSubMessage = throwable.networkError.errorMessage.toString()
             }
 
             // server response (response) error
             throwable is ServerResponseException -> {
                 domainErrorMessage = DOMAIN_SERVER_ERROR_MESSAGE
-                domainErrorSubMessage = throwable.networkError.errorMessage
+                domainErrorSubMessage = throwable.networkError.errorMessage.toString()
 //                if (throwable.networkError.errorCode == "E20002") { // TODO: refactoring - extract enum class
 //                    logout()
 //                    GlobalApplication.instance.goToIntroActivity()
@@ -71,5 +75,16 @@ object ServerRepository {
         }
 
         return DomainException(domainErrorMessage, domainErrorSubMessage, throwable)
+    }
+
+
+    suspend fun isIdExist(id: String, snsType: SnsType? = null): IsExistResponseDto {
+        try {
+            return if (snsType == null) api.isExistId(id)
+            else api.isExistId(snsType.name, id)
+        } catch (exception: Exception) {
+
+            throw toDomainException(exception)
+        }
     }
 }

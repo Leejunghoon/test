@@ -10,16 +10,4 @@
         <!-- Customize your theme here. -->
         <item name="colorControlHighlight">@color/black</item>
     </style>
-
-    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
-        <item name="android:windowSplashScreenBrandingImage" tools:targetApi="s">@mipmap/ic_launcher_round</item>
-        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/white</item>
-        <item name="android:windowSplashScreenBackground" tools:targetApi="s">@color/white</item>
-        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@mipmap/ic_launcher_round</item>
-        <item name="postSplashScreenTheme">@style/Theme.Road</item>
-
-        <!--        <item name="android:statusBarColor" >@color/white</item>-->
-        <!--        <item name="android:navigationBarColor">@color/white</item>-->
-        <!--        <item name="android:windowLightStatusBar">true</item>-->
-    </style>
 </resources>

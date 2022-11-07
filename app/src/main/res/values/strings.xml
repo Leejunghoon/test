@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Road801</string>
 
+    <string name="cancel">취소</string>
+    <string name="confirm">확인</string>
+
     <string name="naver_client_id">1EDAmuXC7asbokZ1fhhD</string>
     <string name="naver_client_secret">usoPZKNWWO</string>
     <string name="naver_client_name">로드801</string>
@@ -11,7 +14,12 @@
 
     <string name="intro_message">SNS로 1초만에 로그인</string>
     <string name="intro_login_signup_msg"><u>ID 로그인하기 / 회원가입</u></string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="dialog_permission_title">권한 요청</string>
+    <string name="dialog_permission_default_message">권한을 수락하시겠습니까?</string>
+    <string name="dialog_permission_button_positive">OK</string>
+    <string name="privacy_message">"[<b>필수</b>]" 개인정보 제공에 동의합니다.</string>
+    <string name="use_policy_message">"[<b>필수</b>]" 로드801 서비스 이용 동의</string>
+    <string name="gps_policy_message">[선택] 위치정보 제공에 동의합니다.</string>
+    <string name="marketing_policy_message">[선택] 마케팅 약관에 동의합니다.</string>
 </resources>

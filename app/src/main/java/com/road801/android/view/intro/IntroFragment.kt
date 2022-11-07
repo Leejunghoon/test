@@ -11,19 +11,20 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.road801.android.BuildConfig
-import com.road801.android.common.TAG
 import com.road801.android.common.enum.GenderType
 import com.road801.android.common.enum.SnsType
+import com.road801.android.common.util.extension.TAG
+import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.databinding.FragmentIntroBinding
 import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.dialog.RoadDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,15 +57,21 @@ class IntroFragment : Fragment() {
     }
 
     private fun initView() {
+        // 카카오 로그인
         binding.introSnsKakaoButton.setOnClickListener {
-//            viewModel.requestSnsLogin(requireContext(), SnsType.KAKAO)
-            findNavController().navigate(IntroFragmentDirections.actionIntroFragmentToSignUpTermsFragment())
+            viewModel.requestSnsLogin(requireContext(), SnsType.KAKAO /*,kakaoResultLauncher */)
         }
+        // 네이버 로그인
         binding.introSnsNaverButton.setOnClickListener {
             viewModel.requestSnsLogin(requireContext(), SnsType.NAVER)
         }
+        // 구글 로그인
         binding.introSnsGoogleButton.setOnClickListener {
             viewModel.requestSnsLogin(requireContext(), SnsType.GOOGLE, googleResultLauncher)
+        }
+        // 로드801 로그인 및 회원가입
+        binding.introGoLoginButton.setOnClickListener{
+            findNavController().navigate(IntroFragmentDirections.actionIntroFragmentToLoginFragment())
         }
     }
 
@@ -73,7 +80,9 @@ class IntroFragment : Fragment() {
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
-                    is Resource.Success -> { if(BuildConfig.DEBUG) Log.d(TAG, it.data.toString()) }
+                    is Resource.Success -> {
+                        findNavController().navigate(IntroFragmentDirections.actionIntroFragmentToSignUpTermsFragment())
+                    }
                     is Resource.Failure -> { if(BuildConfig.DEBUG) Log.e(TAG, it.exception.domainErrorMessage) }
                 }
             }

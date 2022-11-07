@@ -1,6 +1,5 @@
 package com.road801.android.data.network.error
 
-import com.road801.android.domain.transfer.DOMAIN_UNDEFINED_ERROR_SUB_MESSAGE
 import java.io.IOException
 
 abstract class NetworkException(private val networkError: NetworkError, private val throwable: Throwable? = null) : IOException(throwable) {

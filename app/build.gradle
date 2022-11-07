@@ -68,7 +68,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
-    implementation "androidx.core:core-splashscreen:$rootProject.splashscreen"
+//    implementation "androidx.core:core-splashscreen:$rootProject.splashscreen"
 
 
     // Coroutines
@@ -85,6 +85,9 @@ dependencies {
 
     // 바코드 라이브러리
     implementation 'com.google.zxing:core:3.4.0'
+
+    // lottie
+    implementation "com.airbnb.android:lottie:$rootProject.lottieVersion"
 
     // 카카오
     implementation "com.kakao.sdk:v2-all:2.11.2" // 전체 모듈 설치, 2.11.0 버전부터 지원

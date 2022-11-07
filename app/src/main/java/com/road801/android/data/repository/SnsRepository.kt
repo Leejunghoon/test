@@ -17,11 +17,11 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
 import com.road801.android.BuildConfig
-import com.road801.android.common.TAG
 import com.road801.android.common.enum.GenderType
 import com.road801.android.common.enum.SnsType
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
-import com.road801.android.domain.transfer.DomainException
+import com.road801.android.data.network.error.DomainException
 import com.road801.android.domain.transfer.Resource
 
 object SnsRepository {
@@ -155,8 +155,9 @@ object SnsRepository {
             }
 
             SnsType.GOOGLE -> {
-                if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 성공")
+                if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 및 연동해제 성공")
                 googleSignInClient.signOut()
+                callback.invoke(true)
             }
         }
     }
