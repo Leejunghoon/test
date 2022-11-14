@@ -10,7 +10,7 @@ data class UserDto (
     val birthday: String?,
     val mobileNo: String?,
     val sexType: GenderType,
-    val termAgreeList: List<String>,
+    val termAgreeList: ArrayList<String>,
     val socialType: String?,
     val socialId: String?,
     val loginId: String?,

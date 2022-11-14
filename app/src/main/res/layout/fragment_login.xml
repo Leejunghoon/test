@@ -23,17 +23,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="282dp"
                 android:layout_height="65dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/logo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintVertical_bias="0.5"
+                app:srcCompat="@drawable/logo" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -76,7 +76,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login_id_edit_text"
                         style="@style/TextInputEditTextStyle"
-                        android:hint="사용자 ID" />
+                        android:hint="사용자 ID"
+                        android:inputType="text"
+                        android:maxLength="20" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!--사용자 PWD-->
@@ -92,7 +94,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login_password_edit_text"
                         style="@style/TextInputEditTextStyle"
-                        android:hint="비밀번호" />
+                        android:hint="비밀번호"
+                        android:inputType="textPassword"
+                        android:maxLength="20" />
                 </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -100,6 +104,8 @@
                     android:id="@+id/login_button"
                     style="@style/RoadButtonStyle"
                     android:layout_width="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:enabled="false"
                     android:text="로그인"
                     android:textSize="18dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,47 +114,48 @@
 
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton"
+                    android:id="@+id/login_find_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:background="@null"
                     android:text="사용자 ID 찾기   /   "
                     android:textColor="@color/unselected_gray"
                     android:textSize="18dp"
-                    app:layout_constraintEnd_toStartOf="@+id/appCompatButton3"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/login_find_pw"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/login_button" />
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/appCompatButton3"
+                    android:id="@+id/login_find_pw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@null"
                     android:text="비밀번호 찾기"
                     android:textColor="@color/unselected_gray"
                     android:textSize="18dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/appCompatButton"
-                    app:layout_constraintTop_toTopOf="@+id/appCompatButton" />
+                    app:layout_constraintStart_toEndOf="@+id/login_find_id"
+                    app:layout_constraintTop_toTopOf="@+id/login_find_id" />
 
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="26dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/intro_line"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/appCompatButton" />
+                    app:layout_constraintTop_toBottomOf="@+id/login_find_pw" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/login_signup_button"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_marginTop="30dp"
                     android:background="@drawable/round_login_signup"
                     android:text="회원가입"

@@ -2,6 +2,7 @@ package com.road801.android.common.util.extension;
 
 import android.app.Activity
 import android.app.Application
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,11 +12,11 @@ import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
 import androidx.databinding.BindingAdapter;
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -23,8 +24,9 @@ import com.google.zxing.Writer
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.oned.Code128Writer
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.road801.android.R
 import com.road801.android.view.dialog.RoadDialog
-import com.road801.android.view.home.HomeActivity
+import com.road801.android.view.main.home.HomeActivity
 import com.road801.android.view.intro.IntroActivity
 import java.util.*
 
@@ -69,7 +71,7 @@ fun String.getBarcodeBitmap(widthPx: Int, heightPx: Int): Bitmap? {
 }
 
 /**
- * 코드로 뷰 마진 설정
+ * 뷰 마진 설정
  *
  * @param left
  * @param top
@@ -109,6 +111,7 @@ fun Activity.goToHome() {
     val intent = Intent(this, HomeActivity::class.java)
     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK)
     startActivity(intent)
+    overridePendingTransition(R.anim.rotate_in, R.anim.rotate_out)
 }
 
 fun Activity.goToIntro() {
@@ -131,7 +134,7 @@ fun Activity.showDialog(fragmentManager: FragmentManager,
                         title: String = "[ 알림 ]",
                         message: String,
                         cancelButtonTitle: String? = null,
-                        confirmButtonTitle: String? = null,
+                        confirmButtonTitle: String? = getString(R.string.confirm),
                         listener: RoadDialog.OnDialogListener? = null) {
     val dialog = RoadDialog()
     dialog.title = title
@@ -143,6 +146,25 @@ fun Activity.showDialog(fragmentManager: FragmentManager,
 }
 
 /**
+ * 달력
+ *
+ * @param callback y, m, d
+ */
+fun Activity.showCalendar(callback: (String, String, String) -> Unit) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR).minus(20)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerDialog = DatePickerDialog(this,
+        { view, y, m, d ->
+            callback.invoke("$y","%02d".format(m.plus(1)),"%02d".format(d))
+        }, year, month, day)
+
+    datePickerDialog.show()
+}
+
+/**
  * MARK: - Fragment
  *
  */
@@ -151,7 +173,7 @@ fun Fragment.showDialog(fragmentManager: FragmentManager,
                                       title: String = "[ 알림 ]",
                                       message: String,
                                       cancelButtonTitle: String? = null,
-                                      confirmButtonTitle: String? = null,
+                                      confirmButtonTitle: String? = getString(R.string.confirm),
                                       listener: RoadDialog.OnDialogListener? = null) {
     val dialog = RoadDialog()
     dialog.title = title
@@ -160,4 +182,27 @@ fun Fragment.showDialog(fragmentManager: FragmentManager,
     dialog.confirmButtonTitle = confirmButtonTitle
     dialog.onClickListener = listener
     dialog.show(fragmentManager, "showDialog")
+}
+
+/**
+ * 달력
+ *
+ * @param callback y, m, d
+ */
+fun Fragment.showCalendar(callback: (String, String, String) -> Unit) {
+    view?.let { activity?.showCalendar(callback) }
+}
+
+
+fun Fragment.hideKeyboard() {
+    view?.let { activity?.hideKeyboard(it) }
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

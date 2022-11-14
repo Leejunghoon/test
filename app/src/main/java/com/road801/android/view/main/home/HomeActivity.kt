@@ -1,4 +1,4 @@
-package com.road801.android.view.home
+package com.road801.android.view.main.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

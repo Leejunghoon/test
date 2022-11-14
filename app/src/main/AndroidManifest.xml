@@ -37,7 +37,7 @@
         </activity>
 
         <activity
-            android:name=".view.home.HomeActivity"
+            android:name=".view.main.home.HomeActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 

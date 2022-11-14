@@ -82,6 +82,7 @@
             android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="bold"
+            android:text="@string/confirm"
             app:layout_constraintBottom_toBottomOf="@+id/dialog_confirm_button"
             app:layout_constraintEnd_toEndOf="@+id/dialog_confirm_button"
             app:layout_constraintStart_toStartOf="@+id/dialog_cancel_button"

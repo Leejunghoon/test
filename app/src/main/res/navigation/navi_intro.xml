@@ -11,19 +11,39 @@
         tools:layout="@layout/fragment_intro">
         <action
             android:id="@+id/action_introFragment_to_signUpTermsFragment"
-            app:destination="@id/signUpTermsFragment" />
+            app:destination="@id/signUpTermsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_introFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/signUpTermsFragment"
         android:name="com.road801.android.view.intro.signup.SignUpTermsFragment"
         android:label="SignUpTermsFragment"
         tools:layout="@layout/fragment_sign_up_terms">
+
         <action
             android:id="@+id/action_signUpTermsFragment_to_signUpInfoInputFragment"
-            app:destination="@id/signUpInfoInputFragment" />
+            app:destination="@id/signUpInfoInputFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="signupType"
+            app:argType="com.road801.android.common.enum.SignupType" />
+        <action
+            android:id="@+id/action_signUpTermsFragment_to_baseWebView"
+            app:destination="@id/baseWebView" />
+
     </fragment>
     <fragment
         android:id="@+id/signUpInfoInputFragment"
@@ -32,13 +52,31 @@
         tools:layout="@layout/fragment_sign_up_info_input">
         <action
             android:id="@+id/action_signUpInfoInputFragment_to_signUpCompleteFragment"
-            app:destination="@id/signUpCompleteFragment" />
+            app:destination="@id/signUpCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="signupType"
+            app:argType="com.road801.android.common.enum.SignupType" />
+        <argument
+            android:name="termsList"
+            app:argType="string[]" />
     </fragment>
     <fragment
         android:id="@+id/signUpCompleteFragment"
         android:name="com.road801.android.view.intro.signup.SignUpCompleteFragment"
         android:label="SignUpCompleteFragment"
-        tools:layout="@layout/fragment_sign_up_complete"/>
+        tools:layout="@layout/fragment_sign_up_complete">
+        <argument
+            android:name="signupType"
+            app:argType="com.road801.android.common.enum.SignupType" />
+        <argument
+            android:name="signupRequestDto"
+            app:argType="com.road801.android.data.network.dto.requset.SignupRequestDto" />
+    </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.road801.android.view.intro.login.LoginFragment"
@@ -46,6 +84,76 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_signUpTermsFragment"
-            app:destination="@id/signUpTermsFragment" />
+            app:destination="@id/signUpTermsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_loginFragment_to_findIdFragment"
+            app:destination="@id/findIdFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_loginFragment_to_findPasswordFragment"
+            app:destination="@id/findPasswordFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/baseWebView"
+        android:name="com.road801.android.view.BaseWebView"
+        android:label="BaseWebView"
+        tools:layout="@layout/fragment_base_web_view">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/findIdFragment"
+        android:name="com.road801.android.view.intro.find.id.FindIdFragment"
+        android:label="FindIdFragment"
+        tools:layout="@layout/fragment_find_id">
+        <action
+            android:id="@+id/action_findIdFragment_to_findIdCompleteFragment"
+            app:destination="@id/findIdCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/findPasswordFragment"
+        android:name="com.road801.android.view.intro.find.password.FindPasswordFragment"
+        android:label="FindPasswordFragment"
+        tools:layout="@layout/fragment_find_password">
+        <action
+            android:id="@+id/action_findPasswordFragment_to_findPasswordCompleteFragment"
+            app:destination="@id/findPasswordCompleteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/findIdCompleteFragment"
+        android:name="com.road801.android.view.intro.find.id.FindIdCompleteFragment"
+        android:label="FindIdCompleteFragment"
+        tools:layout="@layout/fragment_find_id_complete" />
+    <fragment
+        android:id="@+id/findPasswordCompleteFragment"
+        android:name="com.road801.android.view.intro.find.password.FindPasswordCompleteFragment"
+        android:label="FindPasswordCompleteFragment"
+        tools:layout="@layout/fragment_find_password_complete" />
 </navigation>

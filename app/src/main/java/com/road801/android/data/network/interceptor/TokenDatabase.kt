@@ -1,33 +1,37 @@
-package com.sixdotfive.budkup.data.network.interceptor.token
+package com.road801.android.data.network.interceptor;
 
-import android.content.Context
 import android.content.SharedPreferences
-import com.road801.android.common.GlobalApplication
+import com.road801.android.common.enum.LoginType
 
 object TokenDatabase {
 
-    private var sharedPreferences: SharedPreferences = GlobalApplication.instance.getSharedPreferences("token_database", Context.MODE_PRIVATE)
-    private const val PREFERENCE_KEY = "PREFERENCE_KEY_TOKEN"
-    private const val PREFERENCE_KEY_SIGNUP_TYPE = "PREFERENCE_KEY_TYPE"
-    private const val PREFERENCE_KEY_BUDKUP_ID = "PREFERENCE_KEY_BUDKUP_ID"
+    public lateinit var sharedPreferences: SharedPreferences
+    private const val PREFERENCE_ACCESS_TOKEN_KEY = "PREFERENCE_ACCESS_TOKEN_KEY"
+    private const val PREFERENCE_KEY_LOGIN_TYPE = "PREFERENCE_KEY_LOGIN_TYPE"
+    private const val PREFERENCE_KEY_ID = "PREFERENCE_KEY_ID"
+    private const val PREFERENCE_KEY_PW = "PREFERENCE_KEY_PW"
 
-//    fun saveAccessToken(signUpIdType: SignUpIdType, budKupId: String, accessToken: String) {
-//        sharedPreferences.edit().apply {
-//            putString(PREFERENCE_KEY, accessToken)
-//            putString(PREFERENCE_KEY_SIGNUP_TYPE, signUpIdType.name)
-//            putString(PREFERENCE_KEY_BUDKUP_ID, budKupId)
-//            apply()
-//        }
-//    }
+    fun fetchAccessToken(): String? = sharedPreferences.getString(PREFERENCE_ACCESS_TOKEN_KEY, null)
+    fun fetchLoginType(): String? = sharedPreferences.getString(PREFERENCE_KEY_LOGIN_TYPE, null)
+    fun fetchLoginId(): String? = sharedPreferences.getString(PREFERENCE_KEY_ID, null)
+    fun fetchLoginPw(): String? = sharedPreferences.getString(PREFERENCE_KEY_PW, null)
 
-    fun fetchAccessToken(): String? = sharedPreferences.getString(PREFERENCE_KEY, null)
-    fun fetchSignUpType(): String? = sharedPreferences.getString(PREFERENCE_KEY_SIGNUP_TYPE, null) // TODO: 토큰과 통합 클래스로 추출
-    fun fetchBudKupId(): String? = sharedPreferences.getString(PREFERENCE_KEY_BUDKUP_ID, null) // TODO: 토큰과 통합 클래스로 추출
 
+    fun saveAccessToken(loginType: LoginType, id: String, pw: String?, accessToken: String) {
+        sharedPreferences.edit().apply {
+            putString(PREFERENCE_ACCESS_TOKEN_KEY, accessToken)
+            putString(PREFERENCE_KEY_LOGIN_TYPE, loginType.name)
+            putString(PREFERENCE_KEY_ID, id)
+            pw?.let {
+                putString(PREFERENCE_KEY_PW, it)
+            }
+            apply()
+        }
+    }
 
     fun deleteAccessToken() {
         sharedPreferences.edit().apply {
-            putString(PREFERENCE_KEY, null)
+            putString(PREFERENCE_ACCESS_TOKEN_KEY, null)
             apply()
         }
     }

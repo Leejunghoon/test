@@ -23,7 +23,7 @@ buildscript {
         legacySupportVersion = '1.0.0'
         constraintLayoutVersion = '2.1.4'
         viewPagerVersion = '1.0.0'
-        navigationVersion = '2.5.3'
+        navigationVersion = '2.5.2'
         hiltVersion = '2.42'
         dataStoreVersion = '1.0.0'
         glideVersion = '4.13.2'

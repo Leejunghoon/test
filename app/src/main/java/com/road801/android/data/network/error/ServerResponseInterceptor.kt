@@ -4,7 +4,7 @@ import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.road801.android.BuildConfig
-import com.road801.android.data.network.dto.ErrorResponseDto
+import com.road801.android.data.network.dto.response.ErrorResponseDto
 import okhttp3.Interceptor
 
 import okhttp3.Request

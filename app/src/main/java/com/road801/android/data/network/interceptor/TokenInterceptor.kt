@@ -2,7 +2,6 @@ package com.road801.android.data.network.interceptor
 
 import com.road801.android.data.network.error.NetworkError
 import com.road801.android.data.network.error.ServerResponseException
-import com.sixdotfive.budkup.data.network.interceptor.token.TokenDatabase
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

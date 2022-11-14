@@ -18,7 +18,7 @@ import com.navercorp.nid.profile.NidProfileCallback
 import com.navercorp.nid.profile.data.NidProfileResponse
 import com.road801.android.BuildConfig
 import com.road801.android.common.enum.GenderType
-import com.road801.android.common.enum.SnsType
+import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.error.DomainException
@@ -77,6 +77,7 @@ object SnsRepository {
             .requestProfile()
             .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
+        googleSignInClient.signOut()
         googleResultLauncher = resultLauncher
         googleResultLauncher.launch(googleSignInClient.signInIntent)
     }
@@ -87,24 +88,25 @@ object SnsRepository {
      * @param type KAKAO, NAVER, GOOGLE
      * @param callback none: success
      */
-    public fun logout(type: SnsType, callback: () -> Unit) {
+    public fun logout(type: LoginType, callback: () -> Unit) {
         when (type) {
-            SnsType.KAKAO -> {
+            LoginType.KAKAO -> {
                 UserApiClient.instance.logout {
                     if(BuildConfig.DEBUG) Log.d(TAG, "[카카오] 로그아웃 성공")
                     callback.invoke()
                 }
             }
-            SnsType.NAVER -> {
+            LoginType.NAVER -> {
                 if(BuildConfig.DEBUG) Log.d(TAG, "[네이버] 로그아웃 성공")
                 NaverIdLoginSDK.logout()
                 callback.invoke()
             }
 
-            SnsType.GOOGLE -> {
+            LoginType.GOOGLE -> {
                 if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 성공")
                 googleSignInClient.signOut()
             }
+            else -> {}
         }
     }
 
@@ -115,9 +117,9 @@ object SnsRepository {
      * @param type KAKAO, NAVER, GOOGLE
      * @param callback Boolean: success, fail
      */
-    public fun withdrawal(context: Context, type: SnsType, callback: (result: Boolean) -> Unit) {
+    public fun withdrawal(context: Context, type: LoginType, callback: (result: Boolean) -> Unit) {
         when (type) {
-            SnsType.KAKAO -> {
+            LoginType.KAKAO -> {
                 UserApiClient.instance.unlink { error ->
                     if (error != null) {
                         if(BuildConfig.DEBUG) Log.e(TAG, "[카카오] 연동 해제 실패", error)
@@ -130,7 +132,7 @@ object SnsRepository {
                 }
             }
 
-            SnsType.NAVER -> {
+            LoginType.NAVER -> {
                 NidOAuthLogin().callDeleteTokenApi(context, object : OAuthLoginCallback {
                     override fun onSuccess() {
                         //서버에서 토큰 삭제에 성공한 상태입니다.
@@ -154,11 +156,12 @@ object SnsRepository {
                 })
             }
 
-            SnsType.GOOGLE -> {
+            LoginType.GOOGLE -> {
                 if(BuildConfig.DEBUG) Log.d(TAG, "[구글] 로그아웃 및 연동해제 성공")
                 googleSignInClient.signOut()
                 callback.invoke(true)
             }
+            else -> {}
         }
     }
 
@@ -190,7 +193,7 @@ object SnsRepository {
                     val userName = it.name
                     val birthday = it.birthday
                     val gender = it.gender
-                    val snsType = SnsType.KAKAO.name
+                    val snsType = LoginType.KAKAO.name
                     val thumbnailImageUrl = it.profile?.thumbnailImageUrl
 
                     val userDto = UserDto(
@@ -200,7 +203,7 @@ object SnsRepository {
                         sexType = if (gender == null) GenderType.NONE else GenderType.valueOf(
                             gender.name
                         ),
-                        termAgreeList = emptyList(),
+                        termAgreeList = arrayListOf(),
                         socialType = snsType,
                         socialId = userId,
                         loginId = null,
@@ -331,7 +334,7 @@ object SnsRepository {
                     val userName = it.name
                     val birthday = it.birthday
                     val gender = it.gender
-                    val snsType = SnsType.NAVER.name
+                    val snsType = LoginType.NAVER.name
                     val thumbnailImageUrl = it.profileImage
 
                     val userDto = UserDto(
@@ -340,7 +343,7 @@ object SnsRepository {
                         mobileNo = "",
                         sexType = if (gender == null) GenderType.NONE
                         else GenderType.valueOf( if (gender == "M") "MALE" else "FEMALE"),
-                        termAgreeList = emptyList(),
+                        termAgreeList = arrayListOf(),
                         socialType = snsType,
                         socialId = userId,
                         loginId = null,

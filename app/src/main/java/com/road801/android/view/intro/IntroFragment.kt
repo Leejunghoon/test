@@ -18,13 +18,16 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.road801.android.BuildConfig
 import com.road801.android.common.enum.GenderType
-import com.road801.android.common.enum.SnsType
+import com.road801.android.common.enum.SignupType
+import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.TAG
+import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.UserDto
+import com.road801.android.data.network.interceptor.TokenDatabase
+import com.road801.android.data.repository.LocalRepository
 import com.road801.android.databinding.FragmentIntroBinding
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.dialog.RoadDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -59,15 +62,15 @@ class IntroFragment : Fragment() {
     private fun initView() {
         // 카카오 로그인
         binding.introSnsKakaoButton.setOnClickListener {
-            viewModel.requestSnsLogin(requireContext(), SnsType.KAKAO /*,kakaoResultLauncher */)
+            viewModel.requestSnsLogin(requireContext(), LoginType.KAKAO /*,kakaoResultLauncher */)
         }
         // 네이버 로그인
         binding.introSnsNaverButton.setOnClickListener {
-            viewModel.requestSnsLogin(requireContext(), SnsType.NAVER)
+            viewModel.requestSnsLogin(requireContext(), LoginType.NAVER)
         }
         // 구글 로그인
         binding.introSnsGoogleButton.setOnClickListener {
-            viewModel.requestSnsLogin(requireContext(), SnsType.GOOGLE, googleResultLauncher)
+            viewModel.requestSnsLogin(requireContext(), LoginType.GOOGLE, googleResultLauncher)
         }
         // 로드801 로그인 및 회원가입
         binding.introGoLoginButton.setOnClickListener{
@@ -76,17 +79,70 @@ class IntroFragment : Fragment() {
     }
 
     private fun bindViewModel() {
+        // 회원가입 & 로그인
         viewModel.signupUser.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        findNavController().navigate(IntroFragmentDirections.actionIntroFragmentToSignUpTermsFragment())
+                        val id = it.data.socialId!!
+                        val loginType = LoginType.valueOf(it.data.socialType!!)
+                        viewModel.requestIsIdExist(id, loginType)
                     }
-                    is Resource.Failure -> { if(BuildConfig.DEBUG) Log.e(TAG, it.exception.domainErrorMessage) }
+                    is Resource.Failure -> {
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
                 }
             }
         }
+
+        // 이미 가입된 회원 여부
+        viewModel.isMemberExist.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        if (it.data) { // 존재 여부에 따라 로그인 및 회원가입
+                            viewModel.requestLogin()
+                        } else {
+                            findNavController().navigate(IntroFragmentDirections.actionIntroFragmentToSignUpTermsFragment(SignupType.SNS))
+                        }
+                    }
+                    is Resource.Failure -> {
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
+                }
+            }
+        }
+
+        // 로그인 성공 여부
+        viewModel.isSuccessLogin.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        val accessToken = it.data.accessToken
+
+                        viewModel.getUser().let { user ->
+                            // 로그인 정보 저장
+                            TokenDatabase.saveAccessToken(
+                                loginType = LoginType.valueOf(user.socialType!!),
+                                id = user.socialId!!,
+                                pw = null,
+                                accessToken = accessToken
+                            )
+                        }
+
+                        activity?.goToHome()
+                    }
+                    is Resource.Failure -> {
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
+                }
+            }
+        }
+
+
     }
 
     // google login callback
@@ -107,8 +163,8 @@ class IntroFragment : Fragment() {
                         birthday = "",
                         mobileNo = "",
                         sexType =  GenderType.NONE,
-                        termAgreeList = emptyList(),
-                        socialType = SnsType.GOOGLE.name,
+                        termAgreeList = arrayListOf(),
+                        socialType = LoginType.GOOGLE.name,
                         socialId = account.id,
                         loginId = null,
                         password = null,

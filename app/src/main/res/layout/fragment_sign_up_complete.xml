@@ -12,11 +12,11 @@
         android:layout_height="match_parent"
         android:background="@color/background_gray">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="282dp"
             android:layout_height="84dp"
             android:layout_marginTop="32dp"
-            android:src="@drawable/logo"
+            app:srcCompat="@drawable/logo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

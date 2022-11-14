@@ -2,14 +2,20 @@ package com.road801.android.view.intro
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
-import com.road801.android.common.enum.SnsType
+import com.road801.android.BuildConfig
+import com.road801.android.common.enum.LoginType
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
+import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
+import com.road801.android.data.network.dto.requset.SignupRequestDto
+import com.road801.android.data.network.dto.response.LoginResponseDto
 import com.road801.android.data.network.error.DomainException
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.data.repository.SnsRepository
@@ -27,47 +33,92 @@ class IntroViewModel @Inject constructor() : ViewModel() {
     val signupUser: LiveData<Event<Resource<UserDto>>> = _signupUser
 
     // 이미 가입한 회원 존재 유무
-    private var _memberExist = MutableLiveData<Event<Resource<Boolean>>>()
-    val memberExist: LiveData<Event<Resource<Boolean>>> = _memberExist
+    private var _isMemberExist = MutableLiveData<Event<Resource<Boolean>>>()
+    val isMemberExist: LiveData<Event<Resource<Boolean>>> = _isMemberExist
 
-    public fun requestIsIdExist(id: String, snsType: SnsType? = null) {
+    // 휴대폰 인증 요청 여부
+    private var _isRequestCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isRequestCert: LiveData<Event<Resource<Boolean>>> = _isRequestCert
+
+    // 휴대폰 인증 완료 여부
+    private var _isCompleteCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isCompleteCert: LiveData<Event<Resource<Boolean>>> = _isCompleteCert
+
+    // 회원가입 성공 여부
+    private var _isSuccessSignup = MutableLiveData<Event<Resource<Boolean>>>()
+    val isSuccessSignup: LiveData<Event<Resource<Boolean>>> = _isSuccessSignup
+
+    // 로그인 성공 여부
+    private var _isSuccessLogin = MutableLiveData<Event<Resource<LoginResponseDto>>>()
+    val isSuccessLogin: LiveData<Event<Resource<LoginResponseDto>>> = _isSuccessLogin
+
+
+
+    /**
+     * 회원가입
+     *
+     * @param request
+     */
+    public fun requestSignup(request: SignupRequestDto) {
         viewModelScope.launch {
             try {
-                _memberExist.value = Event(Resource.Loading)
-                val result = ServerRepository.isIdExist(id, snsType)
-                _memberExist.value = Event(Resource.Success(result.isExist))
+                _isSuccessSignup.value = Event(Resource.Loading)
+                ServerRepository.signup(request)
+                _isSuccessSignup.value = Event(Resource.Success(true))
             } catch (domainException: DomainException) {
-                _memberExist.value = Event(Resource.Failure(domainException))
+                _isSuccessSignup.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
-                _memberExist.value = Event(Resource.Failure(DomainException(cause = exception)))
+                _isSuccessSignup.value = Event(Resource.Failure(DomainException(domainErrorSubMessage = "회원가입에 실패하였습니다.", cause = exception)))
+            }
+        }
+    }
+
+    /**
+     * SNS ID로 이미 가입된 회원 여부
+     *
+     * @param id
+     * @param loginType
+     */
+    public fun requestIsIdExist(id: String, loginType: LoginType) {
+        viewModelScope.launch {
+            try {
+                _isMemberExist.value = Event(Resource.Loading)
+                val result = ServerRepository.isIdExist(id, loginType)
+                _isMemberExist.value = Event(Resource.Success(result.isExist))
+            } catch (domainException: DomainException) {
+                _isMemberExist.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isMemberExist.value = Event(Resource.Failure(DomainException(domainErrorSubMessage = "이미 존재하는 회원입니다.", cause = exception)))
             }
         }
     }
 
 
     /**
-     * SNS 로그인
+     * SNS 로그인 (프레임워크)
      *
      * @param context
      * @param type SnsType
      * @param googleResultLauncher 구글 로그인 콜백. (추후 카카오도 사용할 수 있음)
      */
-    public fun requestSnsLogin(context: Context, type: SnsType, googleResultLauncher: ActivityResultLauncher<Intent>? = null) {
+    public fun requestSnsLogin(context: Context, type: LoginType, googleResultLauncher: ActivityResultLauncher<Intent>? = null) {
         _signupUser.value = Event(Resource.Loading)
 
         viewModelScope.launch {
             when (type) {
-                SnsType.KAKAO -> {
+                LoginType.KAKAO -> {
                     SnsRepository.kakaoLogin(context) {
                         when (it) {
                             is Resource.Loading -> {}
-                            is Resource.Success -> _signupUser.value = Event(Resource.Success(it.data))
+                            is Resource.Success -> {
+                                _signupUser.value = Event(Resource.Success(it.data))
+                            }
                             is Resource.Failure -> _signupUser.value = Event(Resource.Failure(it.exception))
                         }
                     }
                 }
 
-                SnsType.NAVER -> {
+                LoginType.NAVER -> {
                     SnsRepository.naverLogin(context) {
                         when (it) {
                             is Resource.Loading -> {}
@@ -77,14 +128,85 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                     }
                 }
 
-                SnsType.GOOGLE -> {
+                LoginType.GOOGLE -> {
                     googleResultLauncher?.let {
                         SnsRepository.googleLogin(context, it)
                     }
                 }
+                else -> {}
             }
         }
     }
+
+    /**
+     * 휴대폰 인증 요청
+     *
+     * @param requestDto PhoneAuthRequestDto
+     */
+    public fun requestPhoneAuth(requestDto: PhoneAuthRequestDto) {
+        viewModelScope.launch {
+            try {
+                _isRequestCert.value = Event(Resource.Loading)
+                val result = ServerRepository.phoneAuth(requestDto)
+                _isRequestCert.value = Event(Resource.Success(true))
+                if (BuildConfig.DEBUG) Log.d(TAG, result.expiredSec.toString())
+            } catch (domainException: DomainException) {
+                _isRequestCert.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isRequestCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    /**
+     * 휴대폰 인증 완료
+     *
+     * @param mobileNo
+     * @param authValue
+     */
+    public fun requestPhoneAuthConfirm(mobileNo: String, authValue: String) {
+        viewModelScope.launch {
+            try {
+                _isCompleteCert.value = Event(Resource.Loading)
+                val result = ServerRepository.phoneAuthConfirm(mobileNo, authValue)
+                _isCompleteCert.value = Event(Resource.Success(true))
+                if (BuildConfig.DEBUG) Log.d(TAG, result.message)
+            } catch (domainException: DomainException) {
+                _isCompleteCert.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isCompleteCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    // 소셜 로그인
+    public fun requestLogin() {
+        val snsId = getUser().socialId!!
+        val snsType = LoginType.valueOf(getUser().socialType!!)
+        requestLogin(snsType, snsId, null)
+    }
+
+    // 로드801 로그인
+    public fun requestLogin(loginType: LoginType, id: String, pw: String?) {
+        viewModelScope.launch {
+            try {
+                _isSuccessLogin.value = Event(Resource.Loading)
+                val result = if(loginType == LoginType.ROAD801) {
+                    ServerRepository.loginRoad(id, pw!!)
+                } else {
+                    ServerRepository.loginSns(loginType, id)
+                }
+                _isSuccessLogin.value = Event(Resource.Success(result))
+            } catch (domainException: DomainException) {
+                _isSuccessLogin.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isSuccessLogin.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+
+
 
     public fun setSignupUser(userDto: UserDto? = null, error: ApiException? = null) {
         _signupUser.value = Event(Resource.Loading)
@@ -97,5 +219,9 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                 _signupUser.value = Event(Resource.Failure(DomainException("[구글] 로그인 실패","",error)))
             }
         }
+    }
+
+    public fun getUser() : UserDto {
+      return (signupUser.value?.peekContent() as Resource.Success<UserDto>).data
     }
 }

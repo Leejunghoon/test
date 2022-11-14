@@ -15,16 +15,27 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background_gray">
+            android:background="@color/bottom_sheet_gray">
 
-            <ImageView
-                android:layout_width="282dp"
-                android:layout_height="84dp"
-                android:layout_marginTop="32dp"
-                android:src="@drawable/logo"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:background="@color/background_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="282dp"
+                    android:layout_height="84dp"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/logo" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scroll_view"
@@ -39,7 +50,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="160dp"
+                    android:layout_marginTop="180dp"
                     android:background="@drawable/signup_background"
                     android:padding="20dp">
 
@@ -198,12 +209,28 @@
                         style="@style/RoadButtonStyle"
                         android:layout_width="0dp"
                         android:layout_marginTop="150dp"
+                        android:enabled="false"
                         android:text="다음"
                         android:textSize="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/signup_marketing_policy_container" />
 
+
+                    <Button
+                        android:id="@+id/back_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:background="@android:color/transparent"
+                        android:text="뒤로가기"
+                        android:textColor="@color/primary"
+                        android:textSize="12dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/next_button"
+                        app:layout_constraintStart_toStartOf="@+id/next_button"
+                        app:layout_constraintTop_toBottomOf="@+id/next_button" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.core.widget.NestedScrollView>

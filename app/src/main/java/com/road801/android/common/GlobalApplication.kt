@@ -1,12 +1,14 @@
 package com.road801.android.common
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
 import com.navercorp.nid.NaverIdLoginSDK
 import com.road801.android.BuildConfig
 import com.road801.android.R
+import com.road801.android.data.network.interceptor.TokenDatabase
 import com.road801.android.data.repository.SnsRepository
 import dagger.hilt.android.HiltAndroidApp
 
@@ -21,6 +23,7 @@ class GlobalApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        initSharedPreference()
         setupKaKaoSDK()
         setupNaverSDK()
 
@@ -34,6 +37,10 @@ class GlobalApplication : Application() {
         lateinit var instance: GlobalApplication
     }
 
+
+    private fun initSharedPreference() {
+        TokenDatabase.sharedPreferences = getSharedPreferences("road801_db", Context.MODE_PRIVATE)
+    }
 
     private fun setupKaKaoSDK() {
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
