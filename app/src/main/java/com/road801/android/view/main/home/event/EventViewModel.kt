@@ -40,8 +40,8 @@ class EventViewModel @Inject constructor() : ViewModel() {
             try {
                 _eventInfo.value = Event(Resource.Loading)
                 val result = ServerRepository.event(PaginationDto(
-                    page = 10,
-                    size = 0,
+                    page = 0,
+                    size = 10,
                     sort = emptyList()
                 ))
                 _eventInfo.value = Event(Resource.Success(result))
@@ -53,7 +53,7 @@ class EventViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 이벤트 리스트 조회
+    // 이벤트 상세 조회
     public fun requestEventDetail(eventId: Int) {
         viewModelScope.launch {
             try {

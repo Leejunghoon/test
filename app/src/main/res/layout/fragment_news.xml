@@ -30,7 +30,7 @@
                 android:textSize="16dp"
                 app:navigationIcon="@drawable/ic_back"
                 app:titleCentered="true"
-                tools:title="로드801 소식" />
+                app:title="로드801 소식" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -39,6 +39,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/white"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/_12dp"
+            android:paddingBottom="@dimen/_12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

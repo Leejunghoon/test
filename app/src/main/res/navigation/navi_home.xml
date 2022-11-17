@@ -46,7 +46,24 @@
         android:id="@+id/eventFragment"
         android:name="com.road801.android.view.main.home.event.EventFragment"
         android:label="EventFragment"
-        tools:layout="@layout/fragment_event"/>
+        tools:layout="@layout/fragment_event">
+        <action
+            android:id="@+id/action_eventFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.road801.android.view.main.home.event.EventDetailFragment"
+        android:label="EventDetailFragment"
+        tools:layout="@layout/fragment_event_detail">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
 
 
 </navigation>

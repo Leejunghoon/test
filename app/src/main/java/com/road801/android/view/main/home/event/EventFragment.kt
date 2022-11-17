@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class EventFragment : Fragment() {
+class EventFragment: Fragment() {
 
     private lateinit var binding: FragmentEventBinding
     private val viewModel: EventViewModel by viewModels()
@@ -64,7 +64,8 @@ class EventFragment : Fragment() {
         binding.recyclerView.addItemDecoration(spaceDecoration)
 
         binding.recyclerView.adapter = EventRecyclerAdapter(items) {
-            Log.d(TAG, it.title)
+            // item onClick
+            findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
         }
     }
 

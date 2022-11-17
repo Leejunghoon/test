@@ -6,18 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.navArgs
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.road801.android.R
+import com.road801.android.common.util.extension.showDialog
+import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
+import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.FragmentNewsBinding
-import com.road801.android.view.intro.signup.SignUpCompleteFragmentArgs
-import com.road801.android.view.main.home.HomeViewModel
-import com.road801.android.view.main.home.adapter.HomeEventPagerAdapter
+import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.main.home.adapter.NewsRecyclerAdapter
+import com.road801.android.view.main.home.event.EventFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class NewsFragment : Fragment() {
 
     private lateinit var binding: FragmentNewsBinding
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: NewsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +35,7 @@ class NewsFragment : Fragment() {
     ): View? {
         binding = FragmentNewsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
         return binding.root
     }
 
@@ -38,16 +44,54 @@ class NewsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-        setupRecyclerView()
+        setListener()
+        bindViewModel()
+
     }
 
     private fun initView() {
 
     }
 
-    private fun setupRecyclerView() {
-        binding.recyclerView.adapter = HomeEventPagerAdapter(emptyList())
+    private fun setListener() {
+        binding.toolbar.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
+
+    private fun bindViewModel() {
+        viewModel.requestNewsInfo()
+
+        viewModel.newsInfo.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        setupRecyclerView(it.data.data)
+                    }
+                    is Resource.Failure -> {
+                        showDialog(
+                            parentFragmentManager,
+                            title = it.exception.domainErrorMessage,
+                            message = it.exception.domainErrorSubMessage
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView(items: List<NewsDto>) {
+        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
+        binding.recyclerView.addItemDecoration(spaceDecoration)
+
+        binding.recyclerView.adapter = NewsRecyclerAdapter(items) {
+            // item onClick
+            findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
+        }
+    }
+
+
 
 
 

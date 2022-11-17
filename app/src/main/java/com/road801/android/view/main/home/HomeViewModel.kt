@@ -1,13 +1,9 @@
 package com.road801.android.view.main.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.road801.android.BuildConfig
-import com.road801.android.common.util.extension.TAG
-import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.response.HomeEventResponseDto
 import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.data.network.error.DomainException

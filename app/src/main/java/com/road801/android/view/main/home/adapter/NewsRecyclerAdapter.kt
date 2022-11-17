@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.road801.android.common.util.extension.formatted
-import com.road801.android.data.network.dto.EventDto
+import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.ItemEventBinding
 
-class EventRecyclerAdapter(private val items: List<EventDto>,
-                            private val onClick: ((item: EventDto) -> Unit)? = null): RecyclerView.Adapter<EventRecyclerAdapter.ViewHolder>() {
+class NewsRecyclerAdapter(private val items: List<NewsDto>,
+                           private val onClick: ((item: NewsDto) -> Unit)? = null): RecyclerView.Adapter<NewsRecyclerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -18,19 +18,18 @@ class EventRecyclerAdapter(private val items: List<EventDto>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
 
     inner class ViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: EventDto) {
-            binding.itemEventSubTextView.visibility = View.GONE
+        fun bind(item: NewsDto) {
             binding.itemEventTitleTextView.text = item.title
-            binding.itemEventDateTextView.text = buildString {
-                append(item.startDt?.formatted("기간 "))
-                append(item.startDt?.formatted("yyyy.MM.dd"))
-                append(" ~ ")
-                append(item.endDt?.formatted("yyyy.MM.dd"))
+            binding.itemEventSubTextView.text = item.subtitle
+            binding.itemEventDateTextView.text = item.date.formatted("yyyy.MM.dd")
+
+            item.iconUrl.isNullOrEmpty().not().apply {
+                binding.itemEventImageView.visibility = View.VISIBLE
+                Glide.with(binding.itemEventImageView.context)
+                    .load(item.iconUrl)
+                    .into(binding.itemEventImageView)
             }
 
-            Glide.with(binding.itemEventImageView.context)
-                .load(item.image)
-                .into(binding.itemEventImageView)
 
             itemView.setOnClickListener {
                 onClick?.invoke(item)
