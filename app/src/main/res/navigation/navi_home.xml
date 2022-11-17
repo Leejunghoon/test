@@ -41,7 +41,15 @@
         android:id="@+id/newsFragment"
         android:name="com.road801.android.view.main.home.news.NewsFragment"
         android:label="NewsFragment"
-        tools:layout="@layout/fragment_news"/>
+        tools:layout="@layout/fragment_news">
+        <action
+            android:id="@+id/action_newsFragment_to_newsDetailFragment"
+            app:destination="@id/newsDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/eventFragment"
         android:name="com.road801.android.view.main.home.event.EventFragment"
@@ -62,6 +70,14 @@
         tools:layout="@layout/fragment_event_detail">
         <argument
             android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsDetailFragment"
+        android:name="com.road801.android.view.main.home.news.NewsDetailFragment"
+        android:label="NewsDetailFragment" >
+        <argument
+            android:name="boardId"
             app:argType="integer" />
     </fragment>
 

@@ -89,8 +89,10 @@ class EventDetailFragment: Fragment() {
             append(item.endDt?.formatted("yyyy.MM.dd"))
         }
 
-        Glide.with(requireContext())
-            .load(item.image)
-            .into(binding.eventDetailImageView)
+        item.image?.let {
+            Glide.with(requireContext())
+                .load(item.image)
+                .into(binding.eventDetailImageView)
+        }
     }
 }

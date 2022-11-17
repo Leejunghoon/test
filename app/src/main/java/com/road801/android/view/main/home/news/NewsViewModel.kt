@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.road801.android.data.network.dto.NewsDetailDto
 import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.data.network.dto.PaginationDto
 import com.road801.android.data.network.dto.response.CommonListResponseDto
@@ -23,8 +24,8 @@ class NewsViewModel @Inject constructor() : ViewModel() {
     val newsInfo: LiveData<Event<Resource<CommonListResponseDto<NewsDto>>>> = _newsInfo
 
     // 소식 상세 정보
-    private var _newsDetail = MutableLiveData<Event<Resource<NewsDto>>>()
-    val newsDetail: LiveData<Event<Resource<NewsDto>>> = _newsDetail
+    private var _newsDetail = MutableLiveData<Event<Resource<NewsDetailDto>>>()
+    val newsDetail: LiveData<Event<Resource<NewsDetailDto>>> = _newsDetail
 
     // 소식 조회
     public fun requestNewsInfo() {

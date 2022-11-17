@@ -286,6 +286,7 @@
                     style="@style/RoadButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_marginTop="28dp"
+                    android:enabled="false"
                     android:text="다음"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

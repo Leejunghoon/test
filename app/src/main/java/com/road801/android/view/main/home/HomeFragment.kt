@@ -1,6 +1,5 @@
 package com.road801.android.view.main.home
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -30,11 +28,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by activityViewModels()
+    private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var newsPagerAdapter: HomeEventPagerAdapter
+    private lateinit var eventPagerAdapter: HomeEventPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("hoon", """onCreateView""")
     }
 
     override fun onCreateView(
@@ -44,19 +44,16 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        Log.d("hoon", """onCreateView""")
         initView()
+        initPager()
         setListener()
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("hoon", """onViewCreated""")
         bindViewModel()
         showNewsBanner()
-
     }
 
     private fun initView() {
@@ -64,20 +61,28 @@ class HomeFragment : Fragment() {
         binding.homeSegmentRadioGroup.check(binding.homeSegmentQr.id)
     }
 
-    private fun setupPager(items: List<EventDto>) {
-        val newsPagerAdapter = HomeEventPagerAdapter(items)
-        val eventPagerAdapter = HomeEventPagerAdapter(items)
+    private fun initPager() {
+        newsPagerAdapter = HomeEventPagerAdapter()
+        eventPagerAdapter = HomeEventPagerAdapter()
+
+        binding.homeNewsViewPager.adapter = newsPagerAdapter
+        binding.homeEventViewPager.adapter = eventPagerAdapter
+
         binding.homeNewsViewPager.offscreenPageLimit = 3
         binding.homeNewsViewPager.setPageTransformer(ZoomOutPageTransformer())
 
         binding.homeEventViewPager.offscreenPageLimit = 3
         binding.homeEventViewPager.setPageTransformer(ZoomOutPageTransformer())
 
-        binding.homeNewsViewPager.adapter = newsPagerAdapter
-        binding.homeEventViewPager.adapter = eventPagerAdapter
+        binding.homeNewsIndicator.isAttachedToWindow.not().apply {
+            binding.homeNewsIndicator.attachTo(binding.homeNewsViewPager)
+            binding.homeEventIndicator.attachTo(binding.homeEventViewPager)
+        }
+    }
 
-        binding.homeNewsIndicator.attachTo(binding.homeNewsViewPager)
-        binding.homeEventIndicator.attachTo(binding.homeEventViewPager)
+    private fun setupPager(items: List<EventDto>) {
+        newsPagerAdapter.setItems(items)
+        eventPagerAdapter.setItems(items)
     }
 
     private fun bindViewModel() {
@@ -89,6 +94,7 @@ class HomeFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
+                        Log.d("hoon", """bindHomeInfo""")
                         bindHomeInfo(it.data)
                     }
                     is Resource.Failure -> {
@@ -108,6 +114,7 @@ class HomeFragment : Fragment() {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         bindHomeEventInfo(it.data)
+                        Log.d("hoon", """bindHomeEventInfo""")
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -159,32 +166,34 @@ class HomeFragment : Fragment() {
         val user = item.customerInfo
         val asset = item.pointInfo
 
-        val qr = user.barcode.getBarcodeBitmap(
+        user.barcode.getBarcodeBitmap(
             BarcodeFormat.QR_CODE,
-            resources.getDimension(R.dimen._300dp).toInt(),
-            resources.getDimension(R.dimen._300dp).toInt()
-        )
+            resources.getDimension(R.dimen._200dp).toInt(),
+            resources.getDimension(R.dimen._200dp).toInt()
+        ).apply {
+            this?.let {
+                Glide.with(requireContext())
+                    .load(it)
+                    .override(resources.getDimension(R.dimen._200dp).toInt())
+                    .into(binding.homeQrImageView)
+            }
+        }
 
-        val barcode = user.barcode.getBarcodeBitmap(
+         user.barcode.getBarcodeBitmap(
             BarcodeFormat.CODE_128,
             resources.getDimension(R.dimen._300dp).toInt(),
             resources.getDimension(R.dimen._80dp).toInt()
-        )
-
-        Glide.with(requireContext())
-            .load(qr)
-            .apply(RequestOptions.overrideOf(resources.getDimension(R.dimen._200dp).toInt()))
-            .into(binding.homeQrImageView)
-
-        Glide.with(requireContext())
-            .load(barcode)
-            .apply(
-                RequestOptions.overrideOf(
-                    resources.getDimension(R.dimen._300dp).toInt(),
-                    resources.getDimension(R.dimen._80dp).toInt()
-                )
-            )
-            .into(binding.homeBarcodeImageView)
+        ).apply {
+             this?.let {
+                 Glide.with(requireContext())
+                     .load(it)
+                     .override( resources.getDimension(R.dimen._300dp).toInt(),
+                         resources.getDimension(R.dimen._80dp).toInt())
+                     .into(binding.homeBarcodeImageView)
+             }
+         }
+//        binding.homeQrImageView.setImageBitmap(qr)
+//        binding.homeBarcodeImageView.setImageBitmap(barcode)
 
 
 
@@ -195,6 +204,18 @@ class HomeFragment : Fragment() {
             append(user.name)
             append(" 회원님!")
         }
+
+        with(user.profileImage){
+            if (!this.isNullOrEmpty()) {
+                Glide.with(requireContext())
+                    .load(this)
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
+                    .circleCrop()
+                    .into(binding.homeProfileImageView)
+            }
+        }
+
         binding.homeGradeTextView.text = buildString {
             append(user.rating.code)
             append(" 회원님")

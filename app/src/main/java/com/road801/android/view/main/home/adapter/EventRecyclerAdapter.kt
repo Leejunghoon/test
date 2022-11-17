@@ -28,9 +28,12 @@ class EventRecyclerAdapter(private val items: List<EventDto>,
                 append(item.endDt?.formatted("yyyy.MM.dd"))
             }
 
-            Glide.with(binding.itemEventImageView.context)
-                .load(item.image)
-                .into(binding.itemEventImageView)
+            item.image?.let {
+                Glide.with(binding.itemEventImageView.context)
+                    .load(it)
+                    .into(binding.itemEventImageView)
+            }
+
 
             itemView.setOnClickListener {
                 onClick?.invoke(item)

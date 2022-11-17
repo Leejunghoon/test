@@ -26,11 +26,6 @@ class GlobalApplication : Application() {
         initSharedPreference()
         setupKaKaoSDK()
         setupNaverSDK()
-
-        if (BuildConfig.DEBUG) {
-            val keyHash = SnsRepository.getHashKey(this)
-            if(BuildConfig.DEBUG) Log.d("GlobalApplication", "keyHash: $keyHash")
-        }
     }
 
     companion object {

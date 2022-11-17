@@ -12,8 +12,9 @@ import com.road801.android.databinding.ItemHomeEventBinding
  * MARK: - 홈 화면 이벤트 어댑터
  *
  */
-class HomeEventPagerAdapter(private val items: List<EventDto>,
-                            private val onClick: ((item: EventDto) -> Unit)? = null): RecyclerView.Adapter<HomeEventPagerAdapter.ViewHolder>() {
+class HomeEventPagerAdapter(private val onClick: ((item: EventDto) -> Unit)? = null): RecyclerView.Adapter<HomeEventPagerAdapter.ViewHolder>() {
+
+    private var items: List<EventDto> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemHomeEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -30,13 +31,20 @@ class HomeEventPagerAdapter(private val items: List<EventDto>,
                 append(item.endDt?.formatted("yyyy.MM.dd"))
             }
 
-            Glide.with(binding.itemHomeEventImageView.context)
-                .load(item.image)
-                .into(binding.itemHomeEventImageView)
+            item.image?.let {
+                Glide.with(binding.itemHomeEventImageView.context)
+                    .load(it)
+                    .into(binding.itemHomeEventImageView)
+            }
 
             itemView.setOnClickListener {
                 onClick?.invoke(item)
             }
         }
+    }
+
+    public fun setItems(items: List<EventDto>) {
+        this.items = items
+        notifyDataSetChanged()
     }
 }

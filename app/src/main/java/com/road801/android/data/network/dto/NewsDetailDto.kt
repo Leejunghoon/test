@@ -4,12 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class NewsDto(
-    val id: Int,
-    val title: String,
+data class NewsDetailDto(
     val subTitle: String,
-    val categoryName: String,
-    val iconUrl: String,
-    val date: String
+    val content: String,
+    val image: String
 ) : Parcelable
-

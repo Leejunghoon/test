@@ -5,24 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.road801.android.R
+import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.road801.android.common.util.extension.showDialog
-import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
+import com.road801.android.data.network.dto.NewsDetailDto
 import com.road801.android.data.network.dto.NewsDto
-import com.road801.android.databinding.FragmentNewsBinding
+import com.road801.android.databinding.FragmentNewsDetailBinding
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.main.home.adapter.NewsRecyclerAdapter
-import com.road801.android.view.main.home.event.EventFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class NewsFragment : Fragment() {
 
-    private lateinit var binding: FragmentNewsBinding
+@AndroidEntryPoint
+class NewsDetailFragment: Fragment() {
+    private lateinit var binding: FragmentNewsDetailBinding
     private val viewModel: NewsViewModel by viewModels()
+    private val args: NewsDetailFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +32,8 @@ class NewsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentNewsBinding.inflate(inflater, container, false)
+        binding = FragmentNewsDetailBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-
         return binding.root
     }
 
@@ -54,20 +52,20 @@ class NewsFragment : Fragment() {
     }
 
     private fun setListener() {
-        binding.toolbar.setOnClickListener {
+        binding.newDetailBackButton.setOnClickListener {
             findNavController().navigateUp()
         }
     }
 
     private fun bindViewModel() {
-        viewModel.requestNewsInfo()
+        viewModel.requestNewsDetail(args.boardId)
 
-        viewModel.newsInfo.observe(viewLifecycleOwner) { result ->
+        viewModel.newsDetail.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        setupRecyclerView(it.data.data)
+                        bindNewsDetail(it.data)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -81,18 +79,12 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView(items: List<NewsDto>) {
-        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
-        binding.recyclerView.addItemDecoration(spaceDecoration)
+    private fun bindNewsDetail(item: NewsDetailDto) {
+        binding.newDetailTitleTextView.text = item.subTitle
+        binding.newDetailContentTextView.text = item.content
 
-        binding.recyclerView.adapter = NewsRecyclerAdapter(items) {
-            // item onClick
-            findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
-        }
+        Glide.with(requireContext())
+            .load(item.image)
+            .into(binding.newDetailImageView)
     }
-
-
-
-
-
 }

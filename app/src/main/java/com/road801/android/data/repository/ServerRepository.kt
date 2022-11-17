@@ -186,7 +186,7 @@ object ServerRepository {
     }
 
     // 소식 상세 조회
-    suspend fun newsDetail(boardId: Int): NewsDto {
+    suspend fun newsDetail(boardId: Int): NewsDetailDto {
         try {
             return api.newsDetail(boardId)
         } catch (exception: Exception) {

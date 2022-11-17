@@ -67,7 +67,7 @@
     </style>
 
     <style name="RoadButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_height">46dp</item>
         <item name="android:textSize">12dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>

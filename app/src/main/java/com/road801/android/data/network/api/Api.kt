@@ -169,7 +169,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/board/{boardId}")
-    suspend fun newsDetail(@Path("boardId") boardId: Int): NewsDto
+    suspend fun newsDetail(@Path("boardId") boardId: Int): NewsDetailDto
 
 
 
