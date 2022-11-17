@@ -10,6 +10,10 @@ import com.road801.android.common.util.extension.showDialog
 import com.road801.android.databinding.FragmentFindPasswordCompleteBinding
 import com.road801.android.view.dialog.RoadDialog.OnDialogListener
 
+/**
+ * MARK: - 비밀번호 찾기  [ 완료 ]
+ *
+ */
 class FindPasswordCompleteFragment : Fragment() {
     private lateinit var binding: FragmentFindPasswordCompleteBinding
 

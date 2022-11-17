@@ -23,13 +23,13 @@ buildscript {
         legacySupportVersion = '1.0.0'
         constraintLayoutVersion = '2.1.4'
         viewPagerVersion = '1.0.0'
-        navigationVersion = '2.5.2'
+        navigationVersion = '2.5.3'
         hiltVersion = '2.42'
         dataStoreVersion = '1.0.0'
         glideVersion = '4.13.2'
         retrofitVersion = '2.9.0'
         okhttpLoggingVersion = '4.9.0'
-        gradleVersion = '7.3.0'
+        gradleVersion = '7.3.1'
         kotlinVersion = '1.7.20'
         emojiVersion = '1.1.0'
         testVersion= '1.4.0'
@@ -41,6 +41,7 @@ buildscript {
         jsoupVersion = '1.12.2'
         splashscreen = '1.0.0'
         lottieVersion = '5.2.0'
+        coordinatorlayoutVersion = '1.2.0'
     }
 
     repositories {
@@ -58,8 +59,8 @@ buildscript {
 }
 
 plugins {
-    id 'com.android.application' version '7.3.0' apply false
-    id 'com.android.library' version '7.3.0' apply false
+    id 'com.android.application' version '7.3.1' apply false
+    id 'com.android.library' version '7.3.1' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
 }
 

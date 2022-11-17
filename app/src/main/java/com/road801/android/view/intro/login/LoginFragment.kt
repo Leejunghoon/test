@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.TextInputLayout
+import com.road801.android.BuildConfig
 import com.road801.android.R
 import com.road801.android.common.enum.LoginType
 import com.road801.android.common.enum.SignupType
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.validator.RoadValidator
@@ -22,6 +24,10 @@ import com.road801.android.databinding.FragmentLoginBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.intro.IntroViewModel
 
+/**
+ * MARK: - 로그인
+ *
+ */
 class LoginFragment : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
@@ -56,14 +62,7 @@ class LoginFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        val accessToken = it.data.accessToken
-                        // 로그인 정보 저장
-                        TokenDatabase.saveAccessToken(
-                            loginType = LoginType.ROAD801,
-                            id = binding.loginIdEditText.text.toString().trim(),
-                            pw = binding.loginPasswordEditText.text.toString().trim(),
-                            accessToken = accessToken
-                        )
+                        if (BuildConfig.DEBUG) Log.d(TAG, it.data.accessToken)
                         activity?.goToHome()
                     }
                     is Resource.Failure -> {

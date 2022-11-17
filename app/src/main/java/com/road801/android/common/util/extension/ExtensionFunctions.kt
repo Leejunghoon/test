@@ -6,34 +6,42 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import android.util.TypedValue
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toolbar
-import androidx.databinding.BindingAdapter;
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.ActivityNavigator
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.zxing.BarcodeFormat
-import com.google.zxing.EncodeHintType
-import com.google.zxing.Writer
-import com.google.zxing.common.BitMatrix
-import com.google.zxing.oned.Code128Writer
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.road801.android.BuildConfig
 import com.road801.android.R
 import com.road801.android.view.dialog.RoadDialog
-import com.road801.android.view.main.home.HomeActivity
 import com.road801.android.view.intro.IntroActivity
+import com.road801.android.view.main.home.HomeActivity
+import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * MARK: - 공통
  */
 val Any.TAG: String get() = this::class.java.simpleName
+
 
 @BindingAdapter("navigateUp")
 fun bindNavigateUp(toolbar: Toolbar, listener: View.OnClickListener) {
@@ -41,34 +49,85 @@ fun bindNavigateUp(toolbar: Toolbar, listener: View.OnClickListener) {
 }
 
 
-/**
- * 바코드 넘버로 비트맵 바코드 생성.
- *
- * @param widthPx
- * @param heightPx
- * @return Bitmap
- */
-fun String.getBarcodeBitmap(widthPx: Int, heightPx: Int): Bitmap? {
-    try {
-        val hintMap: Hashtable<EncodeHintType, ErrorCorrectionLevel> = Hashtable<EncodeHintType, ErrorCorrectionLevel>()
-        hintMap[EncodeHintType.ERROR_CORRECTION] = ErrorCorrectionLevel.L
-        val codeWriter: Writer
-        codeWriter = Code128Writer()
-        val byteMatrix: BitMatrix = codeWriter.encode(this, BarcodeFormat.CODE_128, widthPx, heightPx, hintMap)
-        val width = byteMatrix.width
-        val height = byteMatrix.height
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        for (i in 0 until width) {
-            for (j in 0 until height) {
-                bitmap.setPixel(i, j, if (byteMatrix[i, j]) Color.BLACK else Color.WHITE)
-            }
+fun String.formatted(pattern: String): String {
+    val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+    val date = SimpleDateFormat(DATE_FORMAT, Locale.KOREA).parse(this)
+    val dateFormat = SimpleDateFormat(pattern, Locale.KOREA)
+    date?.let {
+        return dateFormat.format(it)
+    }
+    return "Failed convert date to string"
+}
+
+val Int.currency: String get() = DecimalFormat("#,###").format(this)
+
+
+fun BottomNavigationView.setupWithNavControllerFixed(navController: NavController?) {
+    navController?.let {
+        this.setupWithNavController(it)
+    }
+
+
+    /**
+     *  Fixed by
+     *     NavOptions setRestoreState(false) with  setPopUpTo(saveState = true)
+     *     or
+     *     NavOptions setRestoreState(true) with  setPopUpTo(saveState = false)
+     *
+     *  @see [NavigationUI.onNavDestinationSelected]
+     */
+    this.setOnItemSelectedListener {item->
+
+        val builder = NavOptions.Builder().setLaunchSingleTop(true).setRestoreState(true)
+        if (
+            navController!!.currentDestination!!.parent!!.findNode(item.itemId)
+                    is ActivityNavigator.Destination
+        ) {
+//            builder.setEnterAnim(R.anim.nav_default_enter_anim)
+//                .setExitAnim(R.anim.nav_default_exit_anim)
+//                .setPopEnterAnim(R.anim.nav_default_pop_enter_anim)
+//                .setPopExitAnim(R.anim.nav_default_pop_exit_anim)
+        } else {
+//            builder.setEnterAnim(R.animator.nav_default_enter_anim)
+//                .setExitAnim(R.animator.nav_default_exit_anim)
+//                .setPopEnterAnim(R.animator.nav_default_pop_enter_anim)
+//                .setPopExitAnim(R.animator.nav_default_pop_exit_anim)
         }
-        return bitmap
-    } catch (exception: Exception) {
-        exception.printStackTrace()
-        return null
+        if (item.order and Menu.CATEGORY_SECONDARY == 0) {
+            builder.setPopUpTo(
+                navController.graph.findStartDestination().id,
+                inclusive = true,
+                saveState = true
+            )
+        }
+        val options = builder.build()
+        return@setOnItemSelectedListener  try {
+            // TODO provide proper API instead of using Exceptions as Control-Flow.
+            navController.navigate(item.itemId, null, options)
+            true
+        } catch (e: IllegalArgumentException) {
+            false
+        }
     }
 }
+
+/**
+ * 넘버로 비트맵 바코드 생성.
+ *
+ * @param width
+ * @param height
+ * @return Bitmap
+ */
+fun String.getBarcodeBitmap(type: BarcodeFormat, width: Int, height: Int): Bitmap? {
+    try {
+        val barcodeEncoder = BarcodeEncoder()
+        return barcodeEncoder.encodeBitmap(this, type, width, height)
+    } catch (e: Exception) {
+        if(BuildConfig.DEBUG) Log.d(TAG, "Failed getBarcodeBitmap")
+    }
+    return null
+}
+
 
 /**
  * 뷰 마진 설정

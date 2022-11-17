@@ -13,6 +13,10 @@ import androidx.fragment.app.DialogFragment
 import com.road801.android.R
 import com.road801.android.databinding.DialogRaodBinding
 
+/**
+ * MARK: - 기본 공통 팝업
+ *
+ */
 class RoadDialog : DialogFragment() {
 
     interface OnDialogListener {

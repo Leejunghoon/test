@@ -2,6 +2,7 @@ package com.road801.android.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.road801.android.R
 import com.road801.android.common.util.extension.goToHome
@@ -24,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
         val activityScope = CoroutineScope(Dispatchers.Main)
         activityScope.launch {
             delay(1000)
+            Log.d("hoon LocalRepository.isLogin", "${LocalRepository.isLogin}")
             if (LocalRepository.isLogin) {
                 goToHome()
             } else {

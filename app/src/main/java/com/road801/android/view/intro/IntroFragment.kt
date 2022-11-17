@@ -121,18 +121,7 @@ class IntroFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        val accessToken = it.data.accessToken
-
-                        viewModel.getUser().let { user ->
-                            // 로그인 정보 저장
-                            TokenDatabase.saveAccessToken(
-                                loginType = LoginType.valueOf(user.socialType!!),
-                                id = user.socialId!!,
-                                pw = null,
-                                accessToken = accessToken
-                            )
-                        }
-
+                        if (BuildConfig.DEBUG) Log.d(TAG, it.data.accessToken)
                         activity?.goToHome()
                     }
                     is Resource.Failure -> {

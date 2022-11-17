@@ -1,14 +1,17 @@
 package com.road801.android.view.intro.signup
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import com.road801.android.BuildConfig
 import com.road801.android.common.enum.LoginType
 import com.road801.android.common.enum.SignupType
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.interceptor.TokenDatabase
@@ -56,27 +59,7 @@ class SignUpCompleteFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        val accessToken = it.data.accessToken
-
-                        viewModel.getUser().let { user ->
-                            if (args.signupType == SignupType.SNS) {
-                                // 로그인 정보 저장
-                                TokenDatabase.saveAccessToken(
-                                    loginType = LoginType.valueOf(user.socialType!!),
-                                    id = user.socialId!!,
-                                    pw = null,
-                                    accessToken = accessToken
-                                )
-                            } else {
-                                // 로그인 정보 저장
-                                TokenDatabase.saveAccessToken(
-                                    loginType = LoginType.ROAD801,
-                                    id = user.loginId!!,
-                                    pw = user.password!!,
-                                    accessToken = accessToken
-                                )
-                            }
-                        }
+                        if (BuildConfig.DEBUG) Log.d(TAG, it.data.accessToken)
                         activity?.goToHome()
                     }
                     is Resource.Failure -> {

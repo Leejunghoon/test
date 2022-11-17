@@ -86,11 +86,11 @@ class SignUpTermsFragment : Fragment() {
 
 
         binding.signupUseLinkButton.setOnClickListener {
-            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("로드801 서비스 이용 약관", ""))
+            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("로드801 서비스 이용 약관", "https://spurious-lime-3d4.notion.site/801-8832f2f2a7bc46ec8a1b64b837baab7e"))
         }
 
         binding.signupPrivacyLinkButton.setOnClickListener {
-            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("개인정보 제공 동의 약관", ""))
+            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("개인정보 제공 동의 약관", "https://spurious-lime-3d4.notion.site/24b3a8fc62ae49e291f48cd55818a4d3"))
         }
 
         binding.signupGpsLinkButton.setOnClickListener {
@@ -98,7 +98,7 @@ class SignUpTermsFragment : Fragment() {
         }
 
         binding.signupMarketingLinkButton.setOnClickListener {
-            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("마케팅 동의 약관", ""))
+            findNavController().navigate(SignUpTermsFragmentDirections.actionSignUpTermsFragmentToBaseWebView("마케팅 동의 약관", "https://spurious-lime-3d4.notion.site/df53f4f312c3403292a1547b5ad9d6c2"))
         }
 
 

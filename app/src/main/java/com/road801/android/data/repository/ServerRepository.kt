@@ -4,14 +4,12 @@ import com.road801.android.common.Constants
 import com.road801.android.common.Constants.API_VERSION
 import com.road801.android.common.enum.LoginType
 import com.road801.android.data.network.api.Api
+import com.road801.android.data.network.dto.*
 import com.road801.android.data.network.dto.requset.LoginRoadRequestDto
 import com.road801.android.data.network.dto.requset.LoginSNSRequestDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
-import com.road801.android.data.network.dto.response.IsExistResponseDto
-import com.road801.android.data.network.dto.response.LoginResponseDto
-import com.road801.android.data.network.dto.response.PhoneAuthResponseDto
-import com.road801.android.data.network.dto.response.SuccessResponseDto
+import com.road801.android.data.network.dto.response.*
 import com.road801.android.data.network.error.*
 import com.road801.android.data.network.interceptor.TokenException
 import com.road801.android.data.network.interceptor.TokenInterceptor
@@ -148,4 +146,80 @@ object ServerRepository {
             throw toDomainException(exception)
         }
     }
+
+    // 홈 정보
+    suspend fun home(): HomeResponseDto {
+        try {
+            return api.home()
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 홈 이벤트 정보
+    suspend fun homeEvent(): HomeEventResponseDto {
+        try {
+            return api.homeEvent()
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 포인트 적립 내역 조회
+    suspend fun pointHistory(params: PaginationDto): CommonListResponseDto<PointHistoryDto> {
+        try {
+            return api.pointHistory(params)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+
+
+    // 소식 목록 조회
+    suspend fun news(params: PaginationDto): CommonListResponseDto<NewsDto> {
+        try {
+            return api.news(params)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 소식 상세 조회
+    suspend fun newsDetail(boardId: Int): NewsDto {
+        try {
+            return api.newsDetail(boardId)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+
+    // 이벤트 목록 조회
+    suspend fun event(params: PaginationDto): CommonListResponseDto<EventDto> {
+        try {
+            return api.event(params)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 이벤트 상세 조회
+    suspend fun eventDetail(eventId: Int): EventDto {
+        try {
+            return api.eventDetail(eventId)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 이벤트 참여
+    suspend fun eventEnter(eventId: Int): PointDto {
+        try {
+            return api.eventEnter(eventId)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
 }

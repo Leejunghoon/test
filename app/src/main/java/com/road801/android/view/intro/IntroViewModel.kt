@@ -11,12 +11,14 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
 import com.road801.android.BuildConfig
 import com.road801.android.common.enum.LoginType
+import com.road801.android.common.enum.SignupType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
 import com.road801.android.data.network.dto.response.LoginResponseDto
 import com.road801.android.data.network.error.DomainException
+import com.road801.android.data.network.interceptor.TokenDatabase
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.data.repository.SnsRepository
 import com.road801.android.domain.transfer.Event
@@ -195,6 +197,24 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                     ServerRepository.loginRoad(id, pw!!)
                 } else {
                     ServerRepository.loginSns(loginType, id)
+                }
+
+                if (loginType == LoginType.ROAD801) {
+                    // 로그인 정보 저장
+                    TokenDatabase.saveAccessToken(
+                        loginType = LoginType.ROAD801,
+                        id = id,
+                        pw = pw,
+                        accessToken = result.accessToken
+                    )
+                } else {
+                    // 로그인 정보 저장
+                    TokenDatabase.saveAccessToken(
+                        loginType = loginType,
+                        id = id,
+                        pw = null,
+                        accessToken = result.accessToken
+                    )
                 }
                 _isSuccessLogin.value = Event(Resource.Success(result))
             } catch (domainException: DomainException) {

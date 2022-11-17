@@ -8,6 +8,23 @@ import androidx.fragment.app.Fragment
 import com.road801.android.R
 import java.lang.ref.WeakReference
 
+/**
+ *  val manager = PermissionManager.from(this)
+if (manager.hasPermission(this, Manifest.permission.CAMERA).not()) {
+manager
+.request(Permission.Storage)
+.checkDetailedPermission { result ->
+if (result.all { it.value }) {
+// allow
+
+} else {
+// deny
+}
+}
+}
+ *
+ * @property fragment
+ */
 class PermissionManager private constructor(private val fragment: WeakReference<Fragment>) {
 
     private val requiredPermissions = mutableListOf<Permission>()

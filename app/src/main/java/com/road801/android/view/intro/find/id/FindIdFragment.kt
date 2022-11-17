@@ -10,6 +10,10 @@ import com.road801.android.common.enum.SignupType
 import com.road801.android.databinding.FragmentFindIdBinding
 import com.road801.android.view.intro.login.LoginFragmentDirections
 
+/**
+ * MARK: - 아이디 찾기  [ 인증 ]
+ *
+ */
 class FindIdFragment : Fragment() {
     private lateinit var binding: FragmentFindIdBinding
 

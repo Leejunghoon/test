@@ -2,12 +2,51 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navi_home"
-    app:startDestination="@id/homeFragment">
+    android:id="@+id/navi_main"
+    app:startDestination="@id/home_fragment">
 
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/home_fragment"
         android:name="com.road801.android.view.main.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_newsFragment"
+            app:destination="@id/newsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_eventFragment"
+            app:destination="@id/eventFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/point_fragment"
+        android:name="com.road801.android.view.main.point.PointFragment"
+        android:label="PointFragment"
+        tools:layout="@layout/fragment_point"/>
+
+    <fragment
+        android:id="@+id/me_fragment"
+        android:name="com.road801.android.view.main.me.MeFragment"
+        android:label="MeFragment"
+        tools:layout="@layout/fragment_me"/>
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.road801.android.view.main.home.news.NewsFragment"
+        android:label="NewsFragment"
+        tools:layout="@layout/fragment_news"/>
+    <fragment
+        android:id="@+id/eventFragment"
+        android:name="com.road801.android.view.main.home.event.EventFragment"
+        android:label="EventFragment"
+        tools:layout="@layout/fragment_event"/>
+
+
 </navigation>

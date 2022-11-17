@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.road801.android.databinding.FragmentFindIdCompleteBinding
 
+/**
+ * MARK: - 아이디 찾기  [ 완료 ]
+ *
+ */
 class FindIdCompleteFragment : Fragment() {
 
     private lateinit var binding: FragmentFindIdCompleteBinding

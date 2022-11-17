@@ -11,7 +11,10 @@ import com.road801.android.databinding.FragmentFindPasswordBinding
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.view.intro.find.id.FindIdFragmentDirections
 
-
+/**
+ * MARK: - 비밀번호 찾기  [ 인증 ]
+ *
+ */
 class FindPasswordFragment : Fragment() {
 
     private lateinit var binding: FragmentFindPasswordBinding
