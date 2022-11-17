@@ -130,6 +130,11 @@ class HomeFragment : Fragment() {
 
     private fun setListener() {
 
+        // 소식
+        binding.homeNewsContainer.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
+        }
+
         // 소식 더보기
         binding.homeRoadNewsMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
@@ -139,6 +144,8 @@ class HomeFragment : Fragment() {
         binding.homeRoadEventMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment())
         }
+
+
 
         // QR, 바코드 선택
         binding.homeSegmentRadioGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
