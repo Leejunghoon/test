@@ -26,6 +26,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     private var _homeEventInfo = MutableLiveData<Event<Resource<HomeEventResponseDto>>>()
     val homeEventInfo: LiveData<Event<Resource<HomeEventResponseDto>>> = _homeEventInfo
 
+    private var _userGrade = MutableLiveData<String>("")
+    public val userGrade: LiveData<String> = _userGrade
+
+    private var _userPoint = MutableLiveData<Int>(0)
+    public val userPoint: LiveData<Int> = _userPoint
+
 
     // 홈 정보 조회
     public fun requestHomeInfo() {
@@ -34,6 +40,10 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                 _homeInfo.value = Event(Resource.Loading)
                 val result = ServerRepository.home()
                 _homeInfo.value = Event(Resource.Success(result))
+
+                _userGrade = MutableLiveData(result.customerInfo.rating.value)
+                _userPoint = MutableLiveData(result.pointInfo.point)
+
             } catch (domainException: DomainException) {
                 _homeInfo.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {

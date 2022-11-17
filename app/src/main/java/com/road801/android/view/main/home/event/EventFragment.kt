@@ -64,7 +64,7 @@ class EventFragment: Fragment() {
         binding.recyclerView.addItemDecoration(spaceDecoration)
 
         binding.recyclerView.adapter = EventRecyclerAdapter(items) {
-            // item onClick
+            // 이벤트 상세로 이동
             findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
         }
     }

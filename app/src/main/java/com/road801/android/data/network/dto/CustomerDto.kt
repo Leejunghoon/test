@@ -8,5 +8,5 @@ data class CustomerDto(
     val name: String,
     val barcode: String,
     val profileImage: String,
-    val rating: GradeDto
+    val rating: CodeDto
 ): Parcelable

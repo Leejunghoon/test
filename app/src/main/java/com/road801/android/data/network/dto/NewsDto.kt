@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class NewsDto(
     val id: Int,
     val title: String,
-    val subTitle: String,
+    val subtitle: String,
     val categoryName: String,
     val iconUrl: String,
     val date: String

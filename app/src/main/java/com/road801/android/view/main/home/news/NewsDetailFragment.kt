@@ -80,7 +80,7 @@ class NewsDetailFragment: Fragment() {
     }
 
     private fun bindNewsDetail(item: NewsDetailDto) {
-        binding.newDetailTitleTextView.text = item.subTitle
+        binding.newDetailTitleTextView.text = item.subtitle
         binding.newDetailContentTextView.text = item.content
 
         Glide.with(requireContext())

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GradeDto(
+data class CodeDto(
     val code: String,
     val value: String
 ) : Parcelable

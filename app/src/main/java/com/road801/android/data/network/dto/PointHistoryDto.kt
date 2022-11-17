@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PointHistoryDto(
     val storeName: String,
-    val logType: GradeDto,
+    val logType: CodeDto,
     val requestDt: String,
     val point: Int
 ) : Parcelable
