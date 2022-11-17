@@ -43,20 +43,20 @@ class PointFragment : Fragment() {
     ): View? {
         binding = FragmentPointBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        initView()
+        bindViewModel()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
-        bindViewModel()
-
     }
 
     private fun initView() {
-        binding.pointGradeTextView.text = "${homeViewModel.userGrade} 등급"
-        binding.pointPointTextView.text = homeViewModel.userPoint.toString().toInt().currency
+        binding.pointGradeTextView.text = "${homeViewModel.userGrade.value} 등급"
+        binding.pointPointTextView.text = "${homeViewModel.userPoint.value?.currency} P"
     }
 
     private fun setupRecyclerView(items: List<PointHistoryDto>) {

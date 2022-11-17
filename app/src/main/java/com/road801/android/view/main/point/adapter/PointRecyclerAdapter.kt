@@ -1,10 +1,12 @@
 package com.road801.android.view.main.point.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
+import com.road801.android.common.enum.PointType
 import com.road801.android.common.util.extension.formatted
 import com.road801.android.data.network.dto.PointHistoryDto
 import com.road801.android.databinding.ItemPointBinding
@@ -22,10 +24,17 @@ class PointRecyclerAdapter(private val items: List<PointHistoryDto>,
             val context = binding.root.context
             binding.itemPointTitleTextView.text = item.storeName
             binding.itemPointDateTextView.text = item.requestDt.formatted("yyyy년 MM월 dd일 (E)")
+            binding.itemPointPointTextView.text = "${item.point}P ${item.logType.value}"
 
-            // 적립 // 사용
-            binding.itemPointPointTextView.setTextColor(ContextCompat.getColor(context, R.color.primary_blue))
-            binding.itemPointPointTextView.setTextColor(ContextCompat.getColor(context, R.color.positive_green) )
+            when(PointType.valueOf(item.logType.code)) {
+                PointType.EARN, PointType.USE-> {
+                    binding.itemPointPointTextView.setTextColor(ContextCompat.getColor(context, R.color.primary_blue))
+                }
+                PointType.EARN_CANCEL, PointType.USE_CANCEL -> {
+                    binding.itemPointPointTextView.setTextColor(ContextCompat.getColor(context, R.color.positive_green) )
+                }
+            }
+
 
             itemView.setOnClickListener {
                 onClick?.invoke(item)
