@@ -1,10 +1,7 @@
 package com.road801.android.data.network.api
 
 import com.road801.android.data.network.dto.*
-import com.road801.android.data.network.dto.requset.LoginRoadRequestDto
-import com.road801.android.data.network.dto.requset.LoginSNSRequestDto
-import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
-import com.road801.android.data.network.dto.requset.SignupRequestDto
+import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.*
 import com.road801.android.data.network.interceptor.BearerToken
 import retrofit2.http.*
@@ -127,7 +124,7 @@ interface Api {
     // MARK - ME -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
 
     /**
-     * 핸드폰 인증 요청 (로그인)
+     * 핸드폰 인증 요청 (로그인 상태)
      *
      * @param mobileNo
      * @return PhoneAuthResponseDto
@@ -137,7 +134,7 @@ interface Api {
     suspend fun phoneAuth(@Path("mobileNo") mobileNo: String): PhoneAuthResponseDto
 
     /**
-     *  핸드폰 인증 확인 및 변경 (로그인)
+     *  핸드폰 인증 확인 및 변경 (로그인 상태)
      *
      * @param params PhoneAuthRequestDto
      * @return SuccessResponseDto
@@ -146,7 +143,64 @@ interface Api {
     @PATCH("customer/me/mobileNo")
     suspend fun phoneAuthConfirm(@Body params: PhoneAuthRequestDto): SuccessResponseDto
 
+    /**
+     * 회원 탈퇴
+     *
+     * @return SuccessResponseDto
+     */
+    @BearerToken
+    @POST("customer/me/drop")
+    suspend fun withdrawal(): SuccessResponseDto
 
+    /**
+     * 푸쉬 ID 저장
+     *
+     * @param params DeviceIdRequestDto
+     * @return SuccessResponseDto
+     */
+    @BearerToken
+    @POST("customer/me/device")
+    suspend fun deviceId(@Body params: DeviceIdRequestDto): SuccessResponseDto
+
+    /**
+     * 알림 푸쉬 수락 여부
+     *
+     * @param isActive
+     * @return SuccessResponseDto
+     */
+    @BearerToken
+    @PATCH("customer/me/push/noti")
+    suspend fun fcmNotification(@Body isActive: Boolean): SuccessResponseDto
+
+
+    /**
+     * 광고 푸쉬 수락 여부
+     *
+     * @param isActive
+     * @return SuccessResponseDto
+     */
+    @BearerToken
+    @PATCH("customer/me/push/ad")
+    suspend fun fcmAd(@Body isActive: Boolean): SuccessResponseDto
+
+    /**
+     * 내 정보
+     *
+     * @return MeDto
+     */
+    @BearerToken
+    @GET("customer/me")
+    suspend fun me(): MeDto
+
+    /**
+     * 내 정보 수정
+     *
+     * @param params MeRequestDto
+     * @return MeDto
+     */
+    @BearerToken
+    @PATCH("customer/me")
+    suspend fun me(@Body params: MeRequestDto): MeDto
 
 
     // MARK - News -------------------------------------------------- -------------------------------------------------- --------------------------------------------------

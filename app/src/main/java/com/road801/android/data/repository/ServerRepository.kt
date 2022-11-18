@@ -5,10 +5,7 @@ import com.road801.android.common.Constants.API_VERSION
 import com.road801.android.common.enum.LoginType
 import com.road801.android.data.network.api.Api
 import com.road801.android.data.network.dto.*
-import com.road801.android.data.network.dto.requset.LoginRoadRequestDto
-import com.road801.android.data.network.dto.requset.LoginSNSRequestDto
-import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
-import com.road801.android.data.network.dto.requset.SignupRequestDto
+import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.*
 import com.road801.android.data.network.error.*
 import com.road801.android.data.network.interceptor.TokenException
@@ -166,20 +163,19 @@ object ServerRepository {
     }
 
     // 포인트 적립 내역 조회
-    suspend fun pointHistory(params: PaginationDto): CommonListResponseDto<PointHistoryDto> {
+    suspend fun pointHistory(requestDto: PaginationDto): CommonListResponseDto<PointHistoryDto> {
         try {
-            return api.pointHistory(params)
+            return api.pointHistory(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
     }
 
 
-
     // 소식 목록 조회
-    suspend fun news(params: PaginationDto): CommonListResponseDto<NewsDto> {
+    suspend fun news(requestDto: PaginationDto): CommonListResponseDto<NewsDto> {
         try {
-            return api.news(params)
+            return api.news(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -196,9 +192,9 @@ object ServerRepository {
 
 
     // 이벤트 목록 조회
-    suspend fun event(params: PaginationDto): CommonListResponseDto<EventDto> {
+    suspend fun event(requestDto: PaginationDto): CommonListResponseDto<EventDto> {
         try {
-            return api.event(params)
+            return api.event(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -221,5 +217,78 @@ object ServerRepository {
             throw toDomainException(exception)
         }
     }
+
+    // 핸드폰 인증 요청 (로그인 상태)
+    suspend fun phoneAuth(mobileNo: String): PhoneAuthResponseDto {
+        try {
+            return api.phoneAuth(mobileNo)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 핸드폰 인증 확인 및 변경 (로그인 상태)
+    suspend fun phoneAuthConfirm(requestDto: PhoneAuthRequestDto): SuccessResponseDto {
+        try {
+            return api.phoneAuthConfirm(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 회원 탈퇴
+    suspend fun withdrawal(): SuccessResponseDto {
+        try {
+            return api.withdrawal()
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  푸쉬 ID 저장
+    suspend fun deviceId(requestDto: DeviceIdRequestDto): SuccessResponseDto {
+        try {
+            return api.deviceId(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  알림 푸쉬 수락 여부
+    suspend fun fcmNotification(isActive: Boolean): SuccessResponseDto {
+        try {
+            return api.fcmNotification(isActive)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  광고 푸쉬 수락 여부
+    suspend fun fcmAd(isActive: Boolean): SuccessResponseDto {
+        try {
+            return api.fcmAd(isActive)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  내 정보
+    suspend fun me(): MeDto {
+        try {
+            return api.me()
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  내 정보 수정
+    suspend fun me(requestDto: MeRequestDto): MeDto {
+        try {
+            return api.me(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
 
 }

@@ -36,7 +36,11 @@
         android:id="@+id/me_fragment"
         android:name="com.road801.android.view.main.me.MeFragment"
         android:label="MeFragment"
-        tools:layout="@layout/fragment_me"/>
+        tools:layout="@layout/fragment_me">
+        <action
+            android:id="@+id/action_me_fragment_to_withdrawalFragment"
+            app:destination="@id/withdrawalFragment" />
+    </fragment>
     <fragment
         android:id="@+id/newsFragment"
         android:name="com.road801.android.view.main.home.news.NewsFragment"
@@ -80,6 +84,11 @@
             android:name="boardId"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/withdrawalFragment"
+        android:name="com.road801.android.view.main.me.withdrawal.WithdrawalFragment"
+        android:label="WithdrawalFragment"
+        tools:layout="@layout/fragment_withdrawal"/>
 
 
 </navigation>
