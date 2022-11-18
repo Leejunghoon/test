@@ -20,16 +20,15 @@ class NewsRecyclerAdapter(private val items: List<NewsDto>,
     inner class ViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: NewsDto) {
             binding.itemEventTitleTextView.text = item.title
-            binding.itemEventSubTextView.text = item.subtitle
-            binding.itemEventDateTextView.text = item.date.formatted("yyyy.MM.dd")
+            binding.itemEventSubTextView.visibility = View.GONE
+            binding.itemEventDateTextView.text = item.writeDt.formatted("yyyy.MM.dd")
 
-            item.iconUrl.isNullOrEmpty().not().apply {
+            if(item.thumbnail.isNullOrEmpty().not()) {
                 binding.itemEventImageView.visibility = View.VISIBLE
                 Glide.with(binding.itemEventImageView.context)
-                    .load(item.iconUrl)
+                    .load(item.thumbnail)
                     .into(binding.itemEventImageView)
             }
-
 
             itemView.setOnClickListener {
                 onClick?.invoke(item)

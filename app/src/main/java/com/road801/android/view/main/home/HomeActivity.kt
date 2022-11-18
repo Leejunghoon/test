@@ -2,7 +2,9 @@ package com.road801.android.view.main.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -67,5 +69,6 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
 
 }

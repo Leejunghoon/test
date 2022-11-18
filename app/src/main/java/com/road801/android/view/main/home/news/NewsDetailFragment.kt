@@ -9,9 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.road801.android.common.util.extension.margin
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.NewsDetailDto
-import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.FragmentNewsDetailBinding
 import com.road801.android.domain.transfer.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -80,11 +80,15 @@ class NewsDetailFragment: Fragment() {
     }
 
     private fun bindNewsDetail(item: NewsDetailDto) {
-        binding.newDetailTitleTextView.text = item.subtitle
+        binding.newDetailTitleTextView.text = item.title
         binding.newDetailContentTextView.text = item.content
 
-        Glide.with(requireContext())
-            .load(item.image)
-            .into(binding.newDetailImageView)
+
+        if (item.image.isNullOrEmpty().not()) {
+            Glide.with(requireContext())
+                .load(item.image)
+                .centerCrop()
+                .into(binding.newDetailImageView)
+        }
     }
 }

@@ -17,7 +17,7 @@
             android:id="@+id/appCompatImageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,50 +26,24 @@
 
 
         <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
+            android:id="@+id/dialog_event_title_text_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Welcome!"
-            android:textColor="#24242c"
-            android:textSize="21dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/secondary_color"
+            android:textSize="20dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/dialog_event_full_confirm_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatImageView2" />
 
-        <TextView
-            android:id="@+id/event_point_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="0P 적립 완료!"
-            android:textColor="@color/secondary_color"
-            android:textSize="21dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="적립된 웰컴 포인트로 세차도 하시고\n카페도 둘러보시고 즐거운 시간 보내세요!"
-            android:textColor="#24242c"
-            android:textSize="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/dialog_full_confirm_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/event_point_text_view" />
-
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/dialog_full_confirm_button"
+            android:id="@+id/dialog_event_full_confirm_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/round_solid_enabled"

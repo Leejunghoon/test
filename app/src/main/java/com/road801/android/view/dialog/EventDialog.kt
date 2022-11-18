@@ -25,7 +25,6 @@ class EventDialog : DialogFragment() {
 
     var title = ""
     var message = ""
-    var confirmButtonTitle: String? = null
     var onClickListener: OnDialogListener? = null
     private var _binding: DialogEventBinding? = null
     private val binding get() = _binding!!
@@ -56,8 +55,8 @@ class EventDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.dialogFullConfirmButton.text = confirmButtonTitle
-        binding.dialogFullConfirmButton.setOnClickListener {
+        binding.dialogEventTitleTextView.text = title
+        binding.dialogEventFullConfirmButton.setOnClickListener {
             onClickListener?.onConfirm()
             dismissAllowingStateLoss()
         }

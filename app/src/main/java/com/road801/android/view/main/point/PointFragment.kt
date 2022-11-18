@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,7 +15,10 @@ import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
 import com.road801.android.data.network.dto.EventDto
 import com.road801.android.data.network.dto.PointHistoryDto
+import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.response.CommonListResponseDto
+import com.road801.android.data.network.dto.response.HomeResponseDto
+import com.road801.android.data.network.error.DomainException
 import com.road801.android.databinding.FragmentPointBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.main.home.HomeViewModel
@@ -30,7 +34,7 @@ class PointFragment : Fragment() {
 
     private lateinit var binding: FragmentPointBinding
     private val viewModel: PointViewModel by viewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +48,6 @@ class PointFragment : Fragment() {
         binding = FragmentPointBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        initView()
         bindViewModel()
         return binding.root
     }
@@ -54,9 +57,9 @@ class PointFragment : Fragment() {
 
     }
 
-    private fun initView() {
-        binding.pointGradeTextView.text = "${homeViewModel.userGrade.value} 등급"
-        binding.pointPointTextView.text = "${homeViewModel.userPoint.value?.currency} P"
+    private fun setUserInfo(grade: String, point: Int) {
+        binding.pointGradeTextView.text = "$grade 등급"
+        binding.pointPointTextView.text = "${point.currency} P"
     }
 
     private fun setupRecyclerView(items: List<PointHistoryDto>) {
@@ -84,6 +87,20 @@ class PointFragment : Fragment() {
                             message = it.exception.domainErrorSubMessage
                         )
                     }
+                }
+            }
+        }
+
+        homeViewModel.homeInfo.observe(viewLifecycleOwner) { result ->
+            when (result.peekContent()) {
+                is Resource.Loading -> {}
+                is Resource.Success -> {
+                    val it = (result.peekContent() as Resource.Success<HomeResponseDto>).data
+                    val grade = it.customerInfo.rating.value
+                    val point = it.pointInfo.point
+                    setUserInfo(grade, point)
+                }
+                is Resource.Failure -> {
                 }
             }
         }

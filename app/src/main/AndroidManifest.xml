@@ -38,8 +38,7 @@
 
         <activity
             android:name=".view.main.home.HomeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
 
 
         <!-- 카카오 -->

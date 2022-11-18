@@ -50,11 +50,20 @@ fun bindNavigateUp(toolbar: Toolbar, listener: View.OnClickListener) {
 
 
 fun String.formatted(pattern: String): String {
-    val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
-    val date = SimpleDateFormat(DATE_FORMAT, Locale.KOREA).parse(this)
-    val dateFormat = SimpleDateFormat(pattern, Locale.KOREA)
-    date?.let {
-        return dateFormat.format(it)
+    try {
+        val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
+        val date = SimpleDateFormat(DATE_FORMAT, Locale.KOREA).parse(this)
+        val dateFormat = SimpleDateFormat(pattern, Locale.KOREA)
+        date?.let {
+            return dateFormat.format(it)
+        }
+    } catch (e: Exception) {
+        val DATE_FORMAT = "yyyy-MM-dd"
+        val date = SimpleDateFormat(DATE_FORMAT, Locale.KOREA).parse(this)
+        val dateFormat = SimpleDateFormat(pattern, Locale.KOREA)
+        date?.let {
+            return dateFormat.format(it)
+        }
     }
     return "Failed convert date to string"
 }

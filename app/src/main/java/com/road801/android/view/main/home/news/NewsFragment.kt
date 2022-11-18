@@ -84,8 +84,7 @@ class NewsFragment : Fragment() {
     private fun setupRecyclerView(items: List<NewsDto>) {
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
-
-        binding.recyclerView.adapter = NewsRecyclerAdapter(items) {
+        binding.recyclerView.adapter = NewsRecyclerAdapter(items.sortedBy { it.id }) {
             // item onClick
             findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
         }

@@ -14,5 +14,5 @@ enum class PointType  {
             EARN -> "충전"
             EARN_CANCEL -> "충전취소"
         }
-        set(value) = TODO()
+        private set(value) = TODO()
 }

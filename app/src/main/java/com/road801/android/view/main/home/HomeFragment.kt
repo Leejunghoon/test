@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -16,11 +17,15 @@ import com.road801.android.R
 import com.road801.android.common.util.extension.*
 import com.road801.android.common.util.transformer.ZoomOutPageTransformer
 import com.road801.android.data.network.dto.EventDto
+import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.data.network.dto.response.HomeEventResponseDto
 import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.dialog.EventDialog
+import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.home.adapter.HomeEventPagerAdapter
+import com.road801.android.view.main.home.adapter.HomeNewsPagerAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -28,9 +33,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel: HomeViewModel by viewModels()
+    private val viewModel: HomeViewModel by activityViewModels()
 
-    private lateinit var newsPagerAdapter: HomeEventPagerAdapter
+    private lateinit var newsPagerAdapter: HomeNewsPagerAdapter
     private lateinit var eventPagerAdapter: HomeEventPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +67,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initPager() {
-        newsPagerAdapter = HomeEventPagerAdapter()
+        newsPagerAdapter = HomeNewsPagerAdapter()
         eventPagerAdapter = HomeEventPagerAdapter()
 
         binding.homeNewsViewPager.adapter = newsPagerAdapter
@@ -80,9 +85,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupPager(items: List<EventDto>) {
-        newsPagerAdapter.setItems(items)
-        eventPagerAdapter.setItems(items)
+    private fun setupPager(news: List<NewsDto>, events: List<EventDto>) {
+        newsPagerAdapter.setItems(news)
+        eventPagerAdapter.setItems(events)
     }
 
     private fun bindViewModel() {
@@ -94,7 +99,6 @@ class HomeFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        Log.d("hoon", """bindHomeInfo""")
                         bindHomeInfo(it.data)
                     }
                     is Resource.Failure -> {
@@ -114,7 +118,7 @@ class HomeFragment : Fragment() {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         bindHomeEventInfo(it.data)
-                        Log.d("hoon", """bindHomeEventInfo""")
+                        showEventPopup(it.data.popup)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -129,24 +133,18 @@ class HomeFragment : Fragment() {
     }
 
     private fun setListener() {
-
         // 소식
         binding.homeNewsContainer.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
         }
-
         // 소식 더보기
         binding.homeRoadNewsMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
         }
-
         // 이벤트 더보기
         binding.homeRoadEventMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment())
         }
-
-
-
         // QR, 바코드 선택
         binding.homeSegmentRadioGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             when (checkedId) {
@@ -212,19 +210,17 @@ class HomeFragment : Fragment() {
             append(" 회원님!")
         }
 
-        with(user.profileImage){
-            if (!this.isNullOrEmpty()) {
-                Glide.with(requireContext())
-                    .load(this)
-                    .placeholder(R.drawable.ic_profile)
-                    .error(R.drawable.ic_profile)
-                    .circleCrop()
-                    .into(binding.homeProfileImageView)
-            }
+        if (user.profileImage.isNullOrEmpty().not()) {
+            Glide.with(requireContext())
+                .load(user.profileImage)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .circleCrop()
+                .into(binding.homeProfileImageView)
         }
 
         binding.homeGradeTextView.text = buildString {
-            append(user.rating.code)
+            append(user.rating.value)
             append(" 회원님")
         }
 
@@ -246,7 +242,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindHomeEventInfo(item: HomeEventResponseDto) {
-        setupPager(item.eventList)
+        setupPager(item.boardList, item.eventList)
     }
 
     private fun showNewsBanner() {
@@ -254,6 +250,20 @@ class HomeFragment : Fragment() {
             visibility = View.VISIBLE
             binding.homeNewsRedDot.visibility = View.VISIBLE
             startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.floating))
+        }
+    }
+
+    private fun showEventPopup(item: EventDto?) {
+        item?.let {
+            val dialog = EventDialog()
+            dialog.title = it.title
+            dialog.onClickListener = object : EventDialog.OnDialogListener {
+                override fun onConfirm() {
+                    
+                }
+            }
+            dialog.show(parentFragmentManager, "showEventDialog")
+
         }
     }
 
