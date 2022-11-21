@@ -9,6 +9,7 @@ import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.data.network.dto.PaginationDto
 import com.road801.android.data.network.dto.response.CommonListResponseDto
 import com.road801.android.data.network.error.DomainException
+import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
@@ -39,6 +40,7 @@ class NewsViewModel @Inject constructor() : ViewModel() {
                     sort = emptyList()
                     ))
                 _newsInfo.value = Event(Resource.Success(result))
+                LocalDatabase.saveNewsSize(result.total)
             } catch (domainException: DomainException) {
                 _newsInfo.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {

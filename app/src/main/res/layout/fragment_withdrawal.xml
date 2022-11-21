@@ -50,13 +50,13 @@
                 android:text="@string/withdrawal_message"
                 android:textColor="@color/black"
                 android:textSize="14dp"
-                app:layout_constraintBottom_toTopOf="@+id/materialCheckBox"
+                app:layout_constraintBottom_toTopOf="@+id/withdrawal_agree_check_box"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/materialCheckBox"
+                android:id="@+id/withdrawal_agree_check_box"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="위 탈퇴 약관에 모두 동의합니다."
@@ -68,7 +68,9 @@
                 android:id="@+id/next_button"
                 style="@style/RoadButtonStyle"
                 android:layout_width="match_parent"
+                android:enabled="false"
                 android:text="회원탈퇴 요청하기"
+                android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />

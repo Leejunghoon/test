@@ -4,6 +4,7 @@ import com.road801.android.data.network.dto.*
 import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.*
 import com.road801.android.data.network.interceptor.BearerToken
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface Api {
@@ -95,7 +96,6 @@ interface Api {
     suspend fun login(@Body params: LoginRoadRequestDto): LoginResponseDto
 
 
-
     // MARK - HOME --------------------------------------------------- -------------------------------------------------- --------------------------------------------------
 
     @BearerToken
@@ -105,7 +105,6 @@ interface Api {
     @BearerToken
     @GET("customer/home/event")
     suspend fun homeEvent(): HomeEventResponseDto
-
 
 
     // MARK - Point -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
@@ -150,7 +149,7 @@ interface Api {
      */
     @BearerToken
     @POST("customer/me/drop")
-    suspend fun withdrawal(): SuccessResponseDto
+    suspend fun withdrawal(@Body params: WithdrawalRequestDto): SuccessResponseDto
 
     /**
      * 푸쉬 ID 저장
@@ -202,6 +201,18 @@ interface Api {
     @PATCH("customer/me")
     suspend fun me(@Body params: MeRequestDto): MeDto
 
+    /**
+     * 프로필 사진 업로드 및 수정
+     *
+     * @param image
+     * @return UploadFileResponseDto
+     */
+    @BearerToken
+    @Multipart
+    @POST("customer/me/profileImage")
+    suspend fun uploadProfileImage(@Part image: MultipartBody.Part): UploadFileResponseDto
+
+
 
     // MARK - News -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
 
@@ -226,6 +237,25 @@ interface Api {
     suspend fun newsDetail(@Path("boardId") boardId: Int): NewsDetailDto
 
 
+    /**
+     * 매장 목록 조회
+     *
+     * @param params PaginationDto
+     * @return CommonListResponseDto<StoreDto>
+     */
+    @BearerToken
+    @GET("customer/store")
+    suspend fun store(@Query("pageable") params: PaginationDto): CommonListResponseDto<StoreDto>
+
+    /**
+     * 매장 상세 조회
+     *
+     * @param storeId
+     * @return StoreDetailDto
+     */
+    @BearerToken
+    @GET("customer/store/{storeId}")
+    suspend fun storeDetail(@Path("storeId") storeId: Int): StoreDetailDto
 
 
     // MARK - Event -------------------------------------------------- -------------------------------------------------- --------------------------------------------------

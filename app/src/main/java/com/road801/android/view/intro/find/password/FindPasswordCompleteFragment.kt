@@ -28,12 +28,13 @@ class FindPasswordCompleteFragment : Fragment() {
     ): View? {
         binding = FragmentFindPasswordCompleteBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        setupListener()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListener()
+
     }
 
 

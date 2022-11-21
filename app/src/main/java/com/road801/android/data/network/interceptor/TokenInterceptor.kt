@@ -23,7 +23,7 @@ object TokenInterceptor : Interceptor {
                 findBearerTokenAnnotation(request) != null -> {
                     request.newBuilder()
 //                        .addHeader(HEADER_AUTHORIZATION_KEY, "Bearer ${TokenDatabase.fetchAccessToken()}")
-                        .addHeader(HEADER_AUTHORIZATION_KEY, "${TokenDatabase.fetchAccessToken()}")
+                        .addHeader(HEADER_AUTHORIZATION_KEY, "${LocalDatabase.fetchAccessToken()}")
                         .addHeader(HEADER_X_REQUEST_TO, HEADER_X_REQUEST_TO_VALUE)
                         .build()
                 }

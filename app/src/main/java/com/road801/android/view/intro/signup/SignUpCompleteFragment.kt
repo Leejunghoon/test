@@ -14,7 +14,6 @@ import com.road801.android.common.enum.SignupType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
-import com.road801.android.data.network.interceptor.TokenDatabase
 import com.road801.android.databinding.FragmentSignUpCompleteBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.intro.IntroViewModel
@@ -42,6 +41,8 @@ class SignUpCompleteFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpCompleteBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        setListener()
         return binding.root
     }
 
@@ -49,7 +50,7 @@ class SignUpCompleteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         bindViewModel()
-        setListener()
+
     }
 
     private fun bindViewModel() {

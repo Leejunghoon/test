@@ -34,9 +34,10 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/next_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appbar">
@@ -99,9 +100,9 @@
 
                 <TextView
                     android:id="@+id/event_detail_content_text_view"
-                    android:layout_marginTop="@dimen/_32dp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_32dp"
                     android:textColor="@color/black"
                     android:textSize="14dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -109,8 +110,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/next_button"
+            style="@style/RoadButtonStyle"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/_20dp"
+            android:text="이벤트 참여하기"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

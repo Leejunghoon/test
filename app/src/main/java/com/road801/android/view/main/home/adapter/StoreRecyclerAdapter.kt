@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.road801.android.common.util.extension.formatted
-import com.road801.android.data.network.dto.NewsDto
+import com.road801.android.data.network.dto.StoreDto
 import com.road801.android.databinding.ItemEventBinding
 
-class NewsRecyclerAdapter(private val items: List<NewsDto>,
-                           private val onClick: ((item: NewsDto) -> Unit)? = null): RecyclerView.Adapter<NewsRecyclerAdapter.ViewHolder>() {
+class StoreRecyclerAdapter(private val items: List<StoreDto>,
+                          private val onClick: ((item: StoreDto) -> Unit)? = null): RecyclerView.Adapter<StoreRecyclerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(ItemEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -19,10 +18,9 @@ class NewsRecyclerAdapter(private val items: List<NewsDto>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
 
     inner class ViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: NewsDto) {
-            binding.itemEventTitleTextView.text = item.title
+        fun bind(item: StoreDto) {
+            binding.itemEventTitleTextView.text = item.name
             binding.itemEventSubTextView.visibility = View.GONE
-            binding.itemEventDateTextView.text = item.writeDt.formatted("yyyy.MM.dd")
 
             if(item.thumbnail.isNullOrEmpty().not()) {
                 binding.itemEventImageView.visibility = View.VISIBLE

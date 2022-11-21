@@ -20,14 +20,12 @@ import com.road801.android.common.util.extension.hideKeyboard
 import com.road801.android.common.util.extension.showCalendar
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.validator.RoadValidator
-import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
 import com.road801.android.databinding.FragmentSignUpInfoInputBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.intro.IntroViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.collections.ArrayList
 
 /**
  * MARK: - 회원가입  [회원 정보 추가 입력]
@@ -41,7 +39,6 @@ class SignUpInfoInputFragment : Fragment() {
     private val args: SignUpInfoInputFragmentArgs by navArgs()
     private lateinit var signupRequestDto: SignupRequestDto
 
-
     private lateinit var countDownTimer: CountDownTimer
     private val MAX_MINUTE = 1L
     private val MAX_VALID_TIME: Long = MAX_MINUTE * 60000 // MAX_MINUTE to millisecond
@@ -53,16 +50,17 @@ class SignUpInfoInputFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpInfoInputBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        initView()
+        setupListener()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
-        bindViewModel()
-        setupListener()
         setupCountDownTimer(1000)
+        bindViewModel()
     }
 
     private fun initView() {

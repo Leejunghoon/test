@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@color/white"
-            app:layout_constraintBottom_toTopOf="@+id/news_detail_reserve_button"
+            app:layout_constraintBottom_toTopOf="@+id/store_detail_reserve_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -37,18 +37,17 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/new_detail_image_view"
+                        android:id="@+id/store_detail_image_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:minHeight="30dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/sample_news" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/new_detail_title_text_view"
+                        android:id="@+id/store_detail_title_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="30dp"
@@ -59,10 +58,10 @@
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/new_detail_image_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/store_detail_image_view" />
 
                     <TextView
-                        android:id="@+id/new_detail_content_text_view"
+                        android:id="@+id/store_detail_content_text_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="30dp"
@@ -72,11 +71,11 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/new_detail_title_text_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/store_detail_title_text_view" />
 
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/new_detail_back_button"
+                        android:id="@+id/store_detail_back_button"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_marginStart="8dp"
@@ -91,14 +90,14 @@
 
 
         <Button
-            android:id="@+id/news_detail_reserve_button"
+            android:id="@+id/store_detail_reserve_button"
             style="@style/RoadButtonStyle"
             android:layout_width="match_parent"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="16dp"
             android:text="예약하기"
-            android:visibility="gone"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

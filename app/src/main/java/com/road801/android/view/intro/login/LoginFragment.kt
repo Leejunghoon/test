@@ -19,7 +19,6 @@ import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.validator.RoadValidator
-import com.road801.android.data.network.interceptor.TokenDatabase
 import com.road801.android.databinding.FragmentLoginBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.intro.IntroViewModel
@@ -44,6 +43,8 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        setupListener()
         return binding.root
     }
 
@@ -51,7 +52,6 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         bindViewModel()
-        setupListener()
     }
 
 

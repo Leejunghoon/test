@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.road801.android.common.util.extension.formatted
 import com.road801.android.data.network.dto.EventDto
 import com.road801.android.databinding.ItemEventBinding
@@ -31,6 +32,7 @@ class EventRecyclerAdapter(private val items: List<EventDto>,
             item.image?.let {
                 Glide.with(binding.itemEventImageView.context)
                     .load(it)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.itemEventImageView)
             }
 

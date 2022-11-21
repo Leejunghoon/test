@@ -29,6 +29,7 @@ class RoadDialog : DialogFragment() {
     var cancelButtonTitle: String? = null
     var confirmButtonTitle: String? = null
     var onClickListener: OnDialogListener? = null
+    var isCanceledOnTouchOutside = false
     private var _binding: DialogRaodBinding? = null
     private val binding get() = _binding!!
 
@@ -41,7 +42,8 @@ class RoadDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCanceledOnTouchOutside(false)
+        dialog.setCanceledOnTouchOutside(isCanceledOnTouchOutside)
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
         dialog.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
                 onClickListener?.onCancel()

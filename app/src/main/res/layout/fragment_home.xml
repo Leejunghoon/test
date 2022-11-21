@@ -235,6 +235,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="5dp"
+                            android:visibility="invisible"
                             app:srcCompat="@drawable/ic_red_dot" />
 
                     </RelativeLayout>
@@ -249,6 +250,7 @@
                         android:text="새로운 소식들이 있어요!"
                         android:textColor="@color/white"
                         android:textSize="10dp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toTopOf="@+id/home_news_container"
                         app:layout_constraintEnd_toStartOf="@+id/home_news_container"
                         app:layout_constraintTop_toTopOf="@+id/home_news_container" />

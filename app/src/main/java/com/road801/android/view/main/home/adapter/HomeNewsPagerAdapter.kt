@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.road801.android.common.util.extension.formatted
 import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.ItemHomeEventBinding
@@ -37,6 +38,7 @@ class HomeNewsPagerAdapter(private val onClick: ((item: NewsDto) -> Unit)? = nul
             item.thumbnail?.let {
                 Glide.with(binding.itemHomeEventImageView.context)
                     .load(it)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.itemHomeEventImageView)
             }
 

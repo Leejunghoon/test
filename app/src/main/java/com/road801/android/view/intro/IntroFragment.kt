@@ -24,8 +24,6 @@ import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.UserDto
-import com.road801.android.data.network.interceptor.TokenDatabase
-import com.road801.android.data.repository.LocalRepository
 import com.road801.android.databinding.FragmentIntroBinding
 import com.road801.android.domain.transfer.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +37,7 @@ class IntroFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        registerForActivityResult()
     }
 
     override fun onCreateView(
@@ -47,15 +46,14 @@ class IntroFragment : Fragment() {
     ): View? {
         binding = FragmentIntroBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        initView()
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        registerForActivityResult()
-
-        initView()
         bindViewModel()
     }
 

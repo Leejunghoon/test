@@ -36,6 +36,8 @@ class NewsFragment : Fragment() {
         binding = FragmentNewsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        initView()
+        setListener()
         return binding.root
     }
 
@@ -43,8 +45,6 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
-        setListener()
         bindViewModel()
 
     }
@@ -82,11 +82,14 @@ class NewsFragment : Fragment() {
     }
 
     private fun setupRecyclerView(items: List<NewsDto>) {
+        val SCREEN_STORE_GUIDE = -1 // 첫번째 인덱스는 고정 매장안내
+        val sortedItems = items.plusElement(NewsDto(-1, title = "매장 안내", thumbnail = "", writeDt = "", ))
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
-        binding.recyclerView.adapter = NewsRecyclerAdapter(items.sortedBy { it.id }) {
+        binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems.sortedBy { it.id }) {
             // item onClick
-            findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
+            if (it.id == SCREEN_STORE_GUIDE) findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToStoreFragment())
+            else  findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
         }
     }
 

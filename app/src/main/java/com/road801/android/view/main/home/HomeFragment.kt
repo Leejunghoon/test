@@ -11,6 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.zxing.BarcodeFormat
 import com.road801.android.R
@@ -58,7 +59,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
-        showNewsBanner()
     }
 
     private fun initView() {
@@ -93,6 +93,7 @@ class HomeFragment : Fragment() {
     private fun bindViewModel() {
         viewModel.requestHomeInfo()
         viewModel.requestHomeEventInfo()
+        viewModel.findNews()
 
         viewModel.homeInfo.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
@@ -119,6 +120,24 @@ class HomeFragment : Fragment() {
                     is Resource.Success -> {
                         bindHomeEventInfo(it.data)
                         showEventPopup(it.data.popup)
+                    }
+                    is Resource.Failure -> {
+                        showDialog(
+                            parentFragmentManager,
+                            title = it.exception.domainErrorMessage,
+                            message = it.exception.domainErrorSubMessage
+                        )
+                    }
+                }
+            }
+        }
+
+        viewModel.isNew.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        showNewsBanner(it.data)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -179,6 +198,7 @@ class HomeFragment : Fragment() {
             this?.let {
                 Glide.with(requireContext())
                     .load(it)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .override(resources.getDimension(R.dimen._200dp).toInt())
                     .into(binding.homeQrImageView)
             }
@@ -192,6 +212,7 @@ class HomeFragment : Fragment() {
              this?.let {
                  Glide.with(requireContext())
                      .load(it)
+                     .transition(DrawableTransitionOptions.withCrossFade())
                      .override( resources.getDimension(R.dimen._300dp).toInt(),
                          resources.getDimension(R.dimen._80dp).toInt())
                      .into(binding.homeBarcodeImageView)
@@ -199,8 +220,6 @@ class HomeFragment : Fragment() {
          }
 //        binding.homeQrImageView.setImageBitmap(qr)
 //        binding.homeBarcodeImageView.setImageBitmap(barcode)
-
-
 
         binding.homeBarcodeTextView.text = user.barcode
 
@@ -213,6 +232,7 @@ class HomeFragment : Fragment() {
         if (user.profileImage.isNullOrEmpty().not()) {
             Glide.with(requireContext())
                 .load(user.profileImage)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .placeholder(R.drawable.ic_profile)
                 .error(R.drawable.ic_profile)
                 .circleCrop()
@@ -245,11 +265,17 @@ class HomeFragment : Fragment() {
         setupPager(item.boardList, item.eventList)
     }
 
-    private fun showNewsBanner() {
+    private fun showNewsBanner(isShow: Boolean) {
         binding.homeNewsBanner.run {
-            visibility = View.VISIBLE
-            binding.homeNewsRedDot.visibility = View.VISIBLE
-            startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.floating))
+            if (isShow) {
+                visibility = View.VISIBLE
+                binding.homeNewsRedDot.visibility = View.VISIBLE
+                startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.floating))
+            } else {
+                visibility = View.INVISIBLE
+                binding.homeNewsRedDot.visibility = View.INVISIBLE
+                clearAnimation()
+            }
         }
     }
 
@@ -259,7 +285,8 @@ class HomeFragment : Fragment() {
             dialog.title = it.title
             dialog.onClickListener = object : EventDialog.OnDialogListener {
                 override fun onConfirm() {
-                    
+                    // 이벤트 상세로 이동
+                    findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(item.id))
                 }
             }
             dialog.show(parentFragmentManager, "showEventDialog")

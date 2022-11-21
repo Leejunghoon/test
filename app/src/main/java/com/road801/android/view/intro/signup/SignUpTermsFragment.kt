@@ -35,12 +35,14 @@ class SignUpTermsFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpTermsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        setupListener()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupListener()
+
     }
 
 

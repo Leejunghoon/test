@@ -1,6 +1,5 @@
 package com.road801.android.view.main.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.road801.android.data.network.dto.response.HomeEventResponseDto
 import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.data.network.error.DomainException
+import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
@@ -27,12 +27,8 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     private var _homeEventInfo = MutableLiveData<Event<Resource<HomeEventResponseDto>>>()
     val homeEventInfo: LiveData<Event<Resource<HomeEventResponseDto>>> = _homeEventInfo
 
-    private var _userGrade = MutableLiveData<String>("")
-    public val userGrade: LiveData<String> = _userGrade
-
-    private var _userPoint = MutableLiveData<Int>(0)
-    public val userPoint: LiveData<Int> = _userPoint
-
+    private var _isNew = MutableLiveData<Event<Resource<Boolean>>>()
+    val isNew: LiveData<Event<Resource<Boolean>>> = _isNew
 
     // 홈 정보 조회
     public fun requestHomeInfo() {
@@ -41,10 +37,6 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                 _homeInfo.value = Event(Resource.Loading)
                 val result = ServerRepository.home()
                 _homeInfo.value = Event(Resource.Success(result))
-
-                _userGrade = MutableLiveData(result.customerInfo.rating.value)
-                _userPoint = MutableLiveData(result.pointInfo.point)
-
             } catch (domainException: DomainException) {
                 _homeInfo.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -67,4 +59,23 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+    //체크 새로운 소식
+    private fun checkNewNews() = LocalDatabase.fetchNewsSize() > LocalDatabase.fetchPreviousNewsSize()
+
+    public fun findNews() {
+        viewModelScope.launch {
+            try {
+                _isNew.value = Event(Resource.Loading)
+                _isNew.value = Event(Resource.Success(checkNewNews()))
+                LocalDatabase.savePreviousNewsSize(LocalDatabase.fetchNewsSize())
+            } catch (domainException: DomainException) {
+                _isNew.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isNew.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+
 }

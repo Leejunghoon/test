@@ -7,25 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.road801.android.R
 import com.road801.android.common.util.extension.currency
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
-import com.road801.android.data.network.dto.EventDto
 import com.road801.android.data.network.dto.PointHistoryDto
-import com.road801.android.data.network.dto.UserDto
-import com.road801.android.data.network.dto.response.CommonListResponseDto
 import com.road801.android.data.network.dto.response.HomeResponseDto
-import com.road801.android.data.network.error.DomainException
 import com.road801.android.databinding.FragmentPointBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.main.home.HomeViewModel
-import com.road801.android.view.main.home.adapter.EventRecyclerAdapter
-import com.road801.android.view.main.home.event.EventDetailFragmentArgs
-import com.road801.android.view.main.home.event.EventFragmentDirections
-import com.road801.android.view.main.home.event.EventViewModel
 import com.road801.android.view.main.point.adapter.PointRecyclerAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,13 +38,12 @@ class PointFragment : Fragment() {
         binding = FragmentPointBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
-        bindViewModel()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        bindViewModel()
     }
 
     private fun setUserInfo(grade: String, point: Int) {

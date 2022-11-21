@@ -38,7 +38,8 @@ class EventDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCanceledOnTouchOutside(false)
+        dialog.window?.attributes?.windowAnimations = R.style.DialogAnimation
+//        dialog.setCanceledOnTouchOutside(false)
 //        dialog.setOnKeyListener { _, keyCode, event ->
 //            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
 //                onClickListener?.onCancel()

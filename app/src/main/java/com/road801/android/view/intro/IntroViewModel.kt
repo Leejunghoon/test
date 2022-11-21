@@ -11,14 +11,13 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.ApiException
 import com.road801.android.BuildConfig
 import com.road801.android.common.enum.LoginType
-import com.road801.android.common.enum.SignupType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
 import com.road801.android.data.network.dto.response.LoginResponseDto
 import com.road801.android.data.network.error.DomainException
-import com.road801.android.data.network.interceptor.TokenDatabase
+import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.data.repository.SnsRepository
 import com.road801.android.domain.transfer.Event
@@ -101,9 +100,9 @@ class IntroViewModel @Inject constructor() : ViewModel() {
      *
      * @param context
      * @param type SnsType
-     * @param googleResultLauncher 구글 로그인 콜백. (추후 카카오도 사용할 수 있음)
+     * @param activityResultLauncher 구글 로그인 콜백. (추후 카카오도 사용할 수 있음)
      */
-    public fun requestSnsLogin(context: Context, type: LoginType, googleResultLauncher: ActivityResultLauncher<Intent>? = null) {
+    public fun requestSnsLogin(context: Context, type: LoginType, activityResultLauncher: ActivityResultLauncher<Intent>? = null) {
         _signupUser.value = Event(Resource.Loading)
 
         viewModelScope.launch {
@@ -131,7 +130,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                 }
 
                 LoginType.GOOGLE -> {
-                    googleResultLauncher?.let {
+                    activityResultLauncher?.let {
                         SnsRepository.googleLogin(context, it)
                     }
                 }
@@ -201,7 +200,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
 
                 if (loginType == LoginType.ROAD801) {
                     // 로그인 정보 저장
-                    TokenDatabase.saveAccessToken(
+                    LocalDatabase.saveAccessToken(
                         loginType = LoginType.ROAD801,
                         id = id,
                         pw = pw,
@@ -209,7 +208,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                     )
                 } else {
                     // 로그인 정보 저장
-                    TokenDatabase.saveAccessToken(
+                    LocalDatabase.saveAccessToken(
                         loginType = loginType,
                         id = id,
                         pw = null,

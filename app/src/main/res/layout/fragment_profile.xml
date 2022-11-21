@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.main.me.profile.ProfileFragment">
+
+        <!-- APP BAR -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:textSize="16dp"
+                app:navigationIcon="@drawable/ic_back"
+                app:title="프로필 수정"
+                app:titleCentered="true" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/next_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_20dp">
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/profile_image_button"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:background="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_image_button"
+                    app:layout_constraintEnd_toEndOf="@+id/profile_image_button"
+                    app:layout_constraintStart_toEndOf="@+id/profile_image_button"
+                    app:srcCompat="@drawable/ic_camera" />
+
+
+                <!--사용자 ID GONE -->
+
+                <!--사용자 이름-->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/profile_name_text_input_layout"
+                    style="@style/TextInputLayoutStyle"
+                    android:layout_marginTop="40dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_image_button">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/profile_name_edit_text"
+                        style="@style/TextInputEditTextStyle"
+                        android:hint="사용자 이름"
+                        android:inputType="text"
+                        android:maxLength="20" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                <!--생년월일-->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/profile_birth_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_name_text_input_layout">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/profile_birth_text_input_layout"
+                        style="@style/TextInputLayoutStyle"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/profile_segment_radio_group"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/profile_birth_edit_text"
+                            style="@style/TextInputEditTextStyle"
+                            android:enabled="false"
+                            android:hint="생년월일" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/profile_calendar_button"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@android:color/transparent"
+                        app:layout_constraintBottom_toBottomOf="@+id/profile_birth_text_input_layout"
+                        app:layout_constraintEnd_toEndOf="@+id/profile_birth_text_input_layout"
+                        app:layout_constraintStart_toStartOf="@+id/profile_birth_text_input_layout"
+                        app:layout_constraintTop_toTopOf="@+id/profile_birth_text_input_layout" />
+
+                    <!-- 성별 토글 -->
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/profile_segment_radio_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <Button
+                            android:id="@+id/profile_segment_gender_m"
+                            style="@style/ToggleButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:text="남" />
+
+                        <Button
+                            android:id="@+id/profile_segment_gender_f"
+                            style="@style/ToggleButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:text="여" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--전화번호 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/profile_phone_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_birth_container">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/profile_phone_text_input_layout"
+                        style="@style/TextInputLayoutStyle"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/profile_request_cert_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/profile_phone_edit_text"
+                            style="@style/TextInputEditTextStyle"
+                            android:hint="전화번호"
+                            android:inputType="number"
+                            android:maxLength="13" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <Button
+                        android:id="@+id/profile_request_cert_button"
+                        style="@style/RoadButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="인증요청"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/profile_phone_text_input_layout" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!--인증번호 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/profile_phone_auth_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_phone_container">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/profile_cert_text_input_layout"
+                        style="@style/TextInputLayoutStyle"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/profile_confirm_cert_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/profile_cert_edit_text"
+                            style="@style/TextInputEditTextStyle"
+                            android:hint="인증번호"
+                            android:inputType="number"
+                            android:maxLength="6" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <Button
+                        android:id="@+id/profile_confirm_cert_button"
+                        style="@style/RoadButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="인증받기"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/profile_password_change_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:textColor="@color/primary"
+                    android:background="@color/white"
+                    android:text="비밀번호 재설정"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profile_phone_auth_container" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
+        <Button
+            android:id="@+id/next_button"
+            style="@style/RoadButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/_20dp"
+            android:text="수정하기"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

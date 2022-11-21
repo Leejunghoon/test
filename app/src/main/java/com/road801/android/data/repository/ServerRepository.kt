@@ -1,8 +1,11 @@
 package com.road801.android.data.repository
 
+import android.net.Uri
 import com.road801.android.common.Constants
 import com.road801.android.common.Constants.API_VERSION
+import com.road801.android.common.GlobalApplication
 import com.road801.android.common.enum.LoginType
+import com.road801.android.common.util.extension.asMultipart
 import com.road801.android.data.network.api.Api
 import com.road801.android.data.network.dto.*
 import com.road801.android.data.network.dto.requset.*
@@ -190,6 +193,24 @@ object ServerRepository {
         }
     }
 
+    // 소식 목록 조회
+    suspend fun store(requestDto: PaginationDto): CommonListResponseDto<StoreDto> {
+        try {
+            return api.store(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 소식 상세 조회
+    suspend fun storeDetail(storeId: Int): StoreDetailDto {
+        try {
+            return api.storeDetail(storeId)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
 
     // 이벤트 목록 조회
     suspend fun event(requestDto: PaginationDto): CommonListResponseDto<EventDto> {
@@ -237,9 +258,9 @@ object ServerRepository {
     }
 
     // 회원 탈퇴
-    suspend fun withdrawal(): SuccessResponseDto {
+    suspend fun withdrawal(requestDto: WithdrawalRequestDto): SuccessResponseDto {
         try {
-            return api.withdrawal()
+            return api.withdrawal(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -285,6 +306,15 @@ object ServerRepository {
     suspend fun me(requestDto: MeRequestDto): MeDto {
         try {
             return api.me(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    //  프로필 사진 등록 및 수정
+    suspend fun uploadProfileImage(file: Uri): UploadFileResponseDto {
+        try {
+            return api.uploadProfileImage(file.asMultipart("image", GlobalApplication.instance.contentResolver)!!)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }

@@ -87,5 +87,10 @@
         <item name="backgroundTint">@color/color_selector_button</item>
     </style>
 
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dissolve_in</item>
+        <item name="android:windowExitAnimation">@anim/dissolve_out</item>
+    </style>
+
 
 </resources>
