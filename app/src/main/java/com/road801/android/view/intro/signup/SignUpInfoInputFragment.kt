@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,20 +65,13 @@ class SignUpInfoInputFragment : Fragment() {
     }
 
     private fun initView() {
-        // 버튼 초기 셋팅
-//        binding.signupIdDuplicateButton.isEnabled = false
-        binding.signupRequestCertButton.isEnabled = false
-        binding.signupConfirmCertButton.isEnabled = false
 
         // 성별 기본값: 여자
-        binding.signupSegmentRadioGroup.check(binding.signupSegmentGenderF.id)
+        binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderF.id)
 
         // 로드801 가입인지 SNS 가입인지 여부에 따라 필드 종류 변경.
         if (args.signupType == SignupType.SNS) {
-//            binding.signupInfoIdContainer.visibility = View.GONE
-//            binding.signupInfoNameTextInputLayout.margin(top = 40f)
             binding.signupInfoPasswordTextInputLayout.visibility = View.GONE
-
         }
     }
 
@@ -108,8 +102,7 @@ class SignUpInfoInputFragment : Fragment() {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         if (it.data) {
-                            binding.signupRequestCertButton.isEnabled = false
-                            startCountDown()
+                            startCertification()
                         }
                     }
                     is Resource.Failure -> {
@@ -125,12 +118,13 @@ class SignUpInfoInputFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        checkValidAndNextButtonEnabled()
-                        stopCountDown()
-                        binding.signupRequestCertButton.text = "인증요청"
-                        binding.signupRequestCertButton.isEnabled = true
+                        if(it.data) {
+                            checkValidAndNextButtonEnabled()
+                            endCertification()
+                        }
                     }
                     is Resource.Failure -> {
+                        notValidCertification()
                         showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
                     }
                 }
@@ -169,7 +163,7 @@ class SignUpInfoInputFragment : Fragment() {
             val birthday = binding.signupInfoBirthEditText.text.toString().trim()
             val mobileNo = binding.signupInfoPhoneEditText.text.toString().trim() // equal loginId
             val termAgreeList = args.termsList.toCollection(ArrayList<String>())
-            val gender = if (binding.signupSegmentRadioGroup.checkedButtonId == binding.signupSegmentGenderM.id) {
+            val gender = if (binding.signupInfoSegmentRadioGroup.checkedButtonId == binding.signupInfoSegmentGenderM.id) {
                  GenderType.MALE.name
             } else {
                 GenderType.FEMALE.name
@@ -177,12 +171,13 @@ class SignUpInfoInputFragment : Fragment() {
 
             var snsId: String? = null
             var snsType: String? = null
-            val password: String?
+            var password: String? = null
 
             if (args.signupType == SignupType.SNS) {
-                snsId =  viewModel.getUser().socialId!!
-                snsType = viewModel.getUser().socialType!!
-                password = null
+                viewModel.getUser()?.let {
+                    snsId =  it.socialId!!
+                    snsType = it.socialType!!
+                }
             } else {
                 password = binding.signupInfoPasswordEditText.text.toString().trim()
             }
@@ -209,7 +204,7 @@ class SignUpInfoInputFragment : Fragment() {
 //        }
 
         // 번호 인증 요청
-        binding.signupRequestCertButton.setOnClickListener {
+        binding.signupInfoRequestCertButton.setOnClickListener {
             val spendTime = MAX_MINUTE * 60 - remainTimeSeconds
             if (spendTime < 60) {
                 Snackbar.make(it, "$spendTime 초 후에 다시 시도해주세요.", 1000).show()
@@ -220,7 +215,7 @@ class SignUpInfoInputFragment : Fragment() {
         }
 
         // 번호 인증 확인
-        binding.signupConfirmCertButton.setOnClickListener {
+        binding.signupInfoConfirmCertButton.setOnClickListener {
             val mobileNo = binding.signupInfoPhoneEditText.text.toString().trim()
             val authValue = binding.signupInfoCertEditText.text.toString().trim()
             viewModel.requestPhoneAuthConfirm(mobileNo, authValue)
@@ -234,23 +229,6 @@ class SignUpInfoInputFragment : Fragment() {
                 checkValidAndNextButtonEnabled()
             }
         }
-
-//        // 아이디
-//        binding.signupInfoIdEditText.addTextChangedListener(object: TextWatcher {
-//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            }
-//
-//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//                val text = p0.toString().trim()
-//                isCheckDuplicateId = false  // 아이디 중복 체크 초기화
-//                binding.signupIdDuplicateButton.isEnabled = validate(text, binding.signupInfoIdTextInputLayout)
-//                checkValidAndNextButtonEnabled()
-//            }
-//
-//            override fun afterTextChanged(p0: Editable?) {
-//            }
-//
-//        })
 
         // 비밀번호
         binding.signupInfoPasswordEditText.addTextChangedListener(object: TextWatcher {
@@ -291,7 +269,7 @@ class SignUpInfoInputFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                binding.signupRequestCertButton.isEnabled = validate(text, binding.signupInfoPhoneTextInputLayout)
+                binding.signupInfoRequestCertButton.isEnabled = validate(text, binding.signupInfoPhoneTextInputLayout)
                 checkValidAndNextButtonEnabled()
             }
 
@@ -307,7 +285,7 @@ class SignUpInfoInputFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                binding.signupConfirmCertButton.isEnabled = validate(text, binding.signupInfoCertTextInputLayout)
+                binding.signupInfoConfirmCertButton.isEnabled = validate(text, binding.signupInfoCertTextInputLayout)
                 checkValidAndNextButtonEnabled()
             }
 
@@ -372,14 +350,7 @@ class SignUpInfoInputFragment : Fragment() {
 
 
     private fun checkValidAndNextButtonEnabled() {
-        var isCompleteCert = false
-        viewModel.isCompleteCert.value?.let {
-            isCompleteCert = try {
-                (it.peekContent() as Resource.Success<Boolean>).data
-            }catch (e: Exception) {
-                false
-            }
-        }
+        val isCompleteCert = viewModel.isCertComplete()
 
         if (args.signupType == SignupType.SNS) {
             binding.nextButton.isEnabled =
@@ -408,15 +379,35 @@ class SignUpInfoInputFragment : Fragment() {
                     remainTimeSeconds = (minutes * 60) + seconds
                 }
                 activity?.runOnUiThread {
-                    binding.signupRequestCertButton.text = getString(R.string.valid_time, minutes, seconds)
+                    binding.signupInfoRequestCertButton.text = getString(R.string.valid_time, minutes, seconds)
                 }
             }
 
             override fun onFinish() {
-                binding.signupRequestCertButton.text = "인증요청"
-                binding.signupRequestCertButton.isEnabled = true
+                endCertification()
             }
         }
+    }
+
+    // 인증번호 검증 시작
+    private fun startCertification() {
+        binding.signupInfoPhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
+        binding.signupInfoRequestCertButton.isEnabled = false // 요청버튼 비활성화
+        binding.signupInfoCertEditText.text = null            // 인증번호 초기화
+        startCountDown()
+    }
+
+    // 유효하지 않은 인증번호
+    private fun notValidCertification() {
+        viewModel.resetCert()
+    }
+
+    // 인증번호 검증 완료 및 시간 만료
+    private fun endCertification() {
+        binding.signupInfoPhoneCertContainer.visibility = View.GONE   // 인증번호 필드 GONE
+        binding.signupInfoRequestCertButton.text = "인증요청"           // 요청버튼 텍스트 초기화
+        binding.signupInfoRequestCertButton.isEnabled = true          // 요청버튼 활성화
+        stopCountDown()
     }
 
     private fun startCountDown() {
@@ -429,5 +420,12 @@ class SignUpInfoInputFragment : Fragment() {
             remainTimeSeconds = 0L
             countDownTimer.cancel()
         }
+    }
+
+    private fun resetCert() {
+        viewModel.resetCert()
+
+        binding.signupInfoCertEditText.text = null
+        binding.signupInfoConfirmCertButton.isEnabled = false
     }
 }

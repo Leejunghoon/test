@@ -82,8 +82,11 @@ class NewsFragment : Fragment() {
     }
 
     private fun setupRecyclerView(items: List<NewsDto>) {
-        val SCREEN_STORE_GUIDE = -1 // 첫번째 인덱스는 고정 매장안내
-        val sortedItems = items.plusElement(NewsDto(-1, title = "매장 안내", thumbnail = "", writeDt = "", ))
+        val SCREEN_STORE_GUIDE = -1 // 첫번째 인덱스는 매장안내 Fix
+        val sortedItems = items.plusElement(NewsDto(-1, title = "매장 안내",
+            thumbnail = "https://d20d7iuoaqw83y.cloudfront.net/ICON/gas-pump.png",
+            writeDt = "", ))
+
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
         binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems.sortedBy { it.id }) {

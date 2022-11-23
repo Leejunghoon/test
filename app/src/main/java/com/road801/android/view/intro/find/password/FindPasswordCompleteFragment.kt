@@ -5,17 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.databinding.FragmentFindPasswordCompleteBinding
 import com.road801.android.view.dialog.RoadDialog.OnDialogListener
+import com.road801.android.view.main.me.MeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * MARK: - 비밀번호 찾기  [ 완료 ]
  *
  */
+@AndroidEntryPoint
 class FindPasswordCompleteFragment : Fragment() {
     private lateinit var binding: FragmentFindPasswordCompleteBinding
+    private val viewModel: MeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +55,7 @@ class FindPasswordCompleteFragment : Fragment() {
                     }
 
                     override fun onConfirm() {
-                        findNavController().popBackStack()
+                        findNavController().navigate(FindPasswordCompleteFragmentDirections.actionFindPasswordCompleteFragmentToLoginFragment())
                     }
                 })
         }

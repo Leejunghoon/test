@@ -18,6 +18,8 @@ import com.road801.android.common.util.permission.PermissionManager
 import com.road801.android.data.network.dto.StoreDetailDto
 import com.road801.android.databinding.FragmentStoreDetailBinding
 import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.dialog.RoadDialog
+import com.road801.android.view.main.me.withdrawal.WithdrawalReasonFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -64,16 +66,29 @@ class StoreDetailFragment : Fragment() {
 
         binding.storeDetailReserveButton.setOnClickListener {
             if (permissionManager.hasPermission(this, Manifest.permission.CALL_PHONE).not()) {
-                goToSystemSettingActivity()
+                showDialog(
+                    parentFragmentManager,
+                    title = "권한 알림",
+                    "로드801 설정에서 전화 권한을 수락해주세요.",
+                    cancelButtonTitle = "거부하기",
+                    confirmButtonTitle = "설정하기",
+                    listener = object : RoadDialog.OnDialogListener {
+                        override fun onCancel() {
+                        }
+
+                        override fun onConfirm() {
+                            goToSystemSettingActivity()
+                        }
+                    }
+                )
+
             } else {
                 permissionManager
                     .request(Permission.Call)
                     .rationale("전화 걸기 권한이 필요합니다.")
                     .checkDetailedPermission { result ->
                         if (result.all { it.value }) {
-                            startActivity(
-                                Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.getTel()}"))
-                            )
+                            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.getTel()}")))
                         }
                     }
             }

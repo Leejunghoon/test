@@ -92,7 +92,7 @@ class EventDetailFragment: Fragment() {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
                         showDialog(parentFragmentManager, title = "이벤트 참여 완료!",
-                            message = "${it.data.point.currency}P 획득",
+                            message = "${it.data.receivedPoint.currency}P 획득",
                             listener = object : RoadDialog.OnDialogListener {
                             override fun onCancel() {
                             }

@@ -56,7 +56,7 @@ class MeRecyclerAdapter(
         ViewHolder(binding.root) {
         fun bind(item: MeDto) {
             binding.itemMeHeaderNameTextView.text = item.name
-            binding.itemMeHeaderEmailTextView.text = item.birthday
+            binding.itemMeHeaderEmailTextView.text = item.mobileNo
 
             item.profileImage?.let {
                 Glide.with(binding.root.context)

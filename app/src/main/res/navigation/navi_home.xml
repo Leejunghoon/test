@@ -30,7 +30,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -58,6 +58,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_me_fragment_to_termsFragment"
+            app:destination="@id/termsFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/newsFragment"
@@ -162,10 +166,32 @@
         android:id="@+id/profileFragment"
         android:name="com.road801.android.view.main.me.profile.ProfileFragment"
         android:label="ProfileFragment"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <argument
             android:name="meDto"
             app:argType="com.road801.android.data.network.dto.MeDto" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/homeBaseWebView"
+        android:name="com.road801.android.view.BaseWebView"
+        tools:layout="@layout/fragment_base_web_view"
+        android:label="BaseWebView" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/termsFragment"
+        android:name="com.road801.android.view.main.me.terms.TermsFragment"
+        android:label="TermsFragment"
+        tools:layout="@layout/fragment_terms">
+        <action
+            android:id="@+id/action_termsFragment_to_homeBaseWebView"
+            app:destination="@id/homeBaseWebView" />
     </fragment>
 
 

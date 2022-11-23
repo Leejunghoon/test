@@ -21,8 +21,8 @@
     <string name="dialog_permission_title">권한 요청</string>
     <string name="dialog_permission_default_message">권한을 수락하시겠습니까?</string>
     <string name="dialog_permission_button_positive">OK</string>
-    <string name="privacy_message">"[<b>필수</b>]" 개인정보 제공에 동의합니다.</string>
-    <string name="use_policy_message">"[<b>필수</b>]" 로드801 서비스 이용 동의</string>
+    <string name="use_policy_message">[<b>필수</b>] 로드801 서비스 이용 동의</string>
+    <string name="privacy_message">[<b>필수</b>] 개인정보 제공에 동의합니다.</string>
     <string name="gps_policy_message">[선택] 위치정보 제공에 동의합니다.</string>
     <string name="marketing_policy_message">[선택] 마케팅 약관에 동의합니다.</string>
 

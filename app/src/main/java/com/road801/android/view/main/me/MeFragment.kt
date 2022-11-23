@@ -1,16 +1,15 @@
 package com.road801.android.view.main.me
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.road801.android.R
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.MeDto
 import com.road801.android.databinding.FragmentMeBinding
@@ -28,6 +27,7 @@ class MeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -85,6 +85,7 @@ class MeFragment : Fragment() {
     private fun bindMe(meDto: MeDto) {
         binding.recyclerView.adapter = MeRecyclerAdapter(this, meDto, getSettingData()) {
             when(it.type) {
+                SettingType.TERMS -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToTermsFragment())
                 SettingType.WITHDRAWAL -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToWithdrawalFragment())
                 else -> {}
             }

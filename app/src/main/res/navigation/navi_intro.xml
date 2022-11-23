@@ -127,9 +127,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="false" />
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/findPasswordFragment"
@@ -142,9 +140,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="false" />
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/findIdCompleteFragment"
@@ -155,5 +151,15 @@
         android:id="@+id/findPasswordCompleteFragment"
         android:name="com.road801.android.view.intro.find.password.FindPasswordCompleteFragment"
         android:label="FindPasswordCompleteFragment"
-        tools:layout="@layout/fragment_find_password_complete" />
+        tools:layout="@layout/fragment_find_password_complete">
+        <action
+            android:id="@+id/action_findPasswordCompleteFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

@@ -96,7 +96,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
 
 
     /**
-     * SNS 로그인 (프레임워크)
+     * SNS 로그인 (모듈)
      *
      * @param context
      * @param type SnsType
@@ -139,11 +139,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    /**
-     * 휴대폰 인증 요청
-     *
-     * @param requestDto PhoneAuthRequestDto
-     */
+    // 휴대폰 인증 요청
     public fun requestPhoneAuth(requestDto: PhoneAuthRequestDto) {
         viewModelScope.launch {
             try {
@@ -159,12 +155,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    /**
-     * 휴대폰 인증 완료
-     *
-     * @param mobileNo
-     * @param authValue
-     */
+    // 휴대폰 인증 완료
     public fun requestPhoneAuthConfirm(mobileNo: String, authValue: String) {
         viewModelScope.launch {
             try {
@@ -182,9 +173,11 @@ class IntroViewModel @Inject constructor() : ViewModel() {
 
     // 소셜 로그인
     public fun requestLogin() {
-        val snsId = getUser().socialId!!
-        val snsType = LoginType.valueOf(getUser().socialType!!)
-        requestLogin(snsType, snsId, null)
+        getUser()?.let {
+            val snsId = it.socialId!!
+            val snsType = LoginType.valueOf(it.socialType!!)
+            requestLogin(snsType, snsId, null)
+        }
     }
 
     // 로드801 로그인
@@ -228,8 +221,8 @@ class IntroViewModel @Inject constructor() : ViewModel() {
 
 
     public fun setSignupUser(userDto: UserDto? = null, error: ApiException? = null) {
-        _signupUser.value = Event(Resource.Loading)
         viewModelScope.launch {
+            _signupUser.value = Event(Resource.Loading)
             if (error == null) {
                 userDto?.let {
                     _signupUser.value = Event(Resource.Success(it))
@@ -240,7 +233,26 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    public fun getUser() : UserDto {
-      return (signupUser.value?.peekContent() as Resource.Success<UserDto>).data
+    public fun getUser() : UserDto? {
+        signupUser.value?.let {
+            return (it.peekContent() as Resource.Success<UserDto>).data
+        }
+        return null
+    }
+
+    // 번호 인증 완료
+    public fun isCertComplete(): Boolean {
+        try {
+            isCompleteCert.value?.let {
+                return (it.peekContent() as Resource.Success<Boolean>).data
+            }
+        } catch (e: Exception) {
+            return false
+        }
+        return false
+    }
+
+    public fun resetCert() {
+        _isCompleteCert.value = Event(Resource.Success(false))
     }
 }

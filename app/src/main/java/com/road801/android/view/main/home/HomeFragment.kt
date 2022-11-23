@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -36,11 +38,15 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by activityViewModels()
 
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
+
     private lateinit var newsPagerAdapter: HomeNewsPagerAdapter
     private lateinit var eventPagerAdapter: HomeEventPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setOnBackPressed()
     }
 
     override fun onCreateView(
@@ -61,6 +67,23 @@ class HomeFragment : Fragment() {
         bindViewModel()
     }
 
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val tempTime = System.currentTimeMillis();
+                    val intervalTime = tempTime - backPressedTime;
+                    if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                        super.setEnabled(false)
+                    } else {
+                        backPressedTime = tempTime;
+                        Toast.makeText(requireContext(), "'뒤로' 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                        return
+                    }
+                }
+            })
+    }
     private fun initView() {
         binding.homeBarcodeTextView.visibility = View.GONE
         binding.homeSegmentRadioGroup.check(binding.homeSegmentQr.id)

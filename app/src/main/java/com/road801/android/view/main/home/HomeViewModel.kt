@@ -60,14 +60,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    //체크 새로운 소식
-    private fun checkNewNews() = LocalDatabase.fetchNewsSize() > LocalDatabase.fetchPreviousNewsSize()
-
     public fun findNews() {
         viewModelScope.launch {
             try {
                 _isNew.value = Event(Resource.Loading)
                 _isNew.value = Event(Resource.Success(checkNewNews()))
+                // 최근 데이터로 저장.
                 LocalDatabase.savePreviousNewsSize(LocalDatabase.fetchNewsSize())
             } catch (domainException: DomainException) {
                 _isNew.value = Event(Resource.Failure(domainException))
@@ -76,6 +74,10 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+
+    //새로운 소식이 있는지 여부
+    private fun checkNewNews() = LocalDatabase.fetchNewsSize() > LocalDatabase.fetchPreviousNewsSize()
 
 
 }

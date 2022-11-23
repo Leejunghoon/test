@@ -7,7 +7,7 @@
         <item name="android:windowMinWidthMinor">80%</item>
     </style>
 
-<!--  TextInputLayout  -->
+    <!--  TextInputLayout  -->
     <style name="TextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -68,12 +68,16 @@
 
     <style name="RoadButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:layout_height">46dp</item>
-        <item name="android:textSize">12dp</item>
+        <item name="android:textSize">16dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="background">@drawable/selector_button</item>
+    </style>
+
+    <style name="RoadSmallButtonStyle" parent="RoadButtonStyle">
+        <item name="android:textSize">12dp</item>
     </style>
 
     <!--머티리얼 버튼 커스텀 스타일-->

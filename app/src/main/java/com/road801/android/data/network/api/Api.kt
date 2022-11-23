@@ -213,6 +213,17 @@ interface Api {
     suspend fun uploadProfileImage(@Part image: MultipartBody.Part): UploadFileResponseDto
 
 
+    /**
+     * 비밀번호 수정
+     *
+     * @param params
+     * @return SuccessResponseDto
+     */
+    @BearerToken
+    @PATCH("customer/me/password")
+    suspend fun changePassword(@Body params: MeRequestDto): SuccessResponseDto
+
+
 
     // MARK - News -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
 

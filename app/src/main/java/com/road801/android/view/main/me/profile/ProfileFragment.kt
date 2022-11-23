@@ -5,31 +5,34 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
-import com.kakao.sdk.user.model.Gender
 import com.road801.android.R
 import com.road801.android.common.enum.GenderType
+import com.road801.android.common.util.extension.hideKeyboard
+import com.road801.android.common.util.extension.showCalendar
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.validator.RoadValidator
-import com.road801.android.data.network.dto.MeDto
+import com.road801.android.data.network.dto.requset.MeRequestDto
+import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.databinding.FragmentProfileBinding
-import com.road801.android.domain.model.SettingType
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.intro.signup.SignUpInfoInputFragmentArgs
-import com.road801.android.view.main.me.MeFragmentDirections
+import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.me.MeViewModel
-import com.road801.android.view.main.me.adapter.MeRecyclerAdapter
+import com.road801.android.view.main.me.withdrawal.WithdrawalReasonFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -72,8 +75,27 @@ class ProfileFragment : Fragment() {
 
 
     private fun initView() {
-        // 버튼 초기 셋팅
-        binding.profileConfirmCertButton.isEnabled = false
+        
+    }
+
+    private fun bindMe() {
+        binding.profileNameEditText.setText(args.meDto.name)
+        binding.profileBirthEditText.setText(args.meDto.birthday)
+        binding.profilePhoneEditText.setText(args.meDto.mobileNo)
+
+        if (GenderType.valueOf(args.meDto.sexType.code) == GenderType.FEMALE){
+            binding.profileSegmentRadioGroup.check(binding.profileSegmentGenderF.id)
+        } else {
+            binding.profileSegmentRadioGroup.check(binding.profileSegmentGenderM.id)
+        }
+
+        args.meDto.profileImage?.let {
+            Glide.with(requireContext())
+                .load(it)
+                .circleCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.profileImageButton)
+        }
 
     }
 
@@ -82,42 +104,205 @@ class ProfileFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        // 수정하기
+        binding.nextButton.setOnClickListener {
+            showDialog(
+                parentFragmentManager,
+                title = "프로필 수정",
+                "수정하신 내용이 반영되어\n프로필이 수정 됩니다.\n\n정말 수정하시겠습니까?",
+                cancelButtonTitle = "수정하기",
+                confirmButtonTitle = "돌아가기",
+                listener = object : RoadDialog.OnDialogListener {
+                    override fun onCancel() {
+                        // 수정하기
+                        val name = binding.profileNameEditText.text.toString().trim()
+                        val birthday = binding.profileBirthEditText.text.toString().trim()
+                        val gender = if (binding.profileSegmentRadioGroup.checkedButtonId == binding.profileSegmentGenderM.id) {
+                            GenderType.MALE.name
+                        } else {
+                            GenderType.FEMALE.name
+                        }
+                        viewModel.modifyMe(MeRequestDto(name, birthday, gender))
+                    }
+
+                    override fun onConfirm() {
+                       // 돌아가기
+                    }
+                }
+            )
+        }
+
+        // 프로필 이미지 수정
+        binding.profileImageButton.setOnClickListener {
+            goToImageFileBrowser()
+        }
+
+        // 비밀번호 재설정 
         binding.profilePasswordChangeButton.setOnClickListener {
-
-        }
-    }
-
-    private fun bindMe() {
-        binding.profileNameEditText.setText(args.meDto.name)
-        binding.profileBirthEditText.setText(args.meDto.name)
-//        binding.profilePhoneEditText.setText(meDto.phone)
-
-        if (GenderType.valueOf(args.meDto.sexType.code) == GenderType.FEMALE){
-            binding.profileSegmentRadioGroup.check(binding.profileSegmentGenderF.id)
-        } else {
-            binding.profileSegmentRadioGroup.check(binding.profileSegmentGenderM.id)
+            //TODO : create pw fragment
         }
 
+        // 이름
+        binding.profileNameEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val text = p0.toString().trim()
+                validate(text, binding.profileNameTextInputLayout)
+                checkValidAndNextButtonEnabled()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        // 전화번호
+        binding.profilePhoneEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val text = p0.toString().trim()
+                binding.profileRequestCertButton.isEnabled = validate(text, binding.profilePhoneTextInputLayout)
+//                checkValidAndNextButtonEnabled()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        // 인증번호
+        binding.profileCertEditText.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val text = p0.toString().trim()
+                binding.profileConfirmCertButton.isEnabled = validate(text, binding.profileCertTextInputLayout)
+//                checkValidAndNextButtonEnabled()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        })
+
+        // 번호 인증 요청
+        binding.profileRequestCertButton.setOnClickListener {
+            val spendTime = MAX_MINUTE * 60 - remainTimeSeconds
+            if (spendTime < 60) {
+                Snackbar.make(it, "$spendTime 초 후에 다시 시도해주세요.", 1000).show()
+                return@setOnClickListener
+            }
+            val mobileNo = binding.profilePhoneEditText.text.toString().trim()
+            viewModel.requestPhoneAuth(mobileNo)
+        }
+
+        // 번호 인증 확인
+        binding.profileConfirmCertButton.setOnClickListener {
+            val mobileNo = binding.profilePhoneEditText.text.toString().trim()
+            val authValue = binding.profileCertEditText.text.toString().trim()
+            viewModel.requestPhoneAuthConfirm(PhoneAuthRequestDto(mobileNo, authValue))
+            hideKeyboard()
+        }
+
+        // 캘린더
+        binding.profileCalendarButton.setOnClickListener {
+            showCalendar { y, m, d ->
+                binding.profileBirthEditText.setText("$y-$m-$d")
+//                checkValidAndNextButtonEnabled()
+            }
+        }
+
     }
 
+    /**
+     * MARK: -------------------------- bindViewModel
+     *
+     */
     private fun bindViewModel() {
-        viewModel.meInfo.observe(viewLifecycleOwner) { result ->
+
+        // 휴대폰 인증 요청
+        viewModel.isRequestCert.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-
+                        if (it.data) {
+                            startCertification()
+                        }
                     }
                     is Resource.Failure -> {
-                        showDialog(
-                            parentFragmentManager,
-                            title = it.exception.domainErrorMessage,
-                            message = it.exception.domainErrorSubMessage
-                        )
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
                     }
                 }
             }
         }
+
+        // 휴대폰 인증 완료
+        viewModel.isCompleteCert.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        // 인증 성공 했을 경우에만 토스트
+                        if (it.data) {
+//                        checkValidAndNextButtonEnabled()
+                            endCertification()
+                            Snackbar.make(binding.root, "휴대폰 번호가 변경되었습니다.", 1000).show()
+                        }
+                    }
+                    is Resource.Failure -> {
+                        notValidCertification()
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
+                }
+            }
+        }
+
+        // 프로필 수정 완료
+        viewModel.isCompleteChange.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        Snackbar.make(binding.root, "프로필 정보가 수정되었습니다.", 1000).show()
+                        findNavController().popBackStack()
+                    }
+                    is Resource.Failure -> {
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
+                }
+            }
+        }
+
+        // 프로필 수정 완료
+        viewModel.uploadFileInfo.observe(viewLifecycleOwner) { result ->
+            result.getContentIfNotHandled()?.let {
+                when (it) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        val uploadFile = it.data
+
+                        Glide.with(requireContext())
+                            .load(uploadFile.previewPath)
+                            .placeholder(R.drawable.ic_profile)
+                            .circleCrop()
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(binding.profileImageButton)
+                        Snackbar.make(binding.root, "프로필 사진이 수정되었습니다.", 1000).show()
+                    }
+                    is Resource.Failure -> {
+                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
+                    }
+                }
+            }
+        }
+
+
     }
 
 
@@ -128,17 +313,6 @@ class ProfileFragment : Fragment() {
         var isValid = false
 
         when (inputLayout) {
-//            binding.profileIdTextInputLayout -> {
-//                emptyMessage = getString(R.string.input_empty_id)
-//                validMessage = getString(R.string.input_valid_id)
-//                isValid = RoadValidator.id(text)
-//            }
-//
-//            binding.profilePasswordTextInputLayout -> {
-//                emptyMessage = getString(R.string.input_empty_pw)
-//                validMessage = getString(R.string.input_valid_pw)
-//                isValid = RoadValidator.password(text)
-//            }
 
             binding.profileNameTextInputLayout -> {
                 emptyMessage = getString(R.string.input_empty_name)
@@ -174,6 +348,10 @@ class ProfileFragment : Fragment() {
         return true
     }
 
+    private fun checkValidAndNextButtonEnabled() {
+        binding.nextButton.isEnabled = !binding.profileNameTextInputLayout.isErrorEnabled
+    }
+
     private fun setupCountDownTimer(interval: Long) {
         countDownTimer = object : CountDownTimer(MAX_VALID_TIME, interval) {
             override fun onTick(millisUntilFinished: Long) {
@@ -183,15 +361,36 @@ class ProfileFragment : Fragment() {
                     remainTimeSeconds = (minutes * 60) + seconds
                 }
                 activity?.runOnUiThread {
-//                    binding.profileRequestCertButton.text = getString(R.string.valid_time, minutes, seconds)
+                    binding.profileRequestCertButton.text = getString(R.string.valid_time, minutes, seconds)
                 }
             }
 
             override fun onFinish() {
-//                binding.profileRequestCertButton.text = "인증요청"
-//                binding.profileRequestCertButton.isEnabled = true
+                endCertification()
             }
         }
+    }
+
+    // 인증번호 검증 시작
+    private fun startCertification() {
+        binding.profilePhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
+        binding.profileRequestCertButton.isEnabled = false // 요청버튼 비활성화
+        binding.profileCertEditText.text = null            // 인증번호 초기화
+        startCountDown()
+    }
+
+    // 유효하지 않은 인증번호
+    private fun notValidCertification() {
+        viewModel.resetCert()
+    }
+
+    // 인증번호 검증 완료 및 시간 만료
+    private fun endCertification() {
+        binding.profilePhoneCertContainer.visibility = View.GONE   // 인증번호 필드 GONE
+        binding.profileRequestCertButton.text = "인증요청"           // 요청버튼 텍스트 초기화
+        binding.profileRequestCertButton.isEnabled = true          // 요청버튼 활성화
+
+        stopCountDown()
     }
 
     private fun startCountDown() {
@@ -206,10 +405,15 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun registerForActivityResult() {
         choseImageActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK && result.data?.data != null) {
-
+                result.data?.let { intent ->
+                    intent.data?.let {
+                        viewModel.uploadImageFile(it)
+                    }
+                }
             }
         }
     }

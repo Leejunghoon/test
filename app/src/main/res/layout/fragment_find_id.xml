@@ -102,7 +102,7 @@
 
                     <Button
                         android:id="@+id/find_id_request_cert_button"
-                        style="@style/RoadButtonStyle"
+                        style="@style/RoadSmallButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="인증요청"
@@ -140,7 +140,7 @@
 
                     <Button
                         android:id="@+id/find_id_cert_button"
-                        style="@style/RoadButtonStyle"
+                        style="@style/RoadSmallButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="인증받기"

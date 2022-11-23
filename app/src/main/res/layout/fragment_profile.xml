@@ -47,6 +47,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
                 android:padding="@dimen/_20dp">
 
                 <androidx.appcompat.widget.AppCompatImageButton
@@ -69,8 +70,6 @@
                     app:srcCompat="@drawable/ic_camera" />
 
 
-                <!--사용자 ID GONE -->
-
                 <!--사용자 이름-->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/profile_name_text_input_layout"
@@ -87,7 +86,6 @@
                         android:inputType="text"
                         android:maxLength="20" />
                 </com.google.android.material.textfield.TextInputLayout>
-
 
 
                 <!--생년월일-->
@@ -180,9 +178,10 @@
 
                     <Button
                         android:id="@+id/profile_request_cert_button"
-                        style="@style/RoadButtonStyle"
+                        style="@style/RoadSmallButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_marginTop="6dp"
+                        android:enabled="false"
                         android:text="인증요청"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/profile_phone_text_input_layout" />
@@ -190,10 +189,11 @@
 
                 <!--인증번호 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/profile_phone_auth_container"
+                    android:id="@+id/profile_phone_cert_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profile_phone_container">
@@ -218,9 +218,10 @@
 
                     <Button
                         android:id="@+id/profile_confirm_cert_button"
-                        style="@style/RoadButtonStyle"
+                        style="@style/RoadSmallButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_marginTop="6dp"
+                        android:enabled="false"
                         android:text="인증받기"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -233,14 +234,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:textColor="@color/primary"
                     android:background="@color/white"
+                    android:gravity="center"
                     android:text="비밀번호 재설정"
+                    android:textColor="@color/primary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_phone_auth_container" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_phone_cert_container" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -252,7 +253,9 @@
             android:layout_margin="@dimen/_20dp"
             android:text="수정하기"
             android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
