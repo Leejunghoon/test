@@ -45,7 +45,7 @@ class TermsFragment : Fragment() {
         }
 
         binding.termsGpsPolicyContainer.setOnClickListener {
-            findNavController().navigate(TermsFragmentDirections.actionTermsFragmentToHomeBaseWebView("위치정보 제공 동의 약관", ""))
+            findNavController().navigate(TermsFragmentDirections.actionTermsFragmentToHomeBaseWebView("위치정보 제공 동의 약관", "https://spurious-lime-3d4.notion.site/e5bb6bb8eb4e483daa9082c43ede0df3"))
         }
 
         binding.termsMarketingContainer.setOnClickListener {
