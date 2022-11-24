@@ -94,7 +94,7 @@ object ServerRepository {
     // 이미 존재하는 회원 여부
     suspend fun isIdExist(id: String, loginType: LoginType): IsExistResponseDto {
         try {
-            return if (loginType == LoginType.ROAD801) api.isExistId(id)
+            return if (loginType == LoginType.DEFAULT) api.isExistId(id)
             else api.isExistId(loginType.name, id)
         } catch (exception: Exception) {
             throw toDomainException(exception)
@@ -168,7 +168,7 @@ object ServerRepository {
     // 포인트 적립 내역 조회
     suspend fun pointHistory(requestDto: PaginationDto): CommonListResponseDto<PointHistoryDto> {
         try {
-            return api.pointHistory(requestDto)
+            return api.pointHistory(requestDto.page,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -178,7 +178,7 @@ object ServerRepository {
     // 소식 목록 조회
     suspend fun news(requestDto: PaginationDto): CommonListResponseDto<NewsDto> {
         try {
-            return api.news(requestDto)
+            return api.news(requestDto.page,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -196,7 +196,7 @@ object ServerRepository {
     // 소식 목록 조회
     suspend fun store(requestDto: PaginationDto): CommonListResponseDto<StoreDto> {
         try {
-            return api.store(requestDto)
+            return api.store(requestDto.page,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -215,7 +215,7 @@ object ServerRepository {
     // 이벤트 목록 조회
     suspend fun event(requestDto: PaginationDto): CommonListResponseDto<EventDto> {
         try {
-            return api.event(requestDto)
+            return api.event(requestDto.page,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -239,7 +239,7 @@ object ServerRepository {
         }
     }
 
-    // 핸드폰 인증 요청 (로그인 상태)
+    // 휴대폰 인증 요청 (로그인 상태)
     suspend fun phoneAuth(mobileNo: String): PhoneAuthResponseDto {
         try {
             return api.phoneAuth(mobileNo)
@@ -248,10 +248,28 @@ object ServerRepository {
         }
     }
 
-    // 핸드폰 인증 확인 및 변경 (로그인 상태)
+    // 휴대폰 인증 확인 및 변경
     suspend fun phoneAuthConfirm(requestDto: PhoneAuthRequestDto): SuccessResponseDto {
         try {
             return api.phoneAuthConfirm(requestDto)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 비밀번호 변경 인증번호 요청
+    suspend fun changePwAuth(mobileNo: String): PhoneAuthResponseDto {
+        try {
+            return api.changePasswordAuth(mobileNo)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 비밀번호 변경
+    suspend fun changePassword(requestDto: ChangePasswordRequestDto): SuccessResponseDto {
+        try {
+            return api.changePassword(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -276,18 +294,18 @@ object ServerRepository {
     }
 
     //  알림 푸쉬 수락 여부
-    suspend fun fcmNotification(isActive: Boolean): SuccessResponseDto {
+    suspend fun fcmNotification(requestDto: ActiveRequestDto): SuccessResponseDto {
         try {
-            return api.fcmNotification(isActive)
+            return api.fcmNotification(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
     }
 
     //  광고 푸쉬 수락 여부
-    suspend fun fcmAd(isActive: Boolean): SuccessResponseDto {
+    suspend fun fcmAd(requestDto: ActiveRequestDto): SuccessResponseDto {
         try {
-            return api.fcmAd(isActive)
+            return api.fcmAd(requestDto)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }

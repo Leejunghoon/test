@@ -2,7 +2,9 @@ package com.road801.android.common
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.Utility
 import com.navercorp.nid.NaverIdLoginSDK
 import com.road801.android.BuildConfig
 import com.road801.android.R
@@ -36,6 +38,8 @@ class GlobalApplication : Application() {
 
     private fun setupKaKaoSDK() {
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
+        val keyHash: String = Utility.getKeyHash(this /* context */)
+        Log.d("hoon", keyHash)
     }
 
     private fun setupNaverSDK() {

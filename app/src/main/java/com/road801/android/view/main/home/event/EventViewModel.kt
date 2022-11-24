@@ -19,6 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventViewModel @Inject constructor() : ViewModel() {
+    private val pagination = PaginationDto(page = 0, size = 20, sort = emptyList())
 
     // 이벤트 정보
     private var _eventInfo = MutableLiveData<Event<Resource<CommonListResponseDto<EventDto>>>>()
@@ -39,11 +40,7 @@ class EventViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             try {
                 _eventInfo.value = Event(Resource.Loading)
-                val result = ServerRepository.event(PaginationDto(
-                    page = 0,
-                    size = 10,
-                    sort = emptyList()
-                ))
+                val result = ServerRepository.event(pagination)
                 _eventInfo.value = Event(Resource.Success(result))
             } catch (domainException: DomainException) {
                 _eventInfo.value = Event(Resource.Failure(domainException))

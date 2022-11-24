@@ -13,6 +13,7 @@ import com.road801.android.BuildConfig
 import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.UserDto
+import com.road801.android.data.network.dto.requset.ChangePasswordRequestDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
 import com.road801.android.data.network.dto.response.LoginResponseDto
@@ -37,11 +38,11 @@ class IntroViewModel @Inject constructor() : ViewModel() {
     private var _isMemberExist = MutableLiveData<Event<Resource<Boolean>>>()
     val isMemberExist: LiveData<Event<Resource<Boolean>>> = _isMemberExist
 
-    // 휴대폰 인증 요청 여부
+    // 휴대폰 인증 요청 여부 (회원가입)
     private var _isRequestCert = MutableLiveData<Event<Resource<Boolean>>>()
     val isRequestCert: LiveData<Event<Resource<Boolean>>> = _isRequestCert
 
-    // 휴대폰 인증 완료 여부
+    // 휴대폰 인증 완료 여부 (회원가입)
     private var _isCompleteCert = MutableLiveData<Event<Resource<Boolean>>>()
     val isCompleteCert: LiveData<Event<Resource<Boolean>>> = _isCompleteCert
 
@@ -52,6 +53,14 @@ class IntroViewModel @Inject constructor() : ViewModel() {
     // 로그인 성공 여부
     private var _isSuccessLogin = MutableLiveData<Event<Resource<LoginResponseDto>>>()
     val isSuccessLogin: LiveData<Event<Resource<LoginResponseDto>>> = _isSuccessLogin
+
+    // 휴대폰 인증 요청 여부 (비밀번호 변경)
+    private var _isRequestPwCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isRequestPwCert: LiveData<Event<Resource<Boolean>>> = _isRequestPwCert
+
+    // 휴대폰 인증 완료 여부 (비밀번호 변경)
+    private var _isCompletePwCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isCompletePwCert: LiveData<Event<Resource<Boolean>>> = _isCompletePwCert
 
 
 
@@ -139,7 +148,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 휴대폰 인증 요청
+    // 휴대폰 인증번호 요청 (회원가입)
     public fun requestPhoneAuth(requestDto: PhoneAuthRequestDto) {
         viewModelScope.launch {
             try {
@@ -155,7 +164,7 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 휴대폰 인증 완료
+    // 휴대폰 인증번호 확인 (회원가입)
     public fun requestPhoneAuthConfirm(mobileNo: String, authValue: String) {
         viewModelScope.launch {
             try {
@@ -167,6 +176,42 @@ class IntroViewModel @Inject constructor() : ViewModel() {
                 _isCompleteCert.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
                 _isCompleteCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    // 비밀번호 변경 인증번호 요청
+    public fun requestChangePasswordAuth(mobileNo: String) {
+        viewModelScope.launch {
+            try {
+                _isRequestPwCert.value = Event(Resource.Loading)
+                val result = ServerRepository.changePwAuth(mobileNo)
+                _isRequestPwCert.value = Event(Resource.Success(true))
+            } catch (domainException: DomainException) {
+                _isRequestPwCert.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isRequestPwCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    // 비밀번호 변경 및 인증번호 확인
+    public fun requestChangePassword(mobileNo: String, authValue: String, password: String) {
+        viewModelScope.launch {
+            try {
+                _isCompletePwCert.value = Event(Resource.Loading)
+                val result = ServerRepository.changePassword(
+                    ChangePasswordRequestDto(
+                    mobileNo,
+                    authValue,
+                    password
+                )
+                )
+                _isCompletePwCert.value = Event(Resource.Success(true))
+            } catch (domainException: DomainException) {
+                _isCompletePwCert.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isCompletePwCert.value = Event(Resource.Failure(DomainException(cause = exception)))
             }
         }
     }
@@ -185,16 +230,16 @@ class IntroViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             try {
                 _isSuccessLogin.value = Event(Resource.Loading)
-                val result = if(loginType == LoginType.ROAD801) {
+                val result = if(loginType == LoginType.DEFAULT) {
                     ServerRepository.loginRoad(id, pw!!)
                 } else {
                     ServerRepository.loginSns(loginType, id)
                 }
 
-                if (loginType == LoginType.ROAD801) {
+                if (loginType == LoginType.DEFAULT) {
                     // 로그인 정보 저장
                     LocalDatabase.saveAccessToken(
-                        loginType = LoginType.ROAD801,
+                        loginType = LoginType.DEFAULT,
                         id = id,
                         pw = pw,
                         accessToken = result.accessToken

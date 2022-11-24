@@ -1,6 +1,7 @@
 package com.road801.android.view.main.home.news
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
@@ -50,7 +52,7 @@ class NewsFragment : Fragment() {
     }
 
     private fun initView() {
-
+        initRecyclerView()
     }
 
     private fun setListener() {
@@ -67,7 +69,7 @@ class NewsFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        setupRecyclerView(it.data.data)
+                        bindNews(it.data.data)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -81,21 +83,36 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView(items: List<NewsDto>) {
-        val SCREEN_STORE_GUIDE = -1 // 첫번째 인덱스는 매장안내 Fix
-        val sortedItems = items.plusElement(NewsDto(-1, title = "매장 안내",
-            thumbnail = "https://d20d7iuoaqw83y.cloudfront.net/ICON/gas-pump.png",
-            writeDt = "", ))
-
+    private fun initRecyclerView() {
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
-        binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems.sortedBy { it.id }) {
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(!binding.recyclerView.canScrollVertically(1)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                }
+            }
+        })
+    }
+
+
+    private fun bindNews(items: List<NewsDto>) {
+        val SCREEN_STORE_GUIDE = -1 // 매장안내
+        val sortedItems = items.plusElement(makeFixNews()).sortedBy { it.id }
+        binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems) {
             // item onClick
             if (it.id == SCREEN_STORE_GUIDE) findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToStoreFragment())
             else  findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
         }
     }
 
+    private fun makeFixNews(): NewsDto {
+        return NewsDto(-1, title = "매장 안내",
+            thumbnail = "https://d20d7iuoaqw83y.cloudfront.net/ICON/gas-pump.png",
+            writeDt = "", )
+    }
 
 
 

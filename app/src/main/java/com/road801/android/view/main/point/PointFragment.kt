@@ -1,12 +1,14 @@
 package com.road801.android.view.main.point
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.currency
 import com.road801.android.common.util.extension.showDialog
@@ -38,6 +40,7 @@ class PointFragment : Fragment() {
         binding = FragmentPointBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
+        initRecyclerView()
         return binding.root
     }
 
@@ -46,18 +49,30 @@ class PointFragment : Fragment() {
         bindViewModel()
     }
 
+    private fun initRecyclerView() {
+        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
+        binding.recyclerView.addItemDecoration(spaceDecoration)
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(!binding.recyclerView.canScrollVertically(1)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                }
+            }
+        })
+    }
+
     private fun setUserInfo(grade: String, point: Int) {
         binding.pointGradeTextView.text = "$grade 등급"
         binding.pointPointTextView.text = "${point.currency} P"
     }
 
-    private fun setupRecyclerView(items: List<PointHistoryDto>) {
+    private fun bindPointHistory(items: List<PointHistoryDto>) {
         binding.pointEmptyContainer.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
-
-        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
-        binding.recyclerView.addItemDecoration(spaceDecoration)
         binding.recyclerView.adapter = PointRecyclerAdapter(items)
     }
+
 
     private fun bindViewModel() {
         viewModel.requestPointHistory()
@@ -67,7 +82,7 @@ class PointFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        setupRecyclerView(it.data.data)
+                        bindPointHistory(it.data.data)
                     }
                     is Resource.Failure -> {
                         showDialog(

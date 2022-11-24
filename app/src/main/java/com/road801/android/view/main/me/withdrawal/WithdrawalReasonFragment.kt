@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.road801.android.common.util.extension.goToIntro
 import com.road801.android.common.util.extension.showDialog
+import com.road801.android.common.util.extension.showToast
 import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.databinding.FragmentWithdrawalReasonBinding
 import com.road801.android.domain.transfer.Resource
@@ -112,12 +113,5 @@ class WithdrawalReasonFragment : Fragment() {
                 }
             }
         }
-    }
-
-
-    private fun showToast(message: String) {
-        val toast = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.CENTER, 0, 0)
-        toast.show()
     }
 }

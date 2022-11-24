@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.showDialog
@@ -37,6 +38,9 @@ class EventFragment: Fragment() {
     ): View? {
         binding = FragmentEventBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        initView()
+        setListener()
         return binding.root
     }
 
@@ -44,13 +48,11 @@ class EventFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initView()
-        setListener()
         bindViewModel()
-
     }
 
     private fun initView() {
+        initRecyclerView()
     }
 
     private fun setListener() {
@@ -59,10 +61,21 @@ class EventFragment: Fragment() {
         }
     }
 
-    private fun setupRecyclerView(items: List<EventDto>) {
+    private fun initRecyclerView() {
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(!binding.recyclerView.canScrollVertically(1)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
 
+                }
+            }
+        })
+    }
+
+    private fun bindEvent(items: List<EventDto>) {
         binding.recyclerView.adapter = EventRecyclerAdapter(items) {
             // 이벤트 상세로 이동
             findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
@@ -77,7 +90,7 @@ class EventFragment: Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        setupRecyclerView(it.data.data)
+                        bindEvent(it.data.data)
                     }
                     is Resource.Failure -> {
                         showDialog(

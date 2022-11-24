@@ -38,6 +38,7 @@
     <string name="input_valid_name">이름은 한글 또는 영문만 가능합니다.</string>
     <string name="input_valid_phone">휴대폰번호 형식이 올바르지 않습니다.</string>
     <string name="input_valid_pw">비밀번호는 숫자와 문자(10~20자) 특수문자 포함 가능합니다.</string>
+    <string name="input_valid_not_equal_pw">비밀번호가 일치하지 않습니다.</string>
     <string name="input_valid_cert">인증번호는 6자리 입니다.</string>
 
     <string name="valid_time">%02d:%02d</string>

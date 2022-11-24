@@ -21,6 +21,7 @@ import com.road801.android.common.util.extension.hideKeyboard
 import com.road801.android.common.util.extension.showCalendar
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.validator.RoadValidator
+import com.road801.android.data.network.dto.UserDto
 import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.data.network.dto.requset.SignupRequestDto
 import com.road801.android.databinding.FragmentSignUpInfoInputBinding
@@ -65,13 +66,41 @@ class SignUpInfoInputFragment : Fragment() {
     }
 
     private fun initView() {
-
-        // 성별 기본값: 여자
-        binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderF.id)
-
         // 로드801 가입인지 SNS 가입인지 여부에 따라 필드 종류 변경.
         if (args.signupType == SignupType.SNS) {
             binding.signupInfoPasswordTextInputLayout.visibility = View.GONE
+        }
+        binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderF.id)
+
+        val signupUser = (viewModel.signupUser.value?.peekContent() as? Resource.Success<*>)?.data as? UserDto
+        signupUser?.let { user ->
+
+            // 이름
+            user.name?.let {
+                binding.signupInfoNameEditText.setText(it)
+            }
+
+            // 휴대폰 번호
+            user.mobileNo?.let {
+                binding.signupInfoPhoneEditText.setText(it)
+            }
+
+            // 생년월일
+            user.birthday?.let {
+                binding.signupInfoBirthEditText.setText(it)
+            }
+
+            // 성별
+            user.sexType?.let {
+                when (it) {
+                    GenderType.MALE -> {
+                        binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderM.id)
+                    }
+                    GenderType.FEMALE, GenderType.NONE -> {
+                        binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderF.id)
+                    }
+                }
+            }
         }
     }
 
@@ -205,11 +234,6 @@ class SignUpInfoInputFragment : Fragment() {
 
         // 번호 인증 요청
         binding.signupInfoRequestCertButton.setOnClickListener {
-            val spendTime = MAX_MINUTE * 60 - remainTimeSeconds
-            if (spendTime < 60) {
-                Snackbar.make(it, "$spendTime 초 후에 다시 시도해주세요.", 1000).show()
-                return@setOnClickListener
-            }
             val mobileNo = binding.signupInfoPhoneEditText.text.toString().trim()
             viewModel.requestPhoneAuth(PhoneAuthRequestDto(mobileNo = mobileNo, authValue = ""))
         }

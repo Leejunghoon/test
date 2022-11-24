@@ -85,6 +85,7 @@ class MeFragment : Fragment() {
     private fun bindMe(meDto: MeDto) {
         binding.recyclerView.adapter = MeRecyclerAdapter(this, meDto, getSettingData()) {
             when(it.type) {
+                SettingType.PUSH -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToAlarmFragment())
                 SettingType.TERMS -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToTermsFragment())
                 SettingType.WITHDRAWAL -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToWithdrawalFragment())
                 else -> {}

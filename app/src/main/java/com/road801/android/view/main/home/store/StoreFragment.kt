@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
@@ -54,7 +55,7 @@ class StoreFragment : Fragment() {
     }
 
     private fun initView() {
-
+        initRecyclerView()
     }
 
     private fun setListener() {
@@ -71,7 +72,7 @@ class StoreFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        setupRecyclerView(it.data.data)
+                        bindStore(it.data.data)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -85,13 +86,25 @@ class StoreFragment : Fragment() {
         }
     }
 
-    private fun setupRecyclerView(items: List<StoreDto>) {
-        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
-        binding.recyclerView.addItemDecoration(spaceDecoration)
+    private fun bindStore(items: List<StoreDto>) {
         binding.recyclerView.adapter = StoreRecyclerAdapter(items.sortedBy { it.id }) {
             // item onClick
             findNavController().navigate(StoreFragmentDirections.actionStoreFragmentToStoreDetailFragment(it.id))
         }
+    }
+
+    private fun initRecyclerView() {
+        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
+        binding.recyclerView.addItemDecoration(spaceDecoration)
+        binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if(!binding.recyclerView.canScrollVertically(1)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                }
+            }
+        })
     }
 }
 

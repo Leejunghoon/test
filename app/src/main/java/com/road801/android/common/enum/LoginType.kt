@@ -5,5 +5,5 @@ package com.road801.android.common.enum
  *
  */
 enum class LoginType {
-    KAKAO, GOOGLE, NAVER, ROAD801
+    KAKAO, GOOGLE, NAVER, DEFAULT
 }

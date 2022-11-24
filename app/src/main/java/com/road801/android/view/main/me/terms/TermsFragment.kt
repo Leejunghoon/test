@@ -32,6 +32,10 @@ class TermsFragment : Fragment() {
 
 
     private fun setListener() {
+        binding.toolbar.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.termsUsePolicyContainer.setOnClickListener {
             findNavController().navigate(TermsFragmentDirections.actionTermsFragmentToHomeBaseWebView("로드801 서비스 이용 약관", "https://spurious-lime-3d4.notion.site/801-8832f2f2a7bc46ec8a1b64b837baab7e"))
         }

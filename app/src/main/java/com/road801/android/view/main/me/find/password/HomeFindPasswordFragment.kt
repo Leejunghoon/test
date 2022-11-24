@@ -1,41 +1,32 @@
-package com.road801.android.view.intro.find.password
+package com.road801.android.view.main.me.find.password
 
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.road801.android.R
-import com.road801.android.common.enum.SignupType
-import com.road801.android.common.util.extension.hideKeyboard
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.extension.showToast
 import com.road801.android.common.util.validator.RoadValidator
-import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
-import com.road801.android.databinding.FragmentFindPasswordBinding
-import com.road801.android.databinding.FragmentHomeBinding
+import com.road801.android.databinding.FragmentHomeFindPasswordBinding
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.intro.IntroViewModel
-import com.road801.android.view.intro.find.id.FindIdFragmentDirections
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.road801.android.view.main.me.MeViewModel
 
 /**
  * MARK: - 비밀번호 재설정
  *
  */
-class FindPasswordFragment : Fragment() {
+class HomeFindPasswordFragment : Fragment() {
 
-    private lateinit var binding: FragmentFindPasswordBinding
-    private val viewModel: IntroViewModel by activityViewModels()
+    private lateinit var binding: FragmentHomeFindPasswordBinding
+    private val viewModel: MeViewModel by viewModels()
 
     private lateinit var countDownTimer: CountDownTimer
     private val MAX_MINUTE = 3L
@@ -51,7 +42,7 @@ class FindPasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentFindPasswordBinding.inflate(inflater, container, false)
+        binding = FragmentHomeFindPasswordBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
         initView()
@@ -77,40 +68,41 @@ class FindPasswordFragment : Fragment() {
 //        }
 
         binding.backButton.setOnClickListener {
-            findNavController().navigate(FindPasswordFragmentDirections.actionFindPasswordFragmentToLoginFragment())
+            findNavController().popBackStack()
         }
 
+        // 비밀번호 변경 버튼
         binding.nextButton.setOnClickListener {
-            val mobileNo = binding.findPasswordPhoneEditText.text.toString().trim()
-            val authValue = binding.findPasswordCertEditText.text.toString().trim()
-            val password = binding.findPasswordConfirmPasswordEditText.text.toString().trim()
+            val mobileNo = binding.homeFindPasswordPhoneEditText.text.toString().trim()
+            val authValue = binding.homeFindPasswordCertEditText.text.toString().trim()
+            val password = binding.homeFindPasswordConfirmPasswordEditText.text.toString().trim()
             viewModel.requestChangePassword(mobileNo, authValue, password)
         }
 
 
         // 번호 인증 요청
-        binding.findPasswordRequestCertButton.setOnClickListener {
-            val mobileNo = binding.findPasswordPhoneEditText.text.toString().trim()
+        binding.homeFindPasswordRequestCertButton.setOnClickListener {
+            val mobileNo = binding.homeFindPasswordPhoneEditText.text.toString().trim()
             viewModel.requestChangePasswordAuth(mobileNo)
         }
 
 //        // 번호 인증 확인
-//        binding.findPasswordConfirmCertButton.setOnClickListener {
-//            val mobileNo = binding.findPasswordPhoneEditText.text.toString().trim()
-//            val authValue = binding.findPasswordCertEditText.text.toString().trim()
+//        binding.homeFindPasswordConfirmCertButton.setOnClickListener {
+//            val mobileNo = binding.homeFindPasswordPhoneEditText.text.toString().trim()
+//            val authValue = binding.homeFindPasswordCertEditText.text.toString().trim()
 //
 //            hideKeyboard()
 //        }
 
         // 전화번호
-        binding.findPasswordPhoneEditText.addTextChangedListener(object : TextWatcher {
+        binding.homeFindPasswordPhoneEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                binding.findPasswordRequestCertButton.isEnabled =
-                    validate(text, binding.findPasswordPhoneTextInputLayout)
+                binding.homeFindPasswordRequestCertButton.isEnabled =
+                    validate(text, binding.homeFindPasswordPhoneTextInputLayout)
                 checkValidAndNextButtonEnabled(isEqualPassword())
             }
 
@@ -120,13 +112,13 @@ class FindPasswordFragment : Fragment() {
         })
 
         // 인증번호
-        binding.findPasswordCertEditText.addTextChangedListener(object : TextWatcher {
+        binding.homeFindPasswordCertEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                validate(text, binding.findPasswordCertTextInputLayout)
+                validate(text, binding.homeFindPasswordCertTextInputLayout)
                 checkValidAndNextButtonEnabled(isEqualPassword())
             }
 
@@ -135,13 +127,13 @@ class FindPasswordFragment : Fragment() {
         })
 
         // 비밀번호
-        binding.findPasswordPasswordEditText.addTextChangedListener(object : TextWatcher {
+        binding.homeFindPasswordPasswordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                validate(text, binding.findPasswordPasswordTextInputLayout, true)
+                validate(text, binding.homeFindPasswordPasswordTextInputLayout, true)
                 checkValidAndNextButtonEnabled(isEqualPassword())
             }
 
@@ -151,13 +143,13 @@ class FindPasswordFragment : Fragment() {
         })
 
         // 비밀번호 재확인
-        binding.findPasswordConfirmPasswordEditText.addTextChangedListener(object : TextWatcher {
+        binding.homeFindPasswordConfirmPasswordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val text = p0.toString().trim()
-                validate(text, binding.findPasswordConfirmPasswordTextInputLayout, isEqualPassword())
+                validate(text, binding.homeFindPasswordConfirmPasswordTextInputLayout, isEqualPassword())
                 checkValidAndNextButtonEnabled(isEqualPassword())
             }
 
@@ -199,7 +191,7 @@ class FindPasswordFragment : Fragment() {
                         if (it.data) {
                             stopCountDown()
                             showToast("비밀번호가 변경 되었습니다.")
-                            findNavController().navigate(FindPasswordFragmentDirections.actionFindPasswordFragmentToLoginFragment())
+                            findNavController().popBackStack()
                         }
                     }
                     is Resource.Failure -> {
@@ -216,8 +208,8 @@ class FindPasswordFragment : Fragment() {
     }
 
     private fun isEqualPassword(): Boolean {
-        val pw = binding.findPasswordPasswordEditText.text.toString().trim()
-        val rePw = binding.findPasswordConfirmPasswordEditText.text.toString().trim()
+        val pw = binding.homeFindPasswordPasswordEditText.text.toString().trim()
+        val rePw = binding.homeFindPasswordConfirmPasswordEditText.text.toString().trim()
         return pw == rePw
     }
 
@@ -232,25 +224,25 @@ class FindPasswordFragment : Fragment() {
         var isValid = false
 
         when (inputLayout) {
-            binding.findPasswordPhoneTextInputLayout -> {
+            binding.homeFindPasswordPhoneTextInputLayout -> {
                 emptyMessage = getString(R.string.input_empty_phone)
                 validMessage = getString(R.string.input_valid_phone)
                 isValid = RoadValidator.phone(text)
             }
 
-            binding.findPasswordCertTextInputLayout -> {
+            binding.homeFindPasswordCertTextInputLayout -> {
                 emptyMessage = getString(R.string.input_empty_cert)
                 validMessage = getString(R.string.input_valid_cert)
                 isValid = RoadValidator.certNum(text)
             }
 
-            binding.findPasswordPasswordTextInputLayout -> {
+            binding.homeFindPasswordPasswordTextInputLayout -> {
                 emptyMessage = getString(R.string.input_empty_pw)
                 validMessage = getString(R.string.input_valid_pw)
                 isValid = RoadValidator.password(text)
             }
 
-            binding.findPasswordConfirmPasswordTextInputLayout -> {
+            binding.homeFindPasswordConfirmPasswordTextInputLayout -> {
                 emptyMessage = getString(R.string.input_empty_pw)
                 validMessage = getString(R.string.input_valid_pw)
                 isValid = RoadValidator.password(text)
@@ -280,10 +272,10 @@ class FindPasswordFragment : Fragment() {
 
 
     private fun checkValidAndNextButtonEnabled(isEqual: Boolean) {
-        binding.nextButton.isEnabled = !binding.findPasswordPhoneTextInputLayout.isErrorEnabled &&
-                !binding.findPasswordCertTextInputLayout.isErrorEnabled &&
-                !binding.findPasswordPasswordTextInputLayout.isErrorEnabled &&
-                !binding.findPasswordConfirmPasswordTextInputLayout.isErrorEnabled &&
+        binding.nextButton.isEnabled = !binding.homeFindPasswordPhoneTextInputLayout.isErrorEnabled &&
+                !binding.homeFindPasswordCertTextInputLayout.isErrorEnabled &&
+                !binding.homeFindPasswordPasswordTextInputLayout.isErrorEnabled &&
+                !binding.homeFindPasswordConfirmPasswordTextInputLayout.isErrorEnabled &&
                 isEqual
 
     }
@@ -293,11 +285,11 @@ class FindPasswordFragment : Fragment() {
             override fun onTick(millisUntilFinished: Long) {
                 val minutes = (millisUntilFinished / 1000) / 60 % 60
                 val seconds = (millisUntilFinished / 1000) % 60
-                synchronized(this@FindPasswordFragment) {
+                synchronized(this@HomeFindPasswordFragment) {
                     remainTimeSeconds = (minutes * 60) + seconds
                 }
                 activity?.runOnUiThread {
-                    binding.findPasswordRequestCertButton.text =
+                    binding.homeFindPasswordRequestCertButton.text =
                         getString(R.string.valid_time, minutes, seconds)
                 }
             }
@@ -311,9 +303,9 @@ class FindPasswordFragment : Fragment() {
 
     // 인증번호 검증 시작
     private fun startCertification() {
-        binding.findPasswordPhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
-        binding.findPasswordRequestCertButton.isEnabled = false // 요청버튼 비활성화
-        binding.findPasswordCertEditText.text = null            // 인증번호 초기화
+        binding.homeFindPasswordPhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
+        binding.homeFindPasswordRequestCertButton.isEnabled = false // 요청버튼 비활성화
+        binding.homeFindPasswordCertEditText.text = null            // 인증번호 초기화
         startCountDown()
     }
 
@@ -324,9 +316,9 @@ class FindPasswordFragment : Fragment() {
 
     // 인증번호 검증 완료 및 시간 만료
     private fun endCertification() {
-        binding.findPasswordPhoneCertContainer.visibility = View.GONE   // 인증번호 필드 GONE
-        binding.findPasswordRequestCertButton.text = "인증요청"           // 요청버튼 텍스트 초기화
-        binding.findPasswordRequestCertButton.isEnabled = true          // 요청버튼 활성화
+        binding.homeFindPasswordPhoneCertContainer.visibility = View.GONE   // 인증번호 필드 GONE
+        binding.homeFindPasswordRequestCertButton.text = "인증요청"           // 요청버튼 텍스트 초기화
+        binding.homeFindPasswordRequestCertButton.isEnabled = true          // 요청버튼 활성화
 
         stopCountDown()
     }

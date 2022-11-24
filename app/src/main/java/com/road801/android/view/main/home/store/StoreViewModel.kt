@@ -16,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StoreViewModel @Inject constructor() : ViewModel() {
+    private val pagination = PaginationDto(page = 0, size = 20, sort = emptyList())
 
     // 매장 정보
     private var _storeInfo = MutableLiveData<Event<Resource<CommonListResponseDto<StoreDto>>>>()
@@ -26,17 +27,11 @@ class StoreViewModel @Inject constructor() : ViewModel() {
     val storeDetail: LiveData<Event<Resource<StoreDetailDto>>> = _storeDetail
 
     // 매장 조회
-    public fun requestStoreInfo() {
+    public fun requestStoreInfo(isMore: Boolean = false) {
         viewModelScope.launch {
             try {
                 _storeInfo.value = Event(Resource.Loading)
-                val result = ServerRepository.store(
-                    PaginationDto(
-                        page = 0,
-                        size = 10,
-                        sort = emptyList()
-                    )
-                )
+                val result = ServerRepository.store(pagination)
                 _storeInfo.value = Event(Resource.Success(result))
             } catch (domainException: DomainException) {
                 _storeInfo.value = Event(Resource.Failure(domainException))

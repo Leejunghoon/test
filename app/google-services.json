@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "392204858866",
+    "project_id": "road801-367508",
+    "storage_bucket": "road801-367508.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392204858866:android:e108b7a177ac10ba0ae76b",
+        "android_client_info": {
+          "package_name": "com.road801.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "392204858866-pohsv27acpv3fm3jb508linpkotebfk7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS_Ev765xa0TbAf2xxs2FuDtLOw58M3xw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "392204858866-pohsv27acpv3fm3jb508linpkotebfk7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

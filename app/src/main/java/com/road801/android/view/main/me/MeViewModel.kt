@@ -1,17 +1,12 @@
 package com.road801.android.view.main.me
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.road801.android.BuildConfig
-import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.MeDto
-import com.road801.android.data.network.dto.requset.MeRequestDto
-import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
-import com.road801.android.data.network.dto.requset.WithdrawalRequestDto
+import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.SuccessResponseDto
 import com.road801.android.data.network.dto.response.UploadFileResponseDto
 import com.road801.android.data.network.error.DomainException
@@ -30,13 +25,22 @@ class MeViewModel @Inject constructor() : ViewModel() {
     private var _meInfo = MutableLiveData<Event<Resource<MeDto>>>()
     val meInfo: LiveData<Event<Resource<MeDto>>> = _meInfo
 
-    // 휴대폰 인증 요청 여부
+    // 휴대폰 인증번호 요청 여부
     private var _isRequestCert = MutableLiveData<Event<Resource<Boolean>>>()
     val isRequestCert: LiveData<Event<Resource<Boolean>>> = _isRequestCert
 
-    // 휴대폰 인증 완료 여부
+    // 휴대폰 인증번호 완료 여부
     private var _isCompleteCert = MutableLiveData<Event<Resource<Boolean>>>()
     val isCompleteCert: LiveData<Event<Resource<Boolean>>> = _isCompleteCert
+
+    // 비밀번호 인증번호 요청 여부
+    private var _isRequestPwCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isRequestPwCert: LiveData<Event<Resource<Boolean>>> = _isRequestPwCert
+
+    // 비밀번호 인증번호 완료 여부
+    private var _isCompletePwCert = MutableLiveData<Event<Resource<Boolean>>>()
+    val isCompletePwCert: LiveData<Event<Resource<Boolean>>> = _isCompletePwCert
+
 
     // 파일 업로드 완료 여부
     private var _uploadFileInfo = MutableLiveData<Event<Resource<UploadFileResponseDto>>>()
@@ -45,6 +49,10 @@ class MeViewModel @Inject constructor() : ViewModel() {
     // 프로필 수정 완료 여부
     private var _isCompleteChange = MutableLiveData<Event<Resource<Boolean>>>()
     val isCompleteChange: LiveData<Event<Resource<Boolean>>> = _isCompleteChange
+
+    // 광고 푸쉬 on/off
+    private var _isActivePushMarketing = MutableLiveData<Event<Resource<Boolean>>>()
+    val isActivePushMarketing: LiveData<Event<Resource<Boolean>>> = _isActivePushMarketing
 
     // 탈퇴 성공 여부
     private var _isDrop = MutableLiveData<Event<Resource<SuccessResponseDto>>>()
@@ -96,14 +104,13 @@ class MeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 휴대폰 인증 요청
+    // 휴대폰 변경 인증번호 요청
     public fun requestPhoneAuth(mobileNo: String) {
         viewModelScope.launch {
             try {
                 _isRequestCert.value = Event(Resource.Loading)
                 val result = ServerRepository.phoneAuth(mobileNo)
                 _isRequestCert.value = Event(Resource.Success(true))
-                if (BuildConfig.DEBUG) Log.d(TAG, result.expiredSec.toString())
             } catch (domainException: DomainException) {
                 _isRequestCert.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -112,14 +119,13 @@ class MeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 휴대폰 인증 완료
-    public fun requestPhoneAuthConfirm(requestDto: PhoneAuthRequestDto) {
+    // 휴대폰 변경 및 인증번호 확인
+    public fun requestPhoneAuthConfirm(mobileNo: String, authValue: String) {
         viewModelScope.launch {
             try {
                 _isCompleteCert.value = Event(Resource.Loading)
-                val result = ServerRepository.phoneAuthConfirm(requestDto)
+                val result = ServerRepository.phoneAuthConfirm(PhoneAuthRequestDto(mobileNo, authValue))
                 _isCompleteCert.value = Event(Resource.Success(true))
-                if (BuildConfig.DEBUG) Log.d(TAG, result.message)
             } catch (domainException: DomainException) {
                 _isCompleteCert.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -128,18 +134,51 @@ class MeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // 비밀번호 변경
-    public fun requestChangePassword(requestDto: PhoneAuthRequestDto) {
+    // 비밀번호 변경 인증번호 요청
+    public fun requestChangePasswordAuth(mobileNo: String) {
         viewModelScope.launch {
             try {
-                _isCompleteCert.value = Event(Resource.Loading)
-                val result = ServerRepository.phoneAuthConfirm(requestDto)
-                _isCompleteCert.value = Event(Resource.Success(true))
-                if (BuildConfig.DEBUG) Log.d(TAG, result.message)
+                _isRequestPwCert.value = Event(Resource.Loading)
+                val result = ServerRepository.changePwAuth(mobileNo)
+                _isRequestPwCert.value = Event(Resource.Success(true))
             } catch (domainException: DomainException) {
-                _isCompleteCert.value = Event(Resource.Failure(domainException))
+                _isRequestPwCert.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
-                _isCompleteCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+                _isRequestPwCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    // 비밀번호 변경 및 인증번호 확인
+    public fun requestChangePassword(mobileNo: String, authValue: String, password: String) {
+        viewModelScope.launch {
+            try {
+                _isCompletePwCert.value = Event(Resource.Loading)
+                val result = ServerRepository.changePassword(ChangePasswordRequestDto(
+                    mobileNo,
+                    authValue,
+                    password
+                ))
+                _isCompletePwCert.value = Event(Resource.Success(true))
+            } catch (domainException: DomainException) {
+                _isCompletePwCert.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isCompletePwCert.value = Event(Resource.Failure(DomainException(cause = exception)))
+            }
+        }
+    }
+
+    // 광고 푸시 on/off
+    public fun requestPushAd(isChecked: Boolean) {
+        viewModelScope.launch {
+            try {
+                _isActivePushMarketing.value = Event(Resource.Loading)
+                val result = ServerRepository.fcmAd(ActiveRequestDto(isChecked))
+                _isActivePushMarketing.value = Event(Resource.Success(isChecked))
+            } catch (domainException: DomainException) {
+                _isActivePushMarketing.value = Event(Resource.Failure(domainException))
+            } catch (exception: Exception) {
+                _isActivePushMarketing.value = Event(Resource.Failure(DomainException(cause = exception)))
             }
         }
     }
@@ -158,6 +197,8 @@ class MeViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+
 
 
 

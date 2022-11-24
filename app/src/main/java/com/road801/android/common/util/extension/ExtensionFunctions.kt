@@ -13,10 +13,12 @@ import android.provider.OpenableColumns
 import android.provider.Settings
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import android.widget.Toolbar
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
@@ -199,6 +201,12 @@ fun Activity.showDialog(fragmentManager: FragmentManager,
     dialog.show(fragmentManager, "showDialog")
 }
 
+fun Activity.showToast(message: String) {
+    val toast = Toast.makeText(this, message, Toast.LENGTH_SHORT)
+    toast.setGravity(Gravity.BOTTOM, 0, 200)
+    toast.show()
+}
+
 /**
  * 달력
  *
@@ -272,6 +280,9 @@ fun Fragment.goToHome() {
     view?.let { activity?.goToHome() }
 }
 
+ fun Fragment.showToast(message: String) {
+     view?.let { activity?.showToast(message) }
+}
 
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

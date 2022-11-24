@@ -18,21 +18,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.road801.android.R
 import com.road801.android.common.enum.GenderType
+import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.hideKeyboard
 import com.road801.android.common.util.extension.showCalendar
 import com.road801.android.common.util.extension.showDialog
+import com.road801.android.common.util.extension.showToast
 import com.road801.android.common.util.validator.RoadValidator
 import com.road801.android.data.network.dto.requset.MeRequestDto
-import com.road801.android.data.network.dto.requset.PhoneAuthRequestDto
 import com.road801.android.databinding.FragmentProfileBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.me.MeViewModel
-import com.road801.android.view.main.me.withdrawal.WithdrawalReasonFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -97,6 +96,10 @@ class ProfileFragment : Fragment() {
                 .into(binding.profileImageButton)
         }
 
+        if (LoginType.valueOf(args.meDto.signupType.code) != LoginType.DEFAULT) {
+            binding.profilePasswordChangeButton.visibility = View.GONE
+        }
+
     }
 
     private fun setListener() {
@@ -139,7 +142,7 @@ class ProfileFragment : Fragment() {
 
         // 비밀번호 재설정 
         binding.profilePasswordChangeButton.setOnClickListener {
-            //TODO : create pw fragment
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToHomeFindPasswordFragment())
         }
 
         // 이름
@@ -192,20 +195,16 @@ class ProfileFragment : Fragment() {
 
         // 번호 인증 요청
         binding.profileRequestCertButton.setOnClickListener {
-            val spendTime = MAX_MINUTE * 60 - remainTimeSeconds
-            if (spendTime < 60) {
-                Snackbar.make(it, "$spendTime 초 후에 다시 시도해주세요.", 1000).show()
-                return@setOnClickListener
-            }
             val mobileNo = binding.profilePhoneEditText.text.toString().trim()
             viewModel.requestPhoneAuth(mobileNo)
+            hideKeyboard()
         }
 
         // 번호 인증 확인
         binding.profileConfirmCertButton.setOnClickListener {
             val mobileNo = binding.profilePhoneEditText.text.toString().trim()
             val authValue = binding.profileCertEditText.text.toString().trim()
-            viewModel.requestPhoneAuthConfirm(PhoneAuthRequestDto(mobileNo, authValue))
+            viewModel.requestPhoneAuthConfirm(mobileNo, authValue)
             hideKeyboard()
         }
 
@@ -252,7 +251,7 @@ class ProfileFragment : Fragment() {
                         if (it.data) {
 //                        checkValidAndNextButtonEnabled()
                             endCertification()
-                            Snackbar.make(binding.root, "휴대폰 번호가 변경되었습니다.", 1000).show()
+                            showToast("휴대폰 번호가 변경되었습니다.")
                         }
                     }
                     is Resource.Failure -> {
@@ -269,7 +268,7 @@ class ProfileFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        Snackbar.make(binding.root, "프로필 정보가 수정되었습니다.", 1000).show()
+                        showToast("프로필 정보가 수정되었습니다.")
                         findNavController().popBackStack()
                     }
                     is Resource.Failure -> {
@@ -293,7 +292,8 @@ class ProfileFragment : Fragment() {
                             .circleCrop()
                             .transition(DrawableTransitionOptions.withCrossFade())
                             .into(binding.profileImageButton)
-                        Snackbar.make(binding.root, "프로필 사진이 수정되었습니다.", 1000).show()
+
+                        showToast("프로필 사진이 수정되었습니다.")
                     }
                     is Resource.Failure -> {
                         showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)

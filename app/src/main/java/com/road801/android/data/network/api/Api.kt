@@ -52,7 +52,7 @@ interface Api {
     suspend fun signup(@Body request: SignupRequestDto): SuccessResponseDto
 
     /**
-     * 핸드폰 인증 요청 (회원가입)
+     * 휴대폰 인증 요청 (회원가입)
      *
      * @param params PhoneAuthRequestDto
      * @return PhoneAuthResponseDto
@@ -61,9 +61,9 @@ interface Api {
     suspend fun phoneAuth(@Body params: PhoneAuthRequestDto): PhoneAuthResponseDto
 
     /**
-     *  핸드폰 인증 확인 (회원가입)
+     *  휴대폰 인증 확인 (회원가입)
      *
-     * @param mobileNo 핸드폰 번호
+     * @param mobileNo 휴대폰 번호
      * @param authValue 인증번호
      * @return SuccessResponseDto
      */
@@ -85,7 +85,6 @@ interface Api {
     @POST("customer/login/social")
     suspend fun login(@Body params: LoginSNSRequestDto): LoginResponseDto
 
-
     /**
      * 로그인 (로드801)
      *
@@ -94,6 +93,26 @@ interface Api {
      */
     @POST("customer/login/default")
     suspend fun login(@Body params: LoginRoadRequestDto): LoginResponseDto
+
+    /**
+     * 비밀번호 변경
+     * 인증번호 요청
+     *
+     * @param mobileNo mobileNo
+     * @return PhoneAuthResponseDto
+     */
+    @POST("customer/login/password/{mobileNo}")
+    suspend fun changePasswordAuth(@Path("mobileNo") mobileNo: String): PhoneAuthResponseDto
+
+    /**
+     *  비밀번호 번호 변경
+     *  인증번호 확인 및 변경
+     *
+     * @param params PhoneAuthRequestDto
+     * @return SuccessResponseDto
+     */
+    @PATCH("customer/login/password/")
+    suspend fun changePassword(@Body params: ChangePasswordRequestDto): SuccessResponseDto
 
 
     // MARK - HOME --------------------------------------------------- -------------------------------------------------- --------------------------------------------------
@@ -117,13 +136,14 @@ interface Api {
      */
     @BearerToken
     @GET("customer/point/earn")
-    suspend fun pointHistory(@Query("pageable") params: PaginationDto): CommonListResponseDto<PointHistoryDto>
+    suspend fun pointHistory(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<PointHistoryDto>
 
 
     // MARK - ME -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
 
     /**
-     * 핸드폰 인증 요청 (로그인 상태)
+     * 휴대폰 번호 변경
+     * 인증번호 요청 (로그인 상태)
      *
      * @param mobileNo
      * @return PhoneAuthResponseDto
@@ -133,7 +153,8 @@ interface Api {
     suspend fun phoneAuth(@Path("mobileNo") mobileNo: String): PhoneAuthResponseDto
 
     /**
-     *  핸드폰 인증 확인 및 변경 (로그인 상태)
+     *  휴대폰 번호 변경
+     *  인증번호 확인 및 변경 (로그인 상태)
      *
      * @param params PhoneAuthRequestDto
      * @return SuccessResponseDto
@@ -169,7 +190,7 @@ interface Api {
      */
     @BearerToken
     @PATCH("customer/me/push/noti")
-    suspend fun fcmNotification(@Body isActive: Boolean): SuccessResponseDto
+    suspend fun fcmNotification(@Body params: ActiveRequestDto): SuccessResponseDto
 
 
     /**
@@ -180,7 +201,7 @@ interface Api {
      */
     @BearerToken
     @PATCH("customer/me/push/ad")
-    suspend fun fcmAd(@Body isActive: Boolean): SuccessResponseDto
+    suspend fun fcmAd(@Body params: ActiveRequestDto): SuccessResponseDto
 
     /**
      * 내 정보
@@ -213,16 +234,6 @@ interface Api {
     suspend fun uploadProfileImage(@Part image: MultipartBody.Part): UploadFileResponseDto
 
 
-    /**
-     * 비밀번호 수정
-     *
-     * @param params
-     * @return SuccessResponseDto
-     */
-    @BearerToken
-    @PATCH("customer/me/password")
-    suspend fun changePassword(@Body params: MeRequestDto): SuccessResponseDto
-
 
 
     // MARK - News -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
@@ -235,7 +246,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/board")
-    suspend fun news(@Query("pageable") params: PaginationDto): CommonListResponseDto<NewsDto>
+    suspend fun news(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<NewsDto>
 
     /**
      * 소식 상세 조회
@@ -256,7 +267,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/store")
-    suspend fun store(@Query("pageable") params: PaginationDto): CommonListResponseDto<StoreDto>
+    suspend fun store(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<StoreDto>
 
     /**
      * 매장 상세 조회
@@ -279,7 +290,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/event")
-    suspend fun event(@Query("pageable") params: PaginationDto): CommonListResponseDto<EventDto>
+    suspend fun event(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<EventDto>
 
 
     /**

@@ -86,7 +86,7 @@ class SignUpCompleteFragment : Fragment() {
             } else {
                 val loginId = args.signupRequestDto.loginId!!
                 val loginPw = args.signupRequestDto.password!!
-                viewModel.requestLogin(LoginType.ROAD801, loginId,loginPw)
+                viewModel.requestLogin(LoginType.DEFAULT, loginId,loginPw)
             }
 
         }

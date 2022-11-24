@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
                         super.setEnabled(false)
                     } else {
                         backPressedTime = tempTime;
-                        Toast.makeText(requireContext(), "'뒤로' 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+                        showToast("'뒤로' 버튼을 한 번 더 누르면 종료됩니다.")
                         return
                     }
                 }

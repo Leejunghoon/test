@@ -34,7 +34,8 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // sns 유저 정보 획득 후 뒤로 간 후 로드 회원가입시 데이터가 남아 있는 경우를 위해 초기화
+        viewModel.setSignupUser(null)
     }
 
     override fun onCreateView(
@@ -101,7 +102,7 @@ class LoginFragment : Fragment() {
         // 로그인
         binding.loginButton.setOnClickListener {
             viewModel.requestLogin(
-                LoginType.ROAD801,
+                LoginType.DEFAULT,
                 id = binding.loginIdEditText.text.toString().trim(),
                 pw = binding.loginPasswordEditText.text.toString().trim()
             )

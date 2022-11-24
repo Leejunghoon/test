@@ -10,5 +10,6 @@ data class MeDto(
     val birthday: String,
     val sexType: CodeDto,
     val mobileNo: String,
+    val signupType: CodeDto,
     val profileImage: String?
 ) : Parcelable

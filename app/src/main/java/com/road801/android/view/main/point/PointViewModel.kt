@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PointViewModel @Inject constructor() : ViewModel() {
+    private val pagination = PaginationDto(page = 0, size = 20, sort = emptyList())
 
     // 포인트 내역 정보
     private var _pointHistoryInfo = MutableLiveData<Event<Resource<CommonListResponseDto<PointHistoryDto>>>>()
@@ -25,17 +26,11 @@ class PointViewModel @Inject constructor() : ViewModel() {
 
 
     // 포인트 내역 조회
-    public fun requestPointHistory() {
+    public fun requestPointHistory(isMore: Boolean = false) {
         viewModelScope.launch {
             try {
                 _pointHistoryInfo.value = Event(Resource.Loading)
-                val result = ServerRepository.pointHistory(
-                    PaginationDto(
-                        page = 0,
-                        size = 10,
-                        sort = emptyList()
-                    )
-                )
+                val result = ServerRepository.pointHistory(pagination)
                 _pointHistoryInfo.value = Event(Resource.Success(result))
             } catch (domainException: DomainException) {
                 _pointHistoryInfo.value = Event(Resource.Failure(domainException))

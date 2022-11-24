@@ -146,10 +146,10 @@ class IntroFragment : Fragment() {
                     if(BuildConfig.DEBUG) Log.d(TAG, "account.id ${account.id}")
 
                     val userDto = UserDto(
-                        name = "",
+                        name = account.displayName,
                         birthday = "",
                         mobileNo = "",
-                        sexType =  GenderType.NONE,
+                        sexType =  GenderType.FEMALE,
                         termAgreeList = arrayListOf(),
                         socialType = LoginType.GOOGLE.name,
                         socialId = account.id,
