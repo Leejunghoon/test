@@ -8,8 +8,9 @@ data class MeDto(
     val customerBarcode: String,
     val name: String,
     val birthday: String,
-    val sexType: CodeDto,
     val mobileNo: String,
+    val profileImage: String?,
+    val sexType: CodeDto,
     val signupType: CodeDto,
-    val profileImage: String?
+    val socialType: CodeDto
 ) : Parcelable

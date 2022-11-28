@@ -28,6 +28,7 @@ class PointFragment : Fragment() {
     private val viewModel: PointViewModel by viewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -49,6 +50,11 @@ class PointFragment : Fragment() {
         bindViewModel()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.onDestroyView()
+    }
+
     private fun initRecyclerView() {
         val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
         binding.recyclerView.addItemDecoration(spaceDecoration)
@@ -57,7 +63,7 @@ class PointFragment : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if(!binding.recyclerView.canScrollVertically(1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
+                    viewModel.requestMorePointHistory()
                 }
             }
         })
@@ -70,7 +76,11 @@ class PointFragment : Fragment() {
 
     private fun bindPointHistory(items: List<PointHistoryDto>) {
         binding.pointEmptyContainer.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
-        binding.recyclerView.adapter = PointRecyclerAdapter(items)
+        binding.recyclerView.adapter = PointRecyclerAdapter(items.sortedByDescending { it.requestDt })
+
+        if (items.size > 20) {
+            binding.recyclerView.smoothScrollToPosition(items.size-1)
+        }
     }
 
 

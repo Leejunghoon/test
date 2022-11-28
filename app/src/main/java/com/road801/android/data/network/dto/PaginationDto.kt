@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PaginationDto(
-    var page: Int,
-    var size: Int,
+    var nextId: Int? = null,
+    var size: Int = 20,
     var sort: List<String>
 ) : Parcelable

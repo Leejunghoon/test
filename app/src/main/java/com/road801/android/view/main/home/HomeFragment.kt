@@ -1,12 +1,10 @@
 package com.road801.android.view.main.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,9 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestOptions
 import com.google.zxing.BarcodeFormat
 import com.road801.android.R
+import com.road801.android.common.fcm.RoadFirebaseMessagingService
 import com.road801.android.common.util.extension.*
 import com.road801.android.common.util.transformer.ZoomOutPageTransformer
 import com.road801.android.data.network.dto.EventDto
@@ -26,9 +24,9 @@ import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.dialog.EventDialog
-import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.home.adapter.HomeEventPagerAdapter
 import com.road801.android.view.main.home.adapter.HomeNewsPagerAdapter
+import com.road801.android.view.main.me.MeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -37,6 +35,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val viewModel: HomeViewModel by activityViewModels()
+    private val meViewModel: MeViewModel by viewModels()
 
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
@@ -47,6 +46,10 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setOnBackPressed()
+
+        RoadFirebaseMessagingService.geToken {
+            meViewModel.updateDeviceID(it)
+        }
     }
 
     override fun onCreateView(
@@ -85,8 +88,7 @@ class HomeFragment : Fragment() {
             })
     }
     private fun initView() {
-        binding.homeBarcodeTextView.visibility = View.GONE
-        binding.homeSegmentRadioGroup.check(binding.homeSegmentQr.id)
+        binding.homeSegmentRadioGroup.check(binding.homeSegmentBarcode.id)
     }
 
     private fun initPager() {

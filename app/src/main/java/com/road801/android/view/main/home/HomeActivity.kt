@@ -29,8 +29,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupNavController() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_home) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_home) as NavHostFragment
         val navController = navHostFragment.navController
         binding.homeBottomNavigation.setupWithNavController(navController)
     }
@@ -72,6 +71,9 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
+    private fun processFCM() {
+        intent.getStringExtra("notificationType") ?: "dd"
+    }
 
 
 

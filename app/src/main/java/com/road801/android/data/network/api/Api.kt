@@ -136,7 +136,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/point/earn")
-    suspend fun pointHistory(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<PointHistoryDto>
+    suspend fun pointHistory(@Query("nextId") nextId: Int?, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<PointHistoryDto>
 
 
     // MARK - ME -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
@@ -246,7 +246,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/board")
-    suspend fun news(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<NewsDto>
+    suspend fun news(@Query("nextId") nextId: Int?, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<NewsDto>
 
     /**
      * 소식 상세 조회
@@ -267,7 +267,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/store")
-    suspend fun store(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<StoreDto>
+    suspend fun store(): CommonListResponseDto<StoreDto>
 
     /**
      * 매장 상세 조회
@@ -290,7 +290,7 @@ interface Api {
      */
     @BearerToken
     @GET("customer/event")
-    suspend fun event(@Query("page") page: Int, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<EventDto>
+    suspend fun event(@Query("nextId") nextId: Int?, @Query("size") size: Int, @Query("sort") sort: List<String>): CommonListResponseDto<EventDto>
 
 
     /**

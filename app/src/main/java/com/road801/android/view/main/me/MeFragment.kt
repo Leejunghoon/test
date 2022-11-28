@@ -9,13 +9,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.road801.android.R
+import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.TAG
+import com.road801.android.common.util.extension.goToIntro
+import com.road801.android.common.util.extension.goToSystemSettingActivity
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.data.network.dto.MeDto
+import com.road801.android.data.network.interceptor.LocalDatabase
+import com.road801.android.data.repository.SnsRepository
 import com.road801.android.databinding.FragmentMeBinding
 import com.road801.android.domain.model.SettingModel
 import com.road801.android.domain.model.SettingType
 import com.road801.android.domain.transfer.Resource
+import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.me.adapter.MeRecyclerAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,6 +56,7 @@ class MeFragment : Fragment() {
     private fun getSettingData(): List<SettingModel> = listOf(
         SettingModel(SettingType.PUSH, R.drawable.ic_setting_push, SettingType.PUSH.koString),
         SettingModel(SettingType.TERMS, R.drawable.ic_setting_terms, SettingType.TERMS.koString),
+        SettingModel(SettingType.LOGOUT, R.drawable.ic_setting_withdrawal, SettingType.LOGOUT.koString),
         SettingModel(SettingType.WITHDRAWAL ,R.drawable.ic_setting_withdrawal, SettingType.WITHDRAWAL.koString)
     )
 
@@ -87,6 +94,27 @@ class MeFragment : Fragment() {
             when(it.type) {
                 SettingType.PUSH -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToAlarmFragment())
                 SettingType.TERMS -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToTermsFragment())
+                SettingType.LOGOUT -> {
+
+                    SnsRepository.logout(LoginType.valueOf(meDto.socialType.code)) {
+                        showDialog(
+                            parentFragmentManager,
+                            title = "로드801",
+                            "정말 로그아웃 하시겠습니까?",
+                            cancelButtonTitle = "돌아가기",
+                            confirmButtonTitle = "로그아웃",
+                            listener = object : RoadDialog.OnDialogListener {
+                                override fun onCancel() {
+                                }
+
+                                override fun onConfirm() {
+                                    LocalDatabase.logOut()
+                                    goToIntro()
+                                }
+                            }
+                        )
+                    }
+                }
                 SettingType.WITHDRAWAL -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToWithdrawalFragment())
                 else -> {}
             }

@@ -51,6 +51,11 @@ class NewsFragment : Fragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.onDestroyView()
+    }
+
     private fun initView() {
         initRecyclerView()
     }
@@ -91,7 +96,7 @@ class NewsFragment : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if(!binding.recyclerView.canScrollVertically(1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
+                        viewModel.requestMoreNewsInfo()
                 }
             }
         })
@@ -99,17 +104,21 @@ class NewsFragment : Fragment() {
 
 
     private fun bindNews(items: List<NewsDto>) {
-        val SCREEN_STORE_GUIDE = -1 // 매장안내
-        val sortedItems = items.plusElement(makeFixNews()).sortedBy { it.id }
+        val SCREEN_STORE_GUIDE = 99999 // 매장안내
+        val sortedItems = items.plusElement(makeFixNews()).sortedByDescending { it.id }
         binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems) {
             // item onClick
             if (it.id == SCREEN_STORE_GUIDE) findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToStoreFragment())
             else  findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
         }
+
+        if (items.size > 20) {
+            binding.recyclerView.smoothScrollToPosition(items.size-1)
+        }
     }
 
     private fun makeFixNews(): NewsDto {
-        return NewsDto(-1, title = "매장 안내",
+        return NewsDto(99999, title = "매장 안내",
             thumbnail = "https://d20d7iuoaqw83y.cloudfront.net/ICON/gas-pump.png",
             writeDt = "", )
     }

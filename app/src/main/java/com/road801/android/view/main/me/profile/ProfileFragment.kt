@@ -41,11 +41,6 @@ class ProfileFragment : Fragment() {
     private val args: ProfileFragmentArgs by navArgs()
 
     private lateinit var choseImageActivityResult: ActivityResultLauncher<Intent>
-    private lateinit var countDownTimer: CountDownTimer
-    private val MAX_MINUTE = 1L
-    private val MAX_VALID_TIME: Long = MAX_MINUTE * 60000 // MAX_MINUTE to millisecond
-    private var remainTimeSeconds = 0L
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +63,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupCountDownTimer(1000)
         bindViewModel()
     }
 
@@ -80,7 +74,6 @@ class ProfileFragment : Fragment() {
     private fun bindMe() {
         binding.profileNameEditText.setText(args.meDto.name)
         binding.profileBirthEditText.setText(args.meDto.birthday)
-        binding.profilePhoneEditText.setText(args.meDto.mobileNo)
 
         if (GenderType.valueOf(args.meDto.sexType.code) == GenderType.FEMALE){
             binding.profileSegmentRadioGroup.check(binding.profileSegmentGenderF.id)
@@ -97,7 +90,7 @@ class ProfileFragment : Fragment() {
         }
 
         if (LoginType.valueOf(args.meDto.signupType.code) != LoginType.DEFAULT) {
-            binding.profilePasswordChangeButton.visibility = View.GONE
+            binding.profilePasswordChangeButton.visibility = View.INVISIBLE
         }
 
     }
@@ -140,10 +133,16 @@ class ProfileFragment : Fragment() {
             goToImageFileBrowser()
         }
 
+        // 휴대폰번호 재설정
+        binding.profilePhoneChangeButton.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToChangePhoneFragment())
+        }
+
         // 비밀번호 재설정 
         binding.profilePasswordChangeButton.setOnClickListener {
             findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToHomeFindPasswordFragment())
         }
+
 
         // 이름
         binding.profileNameEditText.addTextChangedListener(object: TextWatcher {
@@ -161,52 +160,6 @@ class ProfileFragment : Fragment() {
 
         })
 
-        // 전화번호
-        binding.profilePhoneEditText.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val text = p0.toString().trim()
-                binding.profileRequestCertButton.isEnabled = validate(text, binding.profilePhoneTextInputLayout)
-//                checkValidAndNextButtonEnabled()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-
-        // 인증번호
-        binding.profileCertEditText.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val text = p0.toString().trim()
-                binding.profileConfirmCertButton.isEnabled = validate(text, binding.profileCertTextInputLayout)
-//                checkValidAndNextButtonEnabled()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
-
-        // 번호 인증 요청
-        binding.profileRequestCertButton.setOnClickListener {
-            val mobileNo = binding.profilePhoneEditText.text.toString().trim()
-            viewModel.requestPhoneAuth(mobileNo)
-            hideKeyboard()
-        }
-
-        // 번호 인증 확인
-        binding.profileConfirmCertButton.setOnClickListener {
-            val mobileNo = binding.profilePhoneEditText.text.toString().trim()
-            val authValue = binding.profileCertEditText.text.toString().trim()
-            viewModel.requestPhoneAuthConfirm(mobileNo, authValue)
-            hideKeyboard()
-        }
 
         // 캘린더
         binding.profileCalendarButton.setOnClickListener {
@@ -224,44 +177,6 @@ class ProfileFragment : Fragment() {
      */
     private fun bindViewModel() {
 
-        // 휴대폰 인증 요청
-        viewModel.isRequestCert.observe(viewLifecycleOwner) { result ->
-            result.getContentIfNotHandled()?.let {
-                when (it) {
-                    is Resource.Loading -> {}
-                    is Resource.Success -> {
-                        if (it.data) {
-                            startCertification()
-                        }
-                    }
-                    is Resource.Failure -> {
-                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
-                    }
-                }
-            }
-        }
-
-        // 휴대폰 인증 완료
-        viewModel.isCompleteCert.observe(viewLifecycleOwner) { result ->
-            result.getContentIfNotHandled()?.let {
-                when (it) {
-                    is Resource.Loading -> {}
-                    is Resource.Success -> {
-                        // 인증 성공 했을 경우에만 토스트
-                        if (it.data) {
-//                        checkValidAndNextButtonEnabled()
-                            endCertification()
-                            showToast("휴대폰 번호가 변경되었습니다.")
-                        }
-                    }
-                    is Resource.Failure -> {
-                        notValidCertification()
-                        showDialog(parentFragmentManager, title = it.exception.domainErrorMessage, message = it.exception.domainErrorSubMessage)
-                    }
-                }
-            }
-        }
-
         // 프로필 수정 완료
         viewModel.isCompleteChange.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
@@ -278,7 +193,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // 프로필 수정 완료
+        // 프로필 사진 수정 완료
         viewModel.uploadFileInfo.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
                 when (it) {
@@ -319,18 +234,6 @@ class ProfileFragment : Fragment() {
                 validMessage = getString(R.string.input_valid_name)
                 isValid = RoadValidator.name(text)
             }
-
-            binding.profilePhoneTextInputLayout -> {
-                emptyMessage = getString(R.string.input_empty_phone)
-                validMessage = getString(R.string.input_valid_phone)
-                isValid = RoadValidator.phone(text)
-            }
-
-            binding.profileCertTextInputLayout -> {
-                emptyMessage = getString(R.string.input_empty_cert)
-                validMessage = getString(R.string.input_valid_cert)
-                isValid = RoadValidator.certNum(text)
-            }
         }
 
         if (text.isEmpty()) {
@@ -350,59 +253,6 @@ class ProfileFragment : Fragment() {
 
     private fun checkValidAndNextButtonEnabled() {
         binding.nextButton.isEnabled = !binding.profileNameTextInputLayout.isErrorEnabled
-    }
-
-    private fun setupCountDownTimer(interval: Long) {
-        countDownTimer = object : CountDownTimer(MAX_VALID_TIME, interval) {
-            override fun onTick(millisUntilFinished: Long) {
-                val minutes = (millisUntilFinished / 1000) / 60 % 60
-                val seconds = (millisUntilFinished / 1000) % 60
-                synchronized(this@ProfileFragment) {
-                    remainTimeSeconds = (minutes * 60) + seconds
-                }
-                activity?.runOnUiThread {
-                    binding.profileRequestCertButton.text = getString(R.string.valid_time, minutes, seconds)
-                }
-            }
-
-            override fun onFinish() {
-                endCertification()
-            }
-        }
-    }
-
-    // 인증번호 검증 시작
-    private fun startCertification() {
-        binding.profilePhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
-        binding.profileRequestCertButton.isEnabled = false // 요청버튼 비활성화
-        binding.profileCertEditText.text = null            // 인증번호 초기화
-        startCountDown()
-    }
-
-    // 유효하지 않은 인증번호
-    private fun notValidCertification() {
-        viewModel.resetCert()
-    }
-
-    // 인증번호 검증 완료 및 시간 만료
-    private fun endCertification() {
-        binding.profilePhoneCertContainer.visibility = View.GONE   // 인증번호 필드 GONE
-        binding.profileRequestCertButton.text = "인증요청"           // 요청버튼 텍스트 초기화
-        binding.profileRequestCertButton.isEnabled = true          // 요청버튼 활성화
-
-        stopCountDown()
-    }
-
-    private fun startCountDown() {
-        stopCountDown()
-        countDownTimer.start()
-    }
-
-    private fun stopCountDown() {
-        synchronized(this) {
-            remainTimeSeconds = 0L
-            countDownTimer.cancel()
-        }
     }
 
 

@@ -42,7 +42,7 @@ class SignUpInfoInputFragment : Fragment() {
     private lateinit var signupRequestDto: SignupRequestDto
 
     private lateinit var countDownTimer: CountDownTimer
-    private val MAX_MINUTE = 1L
+    private val MAX_MINUTE = 3L
     private val MAX_VALID_TIME: Long = MAX_MINUTE * 60000 // MAX_MINUTE to millisecond
     private var remainTimeSeconds = 0L
 
@@ -78,11 +78,13 @@ class SignUpInfoInputFragment : Fragment() {
             // 이름
             user.name?.let {
                 binding.signupInfoNameEditText.setText(it)
+                binding.signupInfoNameTextInputLayout.isErrorEnabled = false
             }
 
             // 휴대폰 번호
             user.mobileNo?.let {
                 binding.signupInfoPhoneEditText.setText(it)
+                binding.signupInfoPhoneTextInputLayout.isErrorEnabled = false
             }
 
             // 생년월일
@@ -91,8 +93,8 @@ class SignUpInfoInputFragment : Fragment() {
             }
 
             // 성별
-            user.sexType?.let {
-                when (it) {
+            user.sexType.run {
+                when (this) {
                     GenderType.MALE -> {
                         binding.signupInfoSegmentRadioGroup.check(binding.signupInfoSegmentGenderM.id)
                     }
@@ -236,6 +238,7 @@ class SignUpInfoInputFragment : Fragment() {
         binding.signupInfoRequestCertButton.setOnClickListener {
             val mobileNo = binding.signupInfoPhoneEditText.text.toString().trim()
             viewModel.requestPhoneAuth(PhoneAuthRequestDto(mobileNo = mobileNo, authValue = ""))
+            hideKeyboard()
         }
 
         // 번호 인증 확인
@@ -415,6 +418,7 @@ class SignUpInfoInputFragment : Fragment() {
 
     // 인증번호 검증 시작
     private fun startCertification() {
+        binding.nextButton.isEnabled = false
         binding.signupInfoPhoneCertContainer.visibility = View.VISIBLE // 인증번호 필드 VISIBLE
         binding.signupInfoRequestCertButton.isEnabled = false // 요청버튼 비활성화
         binding.signupInfoCertEditText.text = null            // 인증번호 초기화

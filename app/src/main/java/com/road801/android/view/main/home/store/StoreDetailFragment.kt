@@ -56,7 +56,6 @@ class StoreDetailFragment : Fragment() {
     private fun initView() {
         // init permission
         permissionManager = PermissionManager.from(this@StoreDetailFragment)
-
     }
 
     private fun setListener() {
@@ -81,16 +80,8 @@ class StoreDetailFragment : Fragment() {
                         }
                     }
                 )
-
             } else {
-                permissionManager
-                    .request(Permission.Call)
-                    .rationale("전화 걸기 권한이 필요합니다.")
-                    .checkDetailedPermission { result ->
-                        if (result.all { it.value }) {
-                            startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.getTel()}")))
-                        }
-                    }
+                startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${viewModel.getTel()}")))
             }
         }
     }

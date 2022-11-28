@@ -229,7 +229,7 @@
                             style="@style/TextInputEditTextStyle"
                             android:hint="전화번호"
                             android:inputType="number"
-                            android:maxLength="13" />
+                            android:maxLength="11" />
                     </com.google.android.material.textfield.TextInputLayout>
 
 

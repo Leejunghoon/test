@@ -1,10 +1,14 @@
 package com.road801.android.view.main.me
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.navercorp.nid.log.toMessage
+import com.road801.android.BuildConfig
+import com.road801.android.common.util.extension.TAG
 import com.road801.android.data.network.dto.MeDto
 import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.SuccessResponseDto
@@ -198,8 +202,16 @@ class MeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-
-
+    // 푸시 아이디
+    public fun updateDeviceID(token: String) {
+        viewModelScope.launch {
+            try {
+                ServerRepository.deviceId(DeviceIdRequestDto("AOS", token))
+            } catch (exception: Exception) {
+                if (BuildConfig.DEBUG) Log.e(TAG, exception.toMessage())
+            }
+        }
+    }
 
 
     // 번호 인증 완료

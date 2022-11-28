@@ -20,6 +20,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import android.widget.Toolbar
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -222,14 +224,13 @@ fun Activity.showCalendar(callback: (String, String, String) -> Unit) {
         { view, y, m, d ->
             callback.invoke("$y","%02d".format(m.plus(1)),"%02d".format(d))
         }, year, month, day)
-
+    datePickerDialog.datePicker.maxDate = calendar.timeInMillis
     datePickerDialog.show()
 }
 
 fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
 }
-
 
 /**
  * MARK: - Fragment
@@ -283,6 +284,8 @@ fun Fragment.goToHome() {
  fun Fragment.showToast(message: String) {
      view?.let { activity?.showToast(message) }
 }
+
+
 
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager

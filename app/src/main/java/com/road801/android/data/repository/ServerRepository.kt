@@ -168,7 +168,7 @@ object ServerRepository {
     // 포인트 적립 내역 조회
     suspend fun pointHistory(requestDto: PaginationDto): CommonListResponseDto<PointHistoryDto> {
         try {
-            return api.pointHistory(requestDto.page,requestDto.size,requestDto.sort)
+            return api.pointHistory(requestDto.nextId,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -178,7 +178,7 @@ object ServerRepository {
     // 소식 목록 조회
     suspend fun news(requestDto: PaginationDto): CommonListResponseDto<NewsDto> {
         try {
-            return api.news(requestDto.page,requestDto.size,requestDto.sort)
+            return api.news(requestDto.nextId,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -194,9 +194,9 @@ object ServerRepository {
     }
 
     // 소식 목록 조회
-    suspend fun store(requestDto: PaginationDto): CommonListResponseDto<StoreDto> {
+    suspend fun store(): CommonListResponseDto<StoreDto> {
         try {
-            return api.store(requestDto.page,requestDto.size,requestDto.sort)
+            return api.store()
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -215,7 +215,7 @@ object ServerRepository {
     // 이벤트 목록 조회
     suspend fun event(requestDto: PaginationDto): CommonListResponseDto<EventDto> {
         try {
-            return api.event(requestDto.page,requestDto.size,requestDto.sort)
+            return api.event(requestDto.nextId,requestDto.size,requestDto.sort)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }

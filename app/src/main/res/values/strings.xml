@@ -35,7 +35,7 @@
     <string name="input_empty_cert">인증번호를 입력해주세요.</string>
 
     <string name="input_valid_id">아이디는 문자와 숫자(8~20자) 가능합니다.</string>
-    <string name="input_valid_name">이름은 한글 또는 영문만 가능합니다.</string>
+    <string name="input_valid_name">이름은 한글 또는 영문만(최소 2자 이상) 가능합니다.</string>
     <string name="input_valid_phone">휴대폰번호 형식이 올바르지 않습니다.</string>
     <string name="input_valid_pw">비밀번호는 숫자와 문자(10~20자) 특수문자 포함 가능합니다.</string>
     <string name="input_valid_not_equal_pw">비밀번호가 일치하지 않습니다.</string>
@@ -62,4 +62,5 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="change_phone_tip">휴대폰번호 변경시 \n<b>변경된 휴대폰번호</b>로 로그인 아이디가 변경됩니다.\n간편가입(SNS) 회원은 해당사항 없음</string>
 </resources>

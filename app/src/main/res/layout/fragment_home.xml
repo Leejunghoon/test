@@ -156,6 +156,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/white"
                             android:scaleType="fitXY"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@+id/home_segment_radio_group"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -168,7 +169,6 @@
                             android:layout_marginTop="10dp"
                             android:background="@color/white"
                             android:scaleType="fitXY"
-                            android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@+id/home_barcode_text_view"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +184,6 @@
                             android:textColor="@color/black"
                             android:textSize="14dp"
                             android:textStyle="bold"
-                            android:visibility="gone"
                             app:layout_constraintBottom_toTopOf="@+id/home_segment_radio_group"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent" />

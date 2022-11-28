@@ -64,14 +64,14 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_me_fragment_to_alarmFragment"
             app:destination="@id/alarmFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
 
     </fragment>
     <fragment
@@ -187,14 +187,21 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_profileFragment_to_changePhoneFragment"
+            app:destination="@id/changePhoneFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
 
     </fragment>
     <fragment
         android:id="@+id/homeBaseWebView"
         android:name="com.road801.android.view.BaseWebView"
-        tools:layout="@layout/fragment_base_web_view"
-        android:label="BaseWebView" >
+        android:label="BaseWebView"
+        tools:layout="@layout/fragment_base_web_view">
         <argument
             android:name="title"
             app:argType="string" />
@@ -213,18 +220,23 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/alarmFragment"
         android:name="com.road801.android.view.main.me.alarm.AlarmFragment"
         android:label="AlarmFragment"
-        tools:layout="@layout/fragment_alarm"/>
+        tools:layout="@layout/fragment_alarm" />
     <fragment
         android:id="@+id/homeFindPasswordFragment"
-        android:name="com.road801.android.view.main.me.find.password.HomeFindPasswordFragment"
+        android:name="com.road801.android.view.main.me.change.password.HomeFindPasswordFragment"
         android:label="HomeFindPasswordFragment"
-        tools:layout="@layout/fragment_home_find_password"/>
+        tools:layout="@layout/fragment_home_find_password" />
+    <fragment
+        android:id="@+id/changePhoneFragment"
+        android:name="com.road801.android.view.main.me.change.phone.ChangePhoneFragment"
+        android:label="ChangePhoneFragment"
+        tools:layout="@layout/fragment_change_phone" />
 
 
 </navigation>

@@ -7,8 +7,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.databinding.ktx.BuildConfig
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,13 +18,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
-import com.road801.android.BuildConfig
 import com.road801.android.common.enum.GenderType
-import com.road801.android.common.enum.SignupType
 import com.road801.android.common.enum.LoginType
+import com.road801.android.common.enum.SignupType
 import com.road801.android.common.util.extension.TAG
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
+import com.road801.android.common.util.extension.showToast
 import com.road801.android.data.network.dto.UserDto
 import com.road801.android.databinding.FragmentIntroBinding
 import com.road801.android.domain.transfer.Resource
@@ -33,11 +35,15 @@ class IntroFragment : Fragment() {
     private lateinit var binding: FragmentIntroBinding
     private val viewModel: IntroViewModel by activityViewModels()
 
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
+
     private lateinit var googleResultLauncher: ActivityResultLauncher<Intent> // for google login
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerForActivityResult()
+        setOnBackPressed()
     }
 
     override fun onCreateView(
@@ -128,8 +134,24 @@ class IntroFragment : Fragment() {
                 }
             }
         }
+    }
 
-
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val tempTime = System.currentTimeMillis();
+                    val intervalTime = tempTime - backPressedTime;
+                    if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+                        super.setEnabled(false)
+                    } else {
+                        backPressedTime = tempTime;
+                        showToast("'뒤로' 버튼을 한 번 더 누르면 종료됩니다.")
+                        return
+                    }
+                }
+            })
     }
 
     // google login callback

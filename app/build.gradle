@@ -6,6 +6,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -71,6 +72,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinVersion"
@@ -95,7 +98,7 @@ dependencies {
     implementation 'com.navercorp.nid:oauth:5.1.0' // jdk 11 (5.2버전은 액티비티 이슈가 있음.)
 
     // 구글 로그인
-    implementation 'com.google.android.gms:play-services-auth:20.3.0'
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
     // 바코드 라이브러리
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'

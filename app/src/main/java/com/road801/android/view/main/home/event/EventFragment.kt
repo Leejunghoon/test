@@ -27,6 +27,8 @@ class EventFragment: Fragment() {
     private lateinit var binding: FragmentEventBinding
     private val viewModel: EventViewModel by viewModels()
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +53,11 @@ class EventFragment: Fragment() {
         bindViewModel()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.onDestroyView()
+    }
+
     private fun initView() {
         initRecyclerView()
     }
@@ -69,16 +76,20 @@ class EventFragment: Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if(!binding.recyclerView.canScrollVertically(1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
+                        viewModel.requestMoreEvent()
                 }
             }
         })
     }
 
     private fun bindEvent(items: List<EventDto>) {
-        binding.recyclerView.adapter = EventRecyclerAdapter(items) {
+        binding.recyclerView.adapter = EventRecyclerAdapter(items.sortedByDescending { it.id }) {
             // 이벤트 상세로 이동
             findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
+        }
+
+        if (items.size > 20) {
+            binding.recyclerView.smoothScrollToPosition(items.size-1)
         }
     }
 
