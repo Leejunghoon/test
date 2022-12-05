@@ -30,14 +30,13 @@ class SplashActivity : AppCompatActivity() {
 
         val activityScope = CoroutineScope(Dispatchers.Main)
         activityScope.launch {
-            delay(1000)
+            delay(1500)
             if (!checkPermission(CALL_PHONE) || !checkPermission(READ_EXTERNAL_STORAGE)) {
                 requestPermission()
             } else {
                 moveNextScreen()
             }
         }
-
     }
 
     private fun moveNextScreen() {
@@ -50,8 +49,8 @@ class SplashActivity : AppCompatActivity() {
 
 
     private fun checkPermission(permission: String): Boolean {
-        val cameraPermission = ContextCompat.checkSelfPermission(this, permission)
-        return cameraPermission == PackageManager.PERMISSION_GRANTED
+        val hasPermission = ContextCompat.checkSelfPermission(this, permission)
+        return hasPermission == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {

@@ -43,7 +43,7 @@ class IntroFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerForActivityResult()
-        setOnBackPressed()
+        setFinishDoubleBack()
     }
 
     override fun onCreateView(
@@ -136,7 +136,7 @@ class IntroFragment : Fragment() {
         }
     }
 
-    private fun setOnBackPressed() {
+    private fun setFinishDoubleBack() {
         activity?.onBackPressedDispatcher?.addCallback(
             this,
             object : OnBackPressedCallback(true) {

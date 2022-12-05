@@ -45,7 +45,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setOnBackPressed()
+        setFinishDoubleBack()
 
         RoadFirebaseMessagingService.geToken {
             meViewModel.updateDeviceID(it)
@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
         bindViewModel()
     }
 
-    private fun setOnBackPressed() {
+    private fun setFinishDoubleBack() {
         activity?.onBackPressedDispatcher?.addCallback(
             this,
             object : OnBackPressedCallback(true) {
@@ -92,8 +92,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun initPager() {
-        newsPagerAdapter = HomeNewsPagerAdapter()
-        eventPagerAdapter = HomeEventPagerAdapter()
+        newsPagerAdapter = HomeNewsPagerAdapter() {
+            // 소식 상세로 이동
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsDetailFragment(it.id))
+        }
+        eventPagerAdapter = HomeEventPagerAdapter() {
+            // 이벤트 상세로 이동
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(it.id))
+        }
 
         binding.homeNewsViewPager.adapter = newsPagerAdapter
         binding.homeEventViewPager.adapter = eventPagerAdapter

@@ -63,7 +63,7 @@
             android:id="@+id/intro_sns_google_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@drawable/ic_sns_google"
+            android:background="@drawable/round_stoke_circle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/intro_sns_kakao_button"

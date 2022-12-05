@@ -107,7 +107,10 @@ object SnsRepository {
 //                googleSignInClient.signOut()
                 callback.invoke()
             }
-            else -> UInt
+            else -> {
+                if(BuildConfig.DEBUG) Log.d(TAG, "[일반] 로그아웃 성공")
+                callback.invoke()
+            }
         }
     }
 

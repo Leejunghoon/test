@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.road801.android.common.util.extension.goToSystemSettingActivity
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.permission.Permission
@@ -119,12 +121,12 @@ class StoreDetailFragment : Fragment() {
                 append(item.phone)
             }
 
-
-//        if (item.image.isNullOrEmpty().not()) {
-//            Glide.with(requireContext())
-//                .load(item.image)
-//                .centerCrop()
-//                .into(binding.newDetailImageView)
-//        }
+        item.image?.let {
+            Glide.with(requireContext())
+                .load(item.image)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.storeDetailImageView)
+        }
     }
+
 }

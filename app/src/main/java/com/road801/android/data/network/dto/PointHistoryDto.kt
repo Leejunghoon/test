@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PointHistoryDto(
+    val productName: String,
     val storeName: String,
     val logType: CodeDto,
     val requestDt: String,

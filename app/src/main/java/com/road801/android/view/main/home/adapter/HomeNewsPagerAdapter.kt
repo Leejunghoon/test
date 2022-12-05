@@ -29,9 +29,6 @@ class HomeNewsPagerAdapter(private val onClick: ((item: NewsDto) -> Unit)? = nul
         fun bind(item: NewsDto) {
             binding.itemHomeEventTitleTextView.text = item.title
             binding.itemHomeEventDateTextView.text = buildString {
-                append(item.writeDt?.formatted("기간 "))
-                append(item.writeDt?.formatted("yyyy.MM.dd"))
-                append(" ~ ")
                 append(item.writeDt?.formatted("yyyy.MM.dd"))
             }
 

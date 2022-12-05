@@ -22,7 +22,7 @@ class NewsRecyclerAdapter(private val items: List<NewsDto>,
         fun bind(item: NewsDto) {
             binding.itemEventTitleTextView.text = item.title
             binding.itemEventSubTextView.visibility = View.GONE
-            binding.itemEventDateTextView.text = item.writeDt.formatted("yyyy.MM.dd")
+            binding.itemEventDateTextView.text = item.writeDt?.formatted("yyyy.MM.dd")
 
             if(item.thumbnail.isNullOrEmpty().not()) {
                 binding.itemEventImageView.visibility = View.VISIBLE

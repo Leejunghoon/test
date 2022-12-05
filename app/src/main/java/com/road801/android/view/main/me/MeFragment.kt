@@ -96,7 +96,14 @@ class MeFragment : Fragment() {
                 SettingType.TERMS -> findNavController().navigate(MeFragmentDirections.actionMeFragmentToTermsFragment())
                 SettingType.LOGOUT -> {
 
-                    SnsRepository.logout(LoginType.valueOf(meDto.socialType.code)) {
+                    // 회원가입 종류
+                    val signupType: LoginType = if (meDto.socialType == null) {
+                        LoginType.valueOf(meDto.signupType.code)
+                    } else {
+                        LoginType.valueOf(meDto.socialType.code)
+                    }
+
+                    SnsRepository.logout(signupType) {
                         showDialog(
                             parentFragmentManager,
                             title = "로드801",

@@ -2,7 +2,7 @@ package com.road801.android.common
 
 object Constants {
     // 버드컵 서버 관련
-    const val BASE_URL = "http://3.35.171.45:9011/"
+    const val BASE_URL = "https://api-mobile.road801.net/"
     const val API_VERSION = "v1/api/"
 
     // 본인인증 패스 관련

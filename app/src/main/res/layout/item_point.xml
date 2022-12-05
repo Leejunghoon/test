@@ -54,16 +54,23 @@
 
 
             <TextView
+                android:id="@+id/item_point_product_name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13dp"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/item_point_title_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/item_point_title_text_view" />
+            <TextView
                 android:id="@+id/item_point_point_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="적립"
                 android:textSize="13dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/item_point_date_text_view"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5"
-                app:srcCompat="@drawable/sample_qr" />
+                app:layout_constraintTop_toTopOf="@+id/item_point_date_text_view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
