@@ -16,12 +16,7 @@ class HomeEventPagerAdapter(private val onClick: ((item: EventDto) -> Unit)? = n
 
     private var items: List<EventDto> = emptyList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = ItemHomeEventBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-
-        return ViewHolder(itemView)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(ItemHomeEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = items.size
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])

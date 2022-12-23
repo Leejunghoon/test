@@ -48,6 +48,8 @@ class HomeFragment : Fragment() {
 
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
+
+    private lateinit var permissionManager: PermissionManager
     private lateinit var newsPagerAdapter: HomeNewsPagerAdapter
     private lateinit var eventPagerAdapter: HomeEventPagerAdapter
 
@@ -96,6 +98,7 @@ class HomeFragment : Fragment() {
             })
     }
     private fun initView() {
+        permissionManager = PermissionManager.from(this@HomeFragment)
         binding.homeSegmentRadioGroup.check(binding.homeSegmentBarcode.id)
     }
 
@@ -244,7 +247,6 @@ class HomeFragment : Fragment() {
         }
 
         binding.homeRoadCallImageView.setOnClickListener {
-            val permissionManager = PermissionManager.from(this@HomeFragment)
             if (permissionManager.hasPermission(this, Manifest.permission.CALL_PHONE).not()) {
                 showDialog(
                     parentFragmentManager,
