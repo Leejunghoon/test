@@ -295,43 +295,44 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/home_news_view_pager"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_road_news_more_button" />
-
-                    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-                        android:id="@+id/home_news_indicator"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:dotsColor="@color/secondary_color"
-                        app:dotsCornerRadius="8dp"
-                        app:dotsSize="8dp"
-                        app:dotsSpacing="2dp"
-                        app:dotsStrokeColor="@color/disabled_gray"
-                        app:dotsStrokeWidth="1dp"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_news_view_pager" />
+                        app:layout_constraintTop_toBottomOf="@+id/home_road_news_more_button"
+                        app:layout_constraintVertical_bias="0.0" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/home_road_call_image_view"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="105dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/road801_store"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/home_road_new_container" />
+
 
                 <!-- 이벤트 영역 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/home_road_event_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/home_road_new_container">
+                    app:layout_constraintTop_toBottomOf="@+id/home_road_call_image_view">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -362,32 +363,17 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/home_event_view_pager"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:clipChildren="false"
-                        android:clipToPadding="false"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/home_road_event_more_button" />
 
-                    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-                        android:id="@+id/home_event_indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="10dp"
-                        app:dotsColor="@color/secondary_color"
-                        app:dotsCornerRadius="8dp"
-                        app:dotsSize="8dp"
-                        app:dotsSpacing="2dp"
-                        app:dotsStrokeColor="@color/disabled_gray"
-                        app:dotsStrokeWidth="1dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_event_view_pager" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

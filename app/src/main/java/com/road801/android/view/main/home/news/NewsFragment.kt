@@ -1,14 +1,14 @@
 package com.road801.android.view.main.home.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.showDialog
@@ -17,7 +17,6 @@ import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.FragmentNewsBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.main.home.adapter.NewsRecyclerAdapter
-import com.road801.android.view.main.home.event.EventFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -89,8 +88,10 @@ class NewsFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
+        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._20dp).toInt())
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), VERTICAL)
         binding.recyclerView.addItemDecoration(spaceDecoration)
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
         binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -106,21 +107,24 @@ class NewsFragment : Fragment() {
     private fun bindNews(items: List<NewsDto>) {
         val SCREEN_STORE_GUIDE = 99999 // 매장안내
         val sortedItems = items.plusElement(makeFixNews()).sortedByDescending { it.id }
+        val beforeItemCount = binding.recyclerView.adapter?.itemCount
+
         binding.recyclerView.adapter = NewsRecyclerAdapter(sortedItems) {
             // item onClick
             if (it.id == SCREEN_STORE_GUIDE) findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToStoreFragment())
             else  findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
         }
 
-        if (items.size > 20) {
-            binding.recyclerView.smoothScrollToPosition(items.size-1)
+        beforeItemCount?.let {
+            if (items.size > 20) binding.recyclerView.smoothScrollToPosition(beforeItemCount+1)
         }
     }
 
     private fun makeFixNews(): NewsDto {
         return NewsDto(99999, title = "매장 안내",
             thumbnail = "https://d20d7iuoaqw83y.cloudfront.net/ICON/gas-pump.png",
-            writeDt = "", )
+            writeDt = "",
+            content = "")
     }
 
 

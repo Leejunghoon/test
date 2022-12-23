@@ -76,11 +76,14 @@ class PointFragment : Fragment() {
 
     private fun bindPointHistory(items: List<PointHistoryDto>) {
         binding.pointEmptyContainer.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+
+        val beforeItemCount = binding.recyclerView.adapter?.itemCount
         binding.recyclerView.adapter = PointRecyclerAdapter(items.sortedByDescending { it.requestDt })
 
-        if (items.size > 20) {
-            binding.recyclerView.smoothScrollToPosition(items.size-1)
+        beforeItemCount?.let {
+            if (items.size > 20) binding.recyclerView.smoothScrollToPosition(beforeItemCount+1)
         }
+
     }
 
 

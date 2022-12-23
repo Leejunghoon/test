@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.road801.android.common.enum.SignupType
 import com.road801.android.databinding.FragmentFindIdBinding
-import com.road801.android.view.intro.login.LoginFragmentDirections
 
 /**
  * MARK: - 아이디 찾기  [ 인증 ]

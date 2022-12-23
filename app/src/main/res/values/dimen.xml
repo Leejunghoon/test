@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="page_offset">0dp</dimen>
+    <dimen name="page_offset">10dp</dimen>
     <dimen name="_12dp">12dp</dimen>
     <dimen name="_20dp">20dp</dimen>
     <dimen name="_32dp">32dp</dimen>

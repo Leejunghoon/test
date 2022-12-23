@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/item_home_event_title_text_view"
+                android:id="@+id/item_news_event_title_text_view"
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:text="title"
@@ -31,19 +31,20 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_home_event_image_view" />
+                app:layout_constraintTop_toBottomOf="@+id/item_news_event_image_view" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/item_home_event_image_view"
+                android:id="@+id/item_news_event_image_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
-                app:layout_constraintDimensionRatio="1:1.4"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/sample_news" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

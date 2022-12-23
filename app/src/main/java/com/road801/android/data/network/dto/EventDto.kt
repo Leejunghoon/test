@@ -8,6 +8,7 @@ data class EventDto(
     val id: Int,
     val title: String,
     val content: String,
+    val thumbnail: String?,
     val image: String?,
     val startDt: String?,
     val endDt: String?,

@@ -38,7 +38,7 @@ class RoadFirebaseMessagingService : FirebaseMessagingService() {
 
                 // Get new FCM registration token
                 val token = task.result
-                if(BuildConfig.DEBUG) Log.d(TAG, token)
+                if(BuildConfig.DEBUG) Log.  d(TAG, token)
                 callback.invoke(token)
             })
         }

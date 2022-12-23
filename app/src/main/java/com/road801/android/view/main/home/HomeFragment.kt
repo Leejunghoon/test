@@ -1,5 +1,8 @@
 package com.road801.android.view.main.home
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +13,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.HORIZONTAL
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.zxing.BarcodeFormat
 import com.road801.android.R
 import com.road801.android.common.fcm.RoadFirebaseMessagingService
 import com.road801.android.common.util.extension.*
-import com.road801.android.common.util.transformer.ZoomOutPageTransformer
+import com.road801.android.common.util.permission.PermissionManager
+import com.road801.android.common.util.transformer.ItemHorizontalDecoration
 import com.road801.android.data.network.dto.EventDto
 import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.data.network.dto.response.HomeEventResponseDto
@@ -24,10 +31,12 @@ import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.dialog.EventDialog
+import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.home.adapter.HomeEventPagerAdapter
 import com.road801.android.view.main.home.adapter.HomeNewsPagerAdapter
 import com.road801.android.view.main.me.MeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.roundToInt
 
 
 @AndroidEntryPoint
@@ -39,7 +48,6 @@ class HomeFragment : Fragment() {
 
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
-
     private lateinit var newsPagerAdapter: HomeNewsPagerAdapter
     private lateinit var eventPagerAdapter: HomeEventPagerAdapter
 
@@ -101,19 +109,38 @@ class HomeFragment : Fragment() {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventDetailFragment(it.id))
         }
 
+        val newsManager = object : LinearLayoutManager(requireContext()) {
+            override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+                val width = (width * 0.6).roundToInt()
+                val height = (width + requireContext().resources.getDimension(R.dimen._20dp)).roundToInt()
+                lp.width = width
+                lp.height = height
+                return true
+            }
+        }
+
+        val eventManager = object : LinearLayoutManager(requireContext()) {
+            override fun checkLayoutParams(lp: RecyclerView.LayoutParams): Boolean {
+                val width = (width * 0.6).roundToInt()
+                val height = ((width * 1.4) + requireContext().resources.getDimension(R.dimen._20dp)).roundToInt()
+                lp.width = width
+                lp.height = height
+                return true
+            }
+        }
+
+        newsManager.orientation = HORIZONTAL
+        eventManager.orientation = HORIZONTAL
+
+        binding.homeNewsViewPager.layoutManager = newsManager
+        binding.homeEventViewPager.layoutManager = eventManager
+
+        binding.homeNewsViewPager.addItemDecoration(ItemHorizontalDecoration(requireContext().resources.getDimension(R.dimen.page_offset).toInt()))
+        binding.homeEventViewPager.addItemDecoration(ItemHorizontalDecoration(requireContext().resources.getDimension(R.dimen.page_offset).toInt()))
+
         binding.homeNewsViewPager.adapter = newsPagerAdapter
         binding.homeEventViewPager.adapter = eventPagerAdapter
 
-        binding.homeNewsViewPager.offscreenPageLimit = 3
-        binding.homeNewsViewPager.setPageTransformer(ZoomOutPageTransformer())
-
-        binding.homeEventViewPager.offscreenPageLimit = 3
-        binding.homeEventViewPager.setPageTransformer(ZoomOutPageTransformer())
-
-        binding.homeNewsIndicator.isAttachedToWindow.not().apply {
-            binding.homeNewsIndicator.attachTo(binding.homeNewsViewPager)
-            binding.homeEventIndicator.attachTo(binding.homeEventViewPager)
-        }
     }
 
     private fun setupPager(news: List<NewsDto>, events: List<EventDto>) {
@@ -213,6 +240,29 @@ class HomeFragment : Fragment() {
                         binding.homeBarcodeTextView.visibility = View.VISIBLE
                     }
                 }
+            }
+        }
+
+        binding.homeRoadCallImageView.setOnClickListener {
+            val permissionManager = PermissionManager.from(this@HomeFragment)
+            if (permissionManager.hasPermission(this, Manifest.permission.CALL_PHONE).not()) {
+                showDialog(
+                    parentFragmentManager,
+                    title = "권한 알림",
+                    "로드801 설정에서 전화 권한을 수락해주세요.",
+                    cancelButtonTitle = "거부하기",
+                    confirmButtonTitle = "설정하기",
+                    listener = object : RoadDialog.OnDialogListener {
+                        override fun onCancel() {
+                        }
+
+                        override fun onConfirm() {
+                            goToSystemSettingActivity()
+                        }
+                    }
+                )
+            } else {
+                startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:0328132000")))
             }
         }
     }

@@ -11,6 +11,7 @@ class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) :
         outRect: Rect, view: View, parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        outRect.top = verticalSpaceHeight
         outRect.bottom = verticalSpaceHeight
     }
 }

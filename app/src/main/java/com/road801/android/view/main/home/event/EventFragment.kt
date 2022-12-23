@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.TAG
@@ -69,8 +70,10 @@ class EventFragment: Fragment() {
     }
 
     private fun initRecyclerView() {
-        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._12dp).toInt())
+        val spaceDecoration = VerticalSpaceItemDecoration(resources.getDimension(R.dimen._20dp).toInt())
+        val dividerItemDecoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
         binding.recyclerView.addItemDecoration(spaceDecoration)
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
         binding.recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -83,13 +86,13 @@ class EventFragment: Fragment() {
     }
 
     private fun bindEvent(items: List<EventDto>) {
+        val beforeItemCount = binding.recyclerView.adapter?.itemCount
         binding.recyclerView.adapter = EventRecyclerAdapter(items.sortedByDescending { it.id }) {
             // 이벤트 상세로 이동
             findNavController().navigate(EventFragmentDirections.actionEventFragmentToEventDetailFragment(it.id))
         }
-
-        if (items.size > 20) {
-            binding.recyclerView.smoothScrollToPosition(items.size-1)
+        beforeItemCount?.let {
+            if (items.size > 20) binding.recyclerView.smoothScrollToPosition(beforeItemCount+1)
         }
     }
 

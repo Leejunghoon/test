@@ -99,7 +99,7 @@ class WithdrawalReasonFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        showToast("회원탈퇴가 완료되었습니다.")
+                        showToast("회원 탈퇴가 완료되었습니다.")
                         LocalDatabase.logOut()
                         goToIntro()
                     }

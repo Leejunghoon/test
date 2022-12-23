@@ -127,7 +127,7 @@ class EventDetailFragment: Fragment() {
 
         item.image?.let {
             Glide.with(requireContext())
-                .load(item.image)
+                .load(it)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.eventDetailImageView)
         }

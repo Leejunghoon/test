@@ -15,8 +15,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:paddingStart="@dimen/_20dp"
+            android:paddingEnd="@dimen/_20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,55 +24,55 @@
 
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/item_event_image_view"
+                android:id="@+id/item_news_image_view"
                 android:layout_width="100dp"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1.4"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/item_event_title_text_view"
+                android:id="@+id/item_news_title_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:text="title"
+                android:layout_marginStart="10dp"
                 android:textColor="@color/black"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/item_event_image_view"
-                app:layout_constraintTop_toTopOf="@+id/item_event_image_view" />
+                app:layout_constraintStart_toEndOf="@+id/item_news_image_view"
+                app:layout_constraintTop_toTopOf="@+id/item_news_image_view" />
 
             <TextView
-                android:id="@+id/item_event_date_text_view"
+                android:id="@+id/item_news_date_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="date"
+                android:layout_marginTop="4dp"
                 android:textColor="@color/selected_gray"
                 android:textSize="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/item_event_title_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/item_event_title_text_view" />
+                app:layout_constraintStart_toStartOf="@+id/item_news_title_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/item_news_title_text_view" />
 
             <TextView
-                android:id="@+id/item_event_content_text_view"
+                android:id="@+id/item_news_content_text_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="4dp"
-                android:ellipsize="end"
-                android:lines="5"
                 android:text="내용"
+                android:ellipsize="end"
+                android:lines="3"
                 android:textColor="@color/primary_gray"
                 android:textSize="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/item_event_date_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/item_event_date_text_view" />
+                app:layout_constraintStart_toStartOf="@+id/item_news_date_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/item_news_date_text_view" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,7 +20,6 @@ class EventRecyclerAdapter(private val items: List<EventDto>,
 
     inner class ViewHolder(private val binding: ItemEventBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EventDto) {
-            binding.itemEventSubTextView.visibility = View.GONE
             binding.itemEventTitleTextView.text = item.title
             binding.itemEventDateTextView.text = buildString {
                 append(item.startDt?.formatted("기간 "))
@@ -28,9 +27,10 @@ class EventRecyclerAdapter(private val items: List<EventDto>,
                 append(" ~ ")
                 append(item.endDt?.formatted("yyyy.MM.dd"))
             }
+            binding.itemEventContentTextView.text = item.content
 
-            item.image?.let {
-                Glide.with(binding.itemEventImageView.context)
+            item.thumbnail?.let {
+                Glide.with(binding.root.context)
                     .load(it)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(binding.itemEventImageView)

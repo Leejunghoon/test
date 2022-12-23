@@ -8,6 +8,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.road801.android.common.util.extension.formatted
 import com.road801.android.data.network.dto.NewsDto
 import com.road801.android.databinding.ItemHomeEventBinding
+import com.road801.android.databinding.ItemHomeNewsBinding
 
 /**
  * MARK: - 홈 화면 소식 어댑터
@@ -19,24 +20,25 @@ class HomeNewsPagerAdapter(private val onClick: ((item: NewsDto) -> Unit)? = nul
     private var items: List<NewsDto> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(ItemHomeEventBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        ViewHolder(ItemHomeNewsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = items.size
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(items[position])
 
-    inner class ViewHolder(private val binding: ItemHomeEventBinding) :
+    inner class ViewHolder(private val binding: ItemHomeNewsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: NewsDto) {
-            binding.itemHomeEventTitleTextView.text = item.title
-            binding.itemHomeEventDateTextView.text = buildString {
-                append(item.writeDt?.formatted("yyyy.MM.dd"))
-            }
+            binding.itemNewsEventTitleTextView.text = item.title
+//            binding.itemHomeEventDateTextView.text = buildString {
+//                append(item.writeDt?.formatted("yyyy.MM.dd"))
+//            }
 
             item.thumbnail?.let {
-                Glide.with(binding.itemHomeEventImageView.context)
+                Glide.with(binding.root.context)
                     .load(it)
+                    .centerCrop()
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(binding.itemHomeEventImageView)
+                    .into(binding.itemNewsEventImageView)
             }
 
             itemView.setOnClickListener {

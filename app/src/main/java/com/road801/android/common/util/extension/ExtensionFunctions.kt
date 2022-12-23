@@ -62,7 +62,10 @@ fun bindNavigateUp(toolbar: Toolbar, listener: View.OnClickListener) {
 }
 
 
-fun String.formatted(pattern: String): String {
+
+
+
+fun String?.formatted(pattern: String): String {
     if(this.isNullOrEmpty()) return ""
     try {
         val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
