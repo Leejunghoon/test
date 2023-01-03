@@ -173,6 +173,16 @@ interface Api {
     suspend fun withdrawal(@Body params: WithdrawalRequestDto): SuccessResponseDto
 
     /**
+     * 토큰 갱신
+     *
+     * @return LoginResponseDto
+     */
+    @BearerToken
+    @POST("customer/me/token")
+    suspend fun refreshToken(): LoginResponseDto
+
+
+    /**
      * 푸쉬 ID 저장
      *
      * @param params DeviceIdRequestDto
@@ -313,4 +323,17 @@ interface Api {
     @BearerToken
     @POST("customer/event/{eventId}/receive")
     suspend fun eventEnter(@Path("eventId") eventId: Int): PointDto
+
+
+    // MARK - Alert -------------------------------------------------- -------------------------------------------------- --------------------------------------------------
+    /**
+     * 알림 목록 조회
+     *
+     * @param params PaginationDto
+     * @return CommonListResponseDto<AlertDto>
+     */
+    @BearerToken
+    @GET("customer/alert")
+    suspend fun alert(@Query("nextId") nextId: Int?, @Query("size") size: Int): CommonListResponseDto<AlertDto>
+
 }

@@ -193,7 +193,7 @@ object ServerRepository {
         }
     }
 
-    // 소식 목록 조회
+    // 매장 목록 조회
     suspend fun store(): CommonListResponseDto<StoreDto> {
         try {
             return api.store()
@@ -202,10 +202,19 @@ object ServerRepository {
         }
     }
 
-    // 소식 상세 조회
+    // 매장 상세 조회
     suspend fun storeDetail(storeId: Int): StoreDetailDto {
         try {
             return api.storeDetail(storeId)
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
+
+    // 알림 목록 조회
+    suspend fun alert(requestDto: PaginationDto): CommonListResponseDto<AlertDto> {
+        try {
+            return api.alert(requestDto.nextId,requestDto.size)
         } catch (exception: Exception) {
             throw toDomainException(exception)
         }
@@ -338,5 +347,13 @@ object ServerRepository {
         }
     }
 
+    //  토큰 갱신
+    suspend fun refreshToken(): LoginResponseDto {
+        try {
+            return api.refreshToken()
+        } catch (exception: Exception) {
+            throw toDomainException(exception)
+        }
+    }
 
 }

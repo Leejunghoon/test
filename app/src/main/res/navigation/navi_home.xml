@@ -38,6 +38,20 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_home_fragment_to_storeFragment"
+            app:destination="@id/storeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_home_fragment_to_alertFragment"
+            app:destination="@id/alertFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -245,6 +259,11 @@
         android:name="com.road801.android.view.main.me.change.phone.ChangePhoneFragment"
         android:label="ChangePhoneFragment"
         tools:layout="@layout/fragment_change_phone" />
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.road801.android.view.main.home.alert.AlertFragment"
+        android:label="AlertFragment"
+        tools:layout="@layout/fragment_alert"/>
 
 
 </navigation>

@@ -82,6 +82,7 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpLoggingVersion"
 
     // Glide
@@ -95,7 +96,7 @@ dependencies {
 
     //네이버 로그인
 //    implementation 'com.navercorp.nid:oauth-jdk8:5.1.0' // jdk 8
-    implementation 'com.navercorp.nid:oauth:5.1.0' // jdk 11 (5.2버전은 액티비티 이슈가 있음.)
+    implementation 'com.navercorp.nid:oauth:5.3.0' // jdk 11
 
     // 구글 로그인
     implementation 'com.google.android.gms:play-services-auth:20.4.0'

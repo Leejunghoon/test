@@ -37,6 +37,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                 _homeInfo.value = Event(Resource.Loading)
                 val result = ServerRepository.home()
                 _homeInfo.value = Event(Resource.Success(result))
+                LocalDatabase.saveAlertCount(result.alertCount)
             } catch (domainException: DomainException) {
                 _homeInfo.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -60,13 +61,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    public fun findNews() {
+    public fun findNewAlert() {
         viewModelScope.launch {
             try {
                 _isNew.value = Event(Resource.Loading)
-                _isNew.value = Event(Resource.Success(checkNewNews()))
-                // 최근 데이터로 저장.
-                LocalDatabase.savePreviousNewsSize(LocalDatabase.fetchNewsSize())
+                _isNew.value = Event(Resource.Success(checkNewAlert()))
+
             } catch (domainException: DomainException) {
                 _isNew.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -76,8 +76,8 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    //새로운 소식이 있는지 여부
-    private fun checkNewNews() = LocalDatabase.fetchNewsSize() > LocalDatabase.fetchPreviousNewsSize()
+    //새로운 알림이 있는지 여부
+    private fun checkNewAlert() = LocalDatabase.fetchAlertCount() > 0
 
 
 }

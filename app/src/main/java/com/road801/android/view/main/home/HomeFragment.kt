@@ -1,8 +1,5 @@
 package com.road801.android.view.main.home
 
-import android.Manifest
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +28,6 @@ import com.road801.android.data.network.dto.response.HomeResponseDto
 import com.road801.android.databinding.FragmentHomeBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.dialog.EventDialog
-import com.road801.android.view.dialog.RoadDialog
 import com.road801.android.view.main.home.adapter.HomeEventPagerAdapter
 import com.road801.android.view.main.home.adapter.HomeNewsPagerAdapter
 import com.road801.android.view.main.me.MeViewModel
@@ -154,7 +150,7 @@ class HomeFragment : Fragment() {
     private fun bindViewModel() {
         viewModel.requestHomeInfo()
         viewModel.requestHomeEventInfo()
-        viewModel.findNews()
+        viewModel.findNewAlert()
 
         viewModel.homeInfo.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
@@ -213,18 +209,26 @@ class HomeFragment : Fragment() {
     }
 
     private fun setListener() {
-        // 소식
-        binding.homeNewsContainer.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
+        // 알림
+        binding.homeAlertContainer.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToAlertFragment())
         }
+
         // 소식 더보기
         binding.homeRoadNewsMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewsFragment())
         }
+
         // 이벤트 더보기
         binding.homeRoadEventMoreButton.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToEventFragment())
         }
+
+        // 로드 801 예약하기
+        binding.homeRoadCallImageView.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToStoreFragment())
+        }
+
         // QR, 바코드 선택
         binding.homeSegmentRadioGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             when (checkedId) {
@@ -246,27 +250,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        binding.homeRoadCallImageView.setOnClickListener {
-            if (permissionManager.hasPermission(this, Manifest.permission.CALL_PHONE).not()) {
-                showDialog(
-                    parentFragmentManager,
-                    title = "권한 알림",
-                    "로드801 설정에서 전화 권한을 수락해주세요.",
-                    cancelButtonTitle = "거부하기",
-                    confirmButtonTitle = "설정하기",
-                    listener = object : RoadDialog.OnDialogListener {
-                        override fun onCancel() {
-                        }
 
-                        override fun onConfirm() {
-                            goToSystemSettingActivity()
-                        }
-                    }
-                )
-            } else {
-                startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:0328132000")))
-            }
-        }
     }
 
     private fun bindHomeInfo(item: HomeResponseDto) {

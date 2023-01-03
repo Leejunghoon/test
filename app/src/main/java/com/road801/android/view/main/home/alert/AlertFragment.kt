@@ -1,9 +1,11 @@
-package com.road801.android.view.main.home.news
+package com.road801.android.view.main.home.alert
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
+import androidx.annotation.IntDef
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,17 +15,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.road801.android.R
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.transformer.VerticalSpaceItemDecoration
-import com.road801.android.data.network.dto.NewsDto
-import com.road801.android.databinding.FragmentNewsBinding
+import com.road801.android.data.network.dto.AlertDto
+import com.road801.android.databinding.FragmentAlertBinding
 import com.road801.android.domain.transfer.Resource
-import com.road801.android.view.main.home.adapter.NewsRecyclerAdapter
+import com.road801.android.view.main.home.adapter.AlertRecyclerAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NewsFragment : Fragment() {
+class AlertFragment : Fragment() {
 
-    private lateinit var binding: FragmentNewsBinding
-    private val viewModel: NewsViewModel by viewModels()
+    private lateinit var binding: FragmentAlertBinding
+    private val viewModel: AlertViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class NewsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentNewsBinding.inflate(inflater, container, false)
+        binding = FragmentAlertBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
         initView()
@@ -66,14 +68,14 @@ class NewsFragment : Fragment() {
     }
 
     private fun bindViewModel() {
-        viewModel.requestNewsInfo()
+        viewModel.requestAlertInfo()
 
-        viewModel.newsInfo.observe(viewLifecycleOwner) { result ->
+        viewModel.alertInfo.observe(viewLifecycleOwner) { result ->
             result.getContentIfNotHandled()?.let {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        bindNews(it.data.data)
+                        bindAlert(it.data.data)
                     }
                     is Resource.Failure -> {
                         showDialog(
@@ -97,27 +99,25 @@ class NewsFragment : Fragment() {
                 super.onScrollStateChanged(recyclerView, newState)
                 if(!binding.recyclerView.canScrollVertically(1)
                     && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        viewModel.requestMoreNewsInfo()
+                        viewModel.requestMoreAlertInfo()
                 }
             }
         })
     }
 
 
-    private fun bindNews(items: List<NewsDto>) {
+    private fun bindAlert(items: List<AlertDto>) {
+        showNoneView(if (items.isEmpty()) VISIBLE else GONE)
         val beforeItemCount = binding.recyclerView.adapter?.itemCount
 
-        binding.recyclerView.adapter = NewsRecyclerAdapter(items.sortedByDescending { it.id }) {
-            // move detail
-            findNavController().navigate(NewsFragmentDirections.actionNewsFragmentToNewsDetailFragment(it.id))
-        }
+        binding.recyclerView.adapter = AlertRecyclerAdapter(items.sortedByDescending { it.createDt })
 
         beforeItemCount?.let {
             if (items.size > 20) binding.recyclerView.smoothScrollToPosition(beforeItemCount+1)
         }
     }
 
-
-
-
+    private fun showNoneView(visibility: Int) {
+        binding.noneView.visibility = visibility
+    }
 }

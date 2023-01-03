@@ -41,7 +41,6 @@ class NewsViewModel @Inject constructor() : ViewModel() {
                 pagination.nextId = result.meta.nextId
                 previousData.addAll(result.data.toMutableList()) // set first data
                 _newsInfo.value = Event(Resource.Success(result))
-                LocalDatabase.saveNewsSize(result.total)
             } catch (domainException: DomainException) {
                 _newsInfo.value = Event(Resource.Failure(domainException))
             } catch (exception: Exception) {
@@ -63,7 +62,6 @@ class NewsViewModel @Inject constructor() : ViewModel() {
                     pagination.nextId = result.meta.nextId
 
                     _newsInfo.value = Event(Resource.Success(result))
-                    LocalDatabase.saveNewsSize(result.total)
                 } catch (domainException: DomainException) {
                     _newsInfo.value = Event(Resource.Failure(domainException))
                 } catch (exception: Exception) {

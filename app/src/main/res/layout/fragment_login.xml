@@ -76,7 +76,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/login_id_edit_text"
                         style="@style/TextInputEditTextStyle"
-                        android:hint="사용자 ID"
+                        android:hint="휴대폰번호"
                         android:inputType="text"
                         android:maxLength="20" />
                 </com.google.android.material.textfield.TextInputLayout>

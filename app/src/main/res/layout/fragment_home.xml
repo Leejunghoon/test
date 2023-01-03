@@ -29,29 +29,50 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_scrollFlags="scroll|snap|enterAlways">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_marginStart="20dp"
-                    app:srcCompat="@drawable/ic_small_logo" />
-
-                <TextView
-                    android:id="@+id/home_title"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="HOME"
-                    android:textColor="#181818"
-                    android:textSize="16dp"
-                    android:textStyle="bold" />
+                    android:layout_marginEnd="20dp">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/home_profile_image_view"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="20dp"
-                    app:srcCompat="@drawable/ic_profile" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView4"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_small_logo" />
+
+                    <TextView
+                        android:id="@+id/home_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="middle"
+                        android:maxLines="1"
+                        android:text="안녕하세요. 로드팔공망러러러러러러러 회원님!"
+                        android:textColor="#181818"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/home_profile_image_view"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView4"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/home_profile_image_view"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_profile" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
 
             </com.google.android.material.appbar.MaterialToolbar>
 
@@ -216,7 +237,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <RelativeLayout
-                        android:id="@+id/home_news_container"
+                        android:id="@+id/home_alert_container"
                         android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:animateLayoutChanges="true"
@@ -250,20 +271,86 @@
                         android:textColor="@color/white"
                         android:textSize="10dp"
                         android:visibility="invisible"
-                        app:layout_constraintBottom_toTopOf="@+id/home_news_container"
-                        app:layout_constraintEnd_toStartOf="@+id/home_news_container"
-                        app:layout_constraintTop_toTopOf="@+id/home_news_container" />
+                        app:layout_constraintBottom_toTopOf="@+id/home_alert_container"
+                        app:layout_constraintEnd_toStartOf="@+id/home_alert_container"
+                        app:layout_constraintTop_toTopOf="@+id/home_alert_container" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- 이벤트 영역 -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/home_road_event_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:text="ROAD801 이벤트"
+                        android:textColor="@color/selected_gray"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/home_road_event_more_button"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/home_road_event_more_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:background="@null"
+                        android:gravity="center_vertical|end"
+                        android:text="더보기 >"
+                        android:textColor="@color/unselected_gray"
+                        android:textSize="14dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_event_view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/home_road_event_more_button" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/home_road_call_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/home_road_event_container"
+                    app:srcCompat="@drawable/road801_store" />
+
+
+                <!-- 소식 영역 -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/home_road_new_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                    app:layout_constraintTop_toBottomOf="@+id/home_road_call_image_view">
 
                     <TextView
                         android:id="@+id/textView6"
@@ -310,71 +397,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/home_road_call_image_view"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="105dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/road801_store"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/home_road_new_container" />
-
-
-                <!-- 이벤트 영역 -->
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/home_road_event_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:background="@color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/home_road_call_image_view">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="20dp"
-                        android:text="ROAD801 이벤트"
-                        android:textColor="@color/selected_gray"
-                        android:textSize="14dp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/home_road_event_more_button"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/home_road_event_more_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="20dp"
-                        android:background="@null"
-                        android:gravity="center_vertical|end"
-                        android:text="더보기 >"
-                        android:textColor="@color/unselected_gray"
-                        android:textSize="14dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/home_event_view_pager"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/home_road_event_more_button" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

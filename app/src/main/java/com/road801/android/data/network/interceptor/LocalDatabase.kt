@@ -10,15 +10,15 @@ object LocalDatabase {
     private const val PREFERENCE_KEY_LOGIN_TYPE = "PREFERENCE_KEY_LOGIN_TYPE"
     private const val PREFERENCE_KEY_ID = "PREFERENCE_KEY_ID"
     private const val PREFERENCE_KEY_PW = "PREFERENCE_KEY_PW"
-    private const val PREFERENCE_NEWS_SIZE = "PREFERENCE_NEWS_SIZE"
-    private const val PREFERENCE_PREVIOUS_NEWS_SIZE = "PREFERENCE_PREVIOUS_NEWS_SIZE"
+    private const val PREFERENCE_ALERT_COUNT = "PREFERENCE_ALERT_COUNT"
+    private const val PREFERENCE_PREVIOUS_ALERT_COUNT = "PREFERENCE_PREVIOUS_ALERT_COUNT"
 
     fun fetchAccessToken(): String? = sharedPreferences.getString(PREFERENCE_ACCESS_TOKEN_KEY, null)
     fun fetchLoginType(): String? = sharedPreferences.getString(PREFERENCE_KEY_LOGIN_TYPE, null)
     fun fetchLoginId(): String? = sharedPreferences.getString(PREFERENCE_KEY_ID, null)
     fun fetchLoginPw(): String? = sharedPreferences.getString(PREFERENCE_KEY_PW, null)
-    fun fetchNewsSize(): Int = sharedPreferences.getInt(PREFERENCE_NEWS_SIZE, 0)
-    fun fetchPreviousNewsSize(): Int = sharedPreferences.getInt(PREFERENCE_NEWS_SIZE, -1)
+    fun fetchAlertCount(): Int = sharedPreferences.getInt(PREFERENCE_ALERT_COUNT, 0)
+    fun fetchPreviousAlertCount(): Int = sharedPreferences.getInt(PREFERENCE_PREVIOUS_ALERT_COUNT, -1)
 
 
     fun saveAccessToken(loginType: LoginType, id: String, pw: String?, accessToken: String) {
@@ -43,16 +43,16 @@ object LocalDatabase {
         }
     }
 
-    fun savePreviousNewsSize(size: Int) {
+    fun savePreviousAlertCount(size: Int) {
         sharedPreferences.edit().apply {
-            putInt(PREFERENCE_PREVIOUS_NEWS_SIZE, size)
+            putInt(PREFERENCE_PREVIOUS_ALERT_COUNT, size)
             apply()
         }
     }
 
-    fun saveNewsSize(size: Int) {
+    fun saveAlertCount(size: Int) {
         sharedPreferences.edit().apply {
-            putInt(PREFERENCE_NEWS_SIZE, size)
+            putInt(PREFERENCE_ALERT_COUNT, size)
             apply()
         }
     }

@@ -81,16 +81,16 @@ class SignUpInfoInputFragment : Fragment() {
                 binding.signupInfoNameTextInputLayout.isErrorEnabled = false
             }
 
-            // 휴대폰 번호
-            user.mobileNo?.let {
-                binding.signupInfoPhoneEditText.setText(it)
-                binding.signupInfoPhoneTextInputLayout.isErrorEnabled = false
-            }
+//            // 휴대폰 번호
+//            user.mobileNo?.let {
+//                binding.signupInfoPhoneEditText.setText(it)
+//                binding.signupInfoPhoneTextInputLayout.isErrorEnabled = false
+//            }
 
-            // 생년월일
-            user.birthday?.let {
-                binding.signupInfoBirthEditText.setText(it)
-            }
+//            // 생년월일
+//            user.birthday?.let {
+//                binding.signupInfoBirthEditText.setText(it)
+//            }
 
             // 성별
             user.sexType.run {
