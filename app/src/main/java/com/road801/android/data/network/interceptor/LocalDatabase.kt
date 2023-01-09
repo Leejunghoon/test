@@ -56,4 +56,10 @@ object LocalDatabase {
             apply()
         }
     }
+
+    fun saveId(id: String) {
+        sharedPreferences.edit().apply {
+            putString(PREFERENCE_KEY_ID, id)
+        }.apply()
+    }
 }

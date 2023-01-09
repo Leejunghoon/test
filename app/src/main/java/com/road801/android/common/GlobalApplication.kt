@@ -22,7 +22,6 @@ class GlobalApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initSharedPreference()
         setupKaKaoSDK()
         setupNaverSDK()
     }
@@ -32,9 +31,7 @@ class GlobalApplication : Application() {
     }
 
 
-    private fun initSharedPreference() {
-        LocalDatabase.sharedPreferences = getSharedPreferences("road801_db", Context.MODE_PRIVATE)
-    }
+
 
     private fun setupKaKaoSDK() {
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)

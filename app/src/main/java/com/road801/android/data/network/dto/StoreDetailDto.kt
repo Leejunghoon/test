@@ -7,5 +7,5 @@ data class StoreDetailDto (
     val introduce: String,
     val phone: String,
     val address: String,
-    val image: String?
+    val thumbnail: String?
 )

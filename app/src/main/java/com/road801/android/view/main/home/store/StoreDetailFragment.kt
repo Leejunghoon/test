@@ -121,9 +121,9 @@ class StoreDetailFragment : Fragment() {
                 append(item.phone)
             }
 
-        item.image?.let {
+        item.thumbnail?.let {
             Glide.with(requireContext())
-                .load(item.image)
+                .load(item.thumbnail)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.storeDetailImageView)
         }

@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -24,11 +23,11 @@ import com.road801.android.view.main.home.HomeActivity
 
 
 class RoadFirebaseMessagingService : FirebaseMessagingService() {
-    companion object {
-        private const val CHANNEL_NAME = "Push Notification"
-        private const val CHANNEL_DESCRIPTION = "FCM"
-        private const val CHANNEL_ID = "ROAD801"
+    private val CHANNEL_NAME = "Push Notification"
+    private val CHANNEL_DESCRIPTION = "FCM"
+    private val CHANNEL_ID = "ROAD801"
 
+    companion object {
         public fun geToken(callback: (String)-> Unit) {
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -106,7 +105,7 @@ class RoadFirebaseMessagingService : FirebaseMessagingService() {
             putExtra("notificationType", " ${type.title} 타입 ")
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK + Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        val pendingIntent = PendingIntent.getActivity(this, (System.currentTimeMillis()/100).toInt(), intent, FLAG_UPDATE_CURRENT)  //알림이 여러개 표시되도록 requestCode 를 추가
+        val pendingIntent = PendingIntent.getActivity(this, (System.currentTimeMillis()/100).toInt(), intent, PendingIntent.FLAG_IMMUTABLE)  //알림이 여러개 표시되도록 requestCode 를 추가
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_small_logo)

@@ -2,6 +2,7 @@ package com.road801.android.view
 
 import android.Manifest.permission.*
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.road801.android.R
 import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.goToIntro
+import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.data.repository.LocalRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -28,13 +30,23 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        val activityScope = CoroutineScope(Dispatchers.Main)
-        activityScope.launch {
-            delay(1500)
-            if (!checkPermission(CALL_PHONE) || !checkPermission(READ_EXTERNAL_STORAGE)) {
-                requestPermission()
-            } else {
-                moveNextScreen()
+        initSharedPreference()
+    }
+
+
+    private fun initSharedPreference() {
+        getSharedPreferences("road801_db", Context.MODE_PRIVATE).apply {
+            LocalDatabase.sharedPreferences = this
+            LocalRepository.isLogin // preload
+
+            val activityScope = CoroutineScope(Dispatchers.Main)
+            activityScope.launch {
+                delay(1500)
+                if (!checkPermission(CALL_PHONE) || !checkPermission(READ_EXTERNAL_STORAGE)) {
+                    requestPermission()
+                } else {
+                    moveNextScreen()
+                }
             }
         }
     }

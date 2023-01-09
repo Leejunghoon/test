@@ -14,6 +14,8 @@ import com.road801.android.data.network.dto.requset.*
 import com.road801.android.data.network.dto.response.SuccessResponseDto
 import com.road801.android.data.network.dto.response.UploadFileResponseDto
 import com.road801.android.data.network.error.DomainException
+import com.road801.android.data.network.interceptor.LocalDatabase
+import com.road801.android.data.repository.LocalRepository
 import com.road801.android.data.repository.ServerRepository
 import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
@@ -129,6 +131,7 @@ class MeViewModel @Inject constructor() : ViewModel() {
             try {
                 _isCompleteCert.value = Event(Resource.Loading)
                 val result = ServerRepository.phoneAuthConfirm(PhoneAuthRequestDto(mobileNo, authValue))
+                LocalDatabase.saveId(id = mobileNo)
                 _isCompleteCert.value = Event(Resource.Success(true))
             } catch (domainException: DomainException) {
                 _isCompleteCert.value = Event(Resource.Failure(domainException))
