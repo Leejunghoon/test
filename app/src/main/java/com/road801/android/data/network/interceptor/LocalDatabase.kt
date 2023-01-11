@@ -35,10 +35,7 @@ object LocalDatabase {
 
     fun logOut() {
         sharedPreferences.edit().apply {
-            remove(PREFERENCE_ACCESS_TOKEN_KEY)
-            remove(PREFERENCE_KEY_LOGIN_TYPE)
-            remove(PREFERENCE_KEY_ID)
-            remove(PREFERENCE_KEY_PW)
+            clear()
             apply()
         }
     }

@@ -20,7 +20,7 @@ import com.road801.android.view.main.me.MeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * MARK: - 비밀번호 찾기  [ 완료 ]
+ * MARK: - 비밀번호 재설정  [ 완료 ]
  *
  */
 @AndroidEntryPoint

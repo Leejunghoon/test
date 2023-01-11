@@ -26,6 +26,7 @@ import com.road801.android.common.util.extension.goToHome
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.extension.showToast
 import com.road801.android.data.network.dto.UserDto
+import com.road801.android.data.repository.SnsRepository
 import com.road801.android.databinding.FragmentIntroBinding
 import com.road801.android.domain.transfer.Resource
 import dagger.hilt.android.AndroidEntryPoint

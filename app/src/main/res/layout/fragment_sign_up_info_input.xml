@@ -169,12 +169,17 @@
                             android:enabled="false"
                             android:hint="생년월일" />
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/signup_info_calendar_button"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:background="@android:color/transparent" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/signup_info_calendar_button"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@android:color/transparent"
+                        app:layout_constraintBottom_toBottomOf="@+id/signup_info_birth_text_input_layout"
+                        app:layout_constraintEnd_toEndOf="@+id/signup_info_birth_text_input_layout"
+                        app:layout_constraintStart_toStartOf="@+id/signup_info_birth_text_input_layout"
+                        app:layout_constraintTop_toTopOf="@+id/signup_info_birth_text_input_layout"/>
 
                     <!-- 성별 토글 -->
                     <com.google.android.material.button.MaterialButtonToggleGroup

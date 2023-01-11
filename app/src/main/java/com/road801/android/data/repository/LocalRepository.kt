@@ -10,5 +10,8 @@ object LocalRepository {
      */
     val isLogin = !LocalDatabase.fetchAccessToken().isNullOrEmpty()
 
+    fun preload() {
+        val preload = isLogin
+    }
 
 }

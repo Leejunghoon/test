@@ -10,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.road801.android.common.enum.LoginType
 import com.road801.android.common.util.extension.goToIntro
 import com.road801.android.common.util.extension.showDialog
 import com.road801.android.common.util.extension.showToast
 import com.road801.android.data.network.interceptor.LocalDatabase
+import com.road801.android.data.repository.SnsRepository
 import com.road801.android.databinding.FragmentWithdrawalReasonBinding
 import com.road801.android.domain.transfer.Resource
 import com.road801.android.view.dialog.RoadDialog
@@ -99,8 +101,15 @@ class WithdrawalReasonFragment : Fragment() {
                 when (it) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
-                        showToast("회원 탈퇴가 완료되었습니다.")
+                        viewModel.getMe()?.let { me ->
+                            me.socialType?.let { type ->
+                                SnsRepository.withdrawal(requireContext(), LoginType.valueOf(type.code)) {
+                                    // completion
+                                }
+                            }
+                        }
                         LocalDatabase.logOut()
+                        showToast("회원 탈퇴가 완료되었습니다.")
                         goToIntro()
                     }
                     is Resource.Failure -> {

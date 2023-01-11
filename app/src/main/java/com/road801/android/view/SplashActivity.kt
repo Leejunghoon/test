@@ -37,7 +37,7 @@ class SplashActivity : AppCompatActivity() {
     private fun initSharedPreference() {
         getSharedPreferences("road801_db", Context.MODE_PRIVATE).apply {
             LocalDatabase.sharedPreferences = this
-            LocalRepository.isLogin // preload
+            LocalRepository.preload() // preload
 
             val activityScope = CoroutineScope(Dispatchers.Main)
             activityScope.launch {

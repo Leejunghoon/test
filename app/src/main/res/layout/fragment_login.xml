@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@null"
-                    android:text="비밀번호 찾기"
+                    android:text="비밀번호 재설정"
                     android:textColor="@color/unselected_gray"
                     android:textSize="18dp"
                     app:layout_constraintEnd_toEndOf="parent"

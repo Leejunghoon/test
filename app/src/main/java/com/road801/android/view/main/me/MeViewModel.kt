@@ -17,6 +17,7 @@ import com.road801.android.data.network.error.DomainException
 import com.road801.android.data.network.interceptor.LocalDatabase
 import com.road801.android.data.repository.LocalRepository
 import com.road801.android.data.repository.ServerRepository
+import com.road801.android.data.repository.SnsRepository
 import com.road801.android.domain.transfer.Event
 import com.road801.android.domain.transfer.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
